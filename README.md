@@ -16,12 +16,12 @@ npm run build      # production build into dist/
 |---|---|
 | Name, tagline, bio, projects, experience, skills, certifications | `src/data/portfolio.ts` |
 | Project images | `src/assets/projects/<project-slug>/` (then list them in the project's `images` in `portfolio.ts`) |
-| Avatar | `src/assets/photo/thanh-avatar.jpg` (square) |
+| Hero photo | `src/assets/photo/thanh-hero.jpg` (square, shown in a circle) |
 | Resume downloads | `public/thanh-vu-resume-data-engineer.pdf`, `public/thanh-vu-resume-data-analyst.pdf` |
 | Social share image | `public/og.png` (1200×630) |
-| Colors (light and dark) and font | `src/styles/global.css` (`:root` and `[data-theme="dark"]`) |
+| Colors and font | `src/styles/global.css` (`@theme` block) |
 
-The site has a light and dark theme. It follows the visitor's system setting until they use the toggle, which is remembered.
+The contact form opens the visitor's email app with the message filled in, since GitHub Pages has no server to send email.
 
 ## Deploy to GitHub Pages
 
