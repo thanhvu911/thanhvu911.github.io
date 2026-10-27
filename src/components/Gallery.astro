@@ -25,7 +25,7 @@ const items = await Promise.all(
       items.map((img, i) => (
         <li>
           <button type="button" class="group block w-full text-left" data-open={i} data-full={img.full} data-caption={img.caption}>
-            <span class="block aspect-[16/10] overflow-hidden rounded-lg border border-line bg-surface transition-colors group-hover:border-accent">
+            <span class="block aspect-[16/10] overflow-hidden rounded-lg border border-line bg-soft transition-colors group-hover:border-teal">
               <Image
                 src={img.src}
                 alt={img.caption}
@@ -46,7 +46,7 @@ const items = await Promise.all(
       <div class="flex items-center justify-between gap-4 px-4 py-3 md:px-6">
         <p class="min-w-0 truncate text-sm text-white" data-v-caption></p>
         <div class="flex items-center gap-1 text-white/70">
-          <span class="tnum mr-2 text-xs" data-v-count></span>
+          <span class="mr-2 text-xs tabular-nums" data-v-count></span>
           <button type="button" class="v-btn" aria-label="Previous image" data-v-prev><Icon name="arrow-left" /></button>
           <button type="button" class="v-btn" aria-label="Next image" data-v-next><Icon name="arrow-right" /></button>
           <button type="button" class="v-btn" aria-label="Close" data-v-close><Icon name="x" /></button>

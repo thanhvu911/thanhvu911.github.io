@@ -6,8 +6,9 @@ export const profile = {
   name: 'Thanh Vu',
   role: 'Data Engineer & Analyst',
   eyebrow: 'Data Engineer & Analyst',
-  tagline:
-    'I build the pipelines, warehouses, and dashboards that turn messy public and business data into decisions people can act on.',
+  tagline: 'Transforming data into intelligence that drives impact.',
+  phone: '(717) 869-9502',
+  phoneHref: 'tel:+17178699502',
   status: 'Data Analyst Fellow @ EDC Lancaster County',
   availability: 'Open to Data Engineer and Data Analyst roles',
   location: 'Lancaster, PA',
@@ -24,9 +25,8 @@ export const profile = {
 
 // About section, one paragraph per entry.
 export const bio = [
-  "I'm a data engineer and analyst in Lancaster, PA. I like the whole path data takes: landing raw files, cleaning and modeling them, and building the dashboard someone actually uses to make a decision.",
-  'Right now I\'m a Data Analyst Fellow at the EDC Lancaster County Center for Regional Analysis, where I build Power BI reporting on federal economic data (BLS, BEA) and a Google Apps Script dashboard with a built-in AI assistant for non-technical staff.',
-  'Before that I built buyer-prediction models at KCC Capital Partners and ETL pipelines at KPIM in Hanoi. I hold the Microsoft Fabric Data Engineer Associate certification (DP-700).',
+  "I'm a Computer Science graduate of Franklin & Marshall College (GPA 3.72, major GPA 3.82) and a Microsoft Certified Fabric Data Engineer Associate (DP-700). My work sits where data engineering, analytics, and statistical modeling meet.",
+  "I'm currently a Data Analyst Fellow at the EDC Lancaster County Center for Regional Analysis, building Power BI reporting on federal economic data and a web dashboard with a built-in AI assistant. I enjoy turning raw data into decisions: building ETL pipelines, designing data warehouses and dashboards, and developing models that solve real-world problems.",
 ];
 
 export type ImageCategory = 'Power BI' | 'Data flow' | 'Data model' | 'Code' | 'Insights';
@@ -448,22 +448,21 @@ export const experience = [
   },
 ];
 
-export const toolkit = [
+export const skills = [
   {
-    group: 'Data engineering',
-    items: ['ETL / ELT', 'Medallion architecture', 'Star & galaxy schemas', 'Stored procedures', 'Data-quality testing', 'Documentation'],
+    group: 'Programming Languages',
+    icon: 'code',
+    items: ['Python (Pandas, NumPy)', 'SQL (T-SQL, MySQL)', 'R', 'DAX', 'Power Query M', 'JavaScript (Apps Script)', 'HTML/CSS'],
   },
   {
-    group: 'Microsoft Fabric',
-    items: ['Lakehouse', 'OneLake', 'Dataflow Gen2', 'Semantic models'],
+    group: 'Tools & Platforms',
+    icon: 'wrench',
+    items: ['Power BI', 'Microsoft Fabric', 'SQL Server', 'Power Query', 'Excel', 'Power Automate', 'Google Sheets / Apps Script', 'Git / GitHub'],
   },
   {
-    group: 'Languages',
-    items: ['SQL (T-SQL)', 'Python (Pandas, NumPy)', 'DAX', 'Power Query M', 'R', 'JavaScript (Apps Script)'],
-  },
-  {
-    group: 'BI & tools',
-    items: ['Power BI', 'SQL Server', 'MySQL', 'Power Automate', 'Google Sheets / Apps Script', 'Excel', 'Git / GitHub'],
+    group: 'Data Engineering & Analytics',
+    icon: 'database',
+    items: ['ETL / ELT pipelines', 'Medallion architecture', 'Dimensional modeling', 'Data-quality testing', 'Statistical modeling', 'Machine learning', 'Predictive analytics'],
   },
 ];
 
@@ -492,9 +491,12 @@ export const education = {
   ],
 };
 
-export const sections = [
-  { id: 'about', label: 'About' },
-  { id: 'experience', label: 'Experience' },
-  { id: 'projects', label: 'Projects' },
-  { id: 'skills', label: 'Skills' },
+export const nav = [
+  { label: 'Home', href: '/#home' },
+  { label: 'About', href: '/#about' },
+  { label: 'Education', href: '/#education' },
+  { label: 'Experience', href: '/#experience' },
+  { label: 'Skills', href: '/#skills' },
+  { label: 'Projects', href: '/#projects' },
+  { label: 'Contact', href: '/#contact' },
 ];

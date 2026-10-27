@@ -1,0 +1,111 @@
+---
+import Icon from './Icon.astro';
+import { nav, profile } from '../data/portfolio';
+
+// On the home page the bar starts transparent over the blue hero and turns
+// white once the visitor scrolls. Other pages start white.
+const overHero = Astro.url.pathname === '/';
+---
+
+<nav
+  class:list={['site-nav fixed inset-x-0 top-0 z-50 transition-colors duration-300', !overHero && 'is-solid']}
+  data-over-hero={overHero ? '' : undefined}
+  aria-label="Main"
+>
+  <div class="container-page flex h-16 items-center justify-between">
+    <a href="/#home" class="nav-brand text-xl font-bold">{profile.name}</a>
+
+    <ul class="hidden items-center gap-1 lg:flex">
+      {
+        nav.map((item) => (
+          <li>
+            <a href={item.href} class="nav-item rounded-md px-4 py-2 text-sm font-medium transition-colors">
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <button
+      type="button"
+      class="nav-item grid size-11 place-items-center rounded-md lg:hidden"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      data-menu-toggle
+    >
+      <Icon name="menu" size={22} class="menu-open" />
+      <Icon name="x" size={22} class="menu-close hidden" />
+    </button>
+  </div>
+
+  <div id="mobile-menu" class="hidden border-t border-line bg-white shadow-lg lg:hidden" data-menu>
+    <ul class="container-page py-2">
+      {
+        nav.map((item) => (
+          <li>
+            <a href={item.href} class="block rounded-md px-3 py-3 font-medium text-ink hover:bg-soft hover:text-teal-ink">
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</nav>
+
+<style>
+  .site-nav .nav-brand,
+  .site-nav .nav-item {
+    color: #fff;
+  }
+  .site-nav .nav-item:hover {
+    background: rgb(255 255 255 / 0.12);
+  }
+  .site-nav.is-solid,
+  .site-nav.menu-open {
+    background: rgb(255 255 255 / 0.95);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 1px 3px rgb(15 39 87 / 0.08);
+  }
+  .site-nav.is-solid .nav-brand,
+  .site-nav.menu-open .nav-brand {
+    color: var(--color-navy);
+  }
+  .site-nav.is-solid .nav-item,
+  .site-nav.menu-open .nav-item {
+    color: var(--color-ink);
+  }
+  .site-nav.is-solid .nav-item:hover {
+    color: var(--color-teal-ink);
+    background: var(--color-soft);
+  }
+</style>
+
+<script>
+  const navEl = document.querySelector<HTMLElement>('.site-nav')!;
+  if (navEl.hasAttribute('data-over-hero')) {
+    const update = () => navEl.classList.toggle('is-solid', window.scrollY > 40);
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  }
+
+  const toggle = navEl.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
+  const menu = navEl.querySelector<HTMLElement>('[data-menu]')!;
+  const setOpen = (open: boolean) => {
+    menu.classList.toggle('hidden', !open);
+    navEl.classList.toggle('menu-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    toggle.querySelector('.menu-open')?.classList.toggle('hidden', open);
+    toggle.querySelector('.menu-close')?.classList.toggle('hidden', !open);
+  };
+  toggle.addEventListener('click', () => setOpen(menu.classList.contains('hidden')));
+  menu.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) setOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setOpen(false);
+  });
+</script>

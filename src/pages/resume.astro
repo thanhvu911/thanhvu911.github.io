@@ -5,30 +5,39 @@ import { profile } from '../data/portfolio';
 ---
 
 <Base title="Resume" description="Download Thanh Vu's resume: Data Engineer or Data Analyst version.">
-  <a href="/" class="inline-flex items-center gap-1.5 text-sm font-medium text-muted hover:text-accent">
-    <Icon name="arrow-left" size={14} />
-    Home
-  </a>
-  <h1 class="mt-6 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Resume</h1>
-  <p class="mt-3 text-muted">Two one-page versions. Pick the one that fits the role.</p>
+  <section class="bg-gradient-to-b from-white to-soft/60 pb-20 pt-28">
+    <div class="container-page max-w-3xl">
+      <a href="/" class="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-teal-ink">
+        <Icon name="arrow-left" size={16} />
+        Back to Home
+      </a>
+      <h1 class="section-title mt-6">Resume</h1>
+      <p class="mt-6 text-center text-muted">Two one-page versions. Pick the one that fits the role.</p>
 
-  <ul class="mt-10 space-y-4">
-    {
-      profile.resumes.map((r) => (
-        <li class="flex flex-col gap-4 rounded-xl border border-line bg-surface p-5 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 class="font-medium text-ink">{r.label} resume</h2>
-            <p class="text-sm text-muted">{r.note}</p>
-          </div>
-          <div class="flex gap-2">
-            <a href={r.href} target="_blank" class="btn btn-ghost">Open</a>
-            <a href={r.href} download class="btn btn-primary">
-              <Icon name="download" />
-              Download PDF
-            </a>
-          </div>
-        </li>
-      ))
-    }
-  </ul>
+      <ul class="mt-10 space-y-4">
+        {
+          profile.resumes.map((r) => (
+            <li class="card flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+              <div class="flex items-center gap-4">
+                <span class="icon-tile">
+                  <Icon name="briefcase" size={22} />
+                </span>
+                <div>
+                  <h2 class="text-lg font-bold text-navy">{r.label} Resume</h2>
+                  <p class="text-sm text-muted">{r.note}</p>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <a href={r.href} target="_blank" class="btn btn-outline">Open</a>
+                <a href={r.href} download class="btn btn-teal">
+                  <Icon name="download" size={16} />
+                  Download
+                </a>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
 </Base>

@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
-import Sidebar from '../components/Sidebar.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
 import { profile } from '../data/portfolio';
 
 interface Props {
@@ -15,7 +16,7 @@ const {
   image = '/og.png',
 } = Astro.props;
 
-const pageTitle = title ? `${title} | ${profile.name}` : `${profile.name}, ${profile.role}`;
+const pageTitle = title ? `${title} | ${profile.name}` : `${profile.name} | ${profile.role} Portfolio`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
 
@@ -41,6 +42,7 @@ const personSchema = {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#0f2757" />
     <meta name="generator" content={Astro.generator} />
 
     <meta property="og:type" content="website" />
@@ -52,27 +54,17 @@ const personSchema = {
 
     <link rel="sitemap" href="/sitemap-index.xml" />
     <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
-    <!-- Apply the saved or system theme before paint to avoid a flash. -->
-    <script is:inline>
-      (function () {
-        var t = null;
-        try { t = localStorage.getItem('theme'); } catch (e) {}
-        if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        document.documentElement.dataset.theme = t;
-      })();
-    </script>
   </head>
-  <body>
+  <body class="flex min-h-dvh flex-col">
     <a
       href="#main"
-      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:text-accent-ink"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-teal focus:px-4 focus:py-2 focus:text-navy"
       >Skip to content</a
     >
-    <div class="mx-auto min-h-dvh max-w-6xl px-6 py-12 md:px-12 md:py-16 lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:py-0">
-      <Sidebar />
-      <main id="main" class="pt-16 lg:py-20">
-        <slot />
-      </main>
-    </div>
+    <Nav />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
   </body>
 </html>

@@ -1,0 +1,78 @@
+---
+import Icon from './Icon.astro';
+import ProjectCard from './ProjectCard.astro';
+import { projects } from '../data/portfolio';
+---
+
+<div class="relative" data-carousel>
+  <ul
+    class="carousel-track -mx-4 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth px-4 pb-6 pt-2"
+    aria-label="Projects"
+    tabindex="0"
+    data-track
+  >
+    {
+      projects.map((p) => (
+        <li class="w-[85%] shrink-0 snap-start sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]">
+          <ProjectCard project={p} />
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="mt-2 flex items-center justify-center gap-3">
+    <button type="button" class="carousel-btn" aria-label="Previous projects" data-prev>
+      <Icon name="chevron-left" size={20} />
+    </button>
+    <button type="button" class="carousel-btn" aria-label="Next projects" data-next>
+      <Icon name="chevron-right" size={20} />
+    </button>
+  </div>
+</div>
+
+<style>
+  .carousel-track {
+    scrollbar-width: none;
+  }
+  .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+  .carousel-btn {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    background: var(--color-navy);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 150ms, opacity 150ms;
+  }
+  .carousel-btn:hover {
+    background: var(--color-navy-2);
+  }
+  .carousel-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-track]')!;
+    const prev = root.querySelector<HTMLButtonElement>('[data-prev]')!;
+    const next = root.querySelector<HTMLButtonElement>('[data-next]')!;
+
+    const step = () => (track.querySelector('li')?.getBoundingClientRect().width ?? 300) + 24;
+    const update = () => {
+      prev.disabled = track.scrollLeft <= 4;
+      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+    };
+
+    prev.addEventListener('click', () => track.scrollBy({ left: -step() }));
+    next.addEventListener('click', () => track.scrollBy({ left: step() }));
+    track.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  });
+</script>

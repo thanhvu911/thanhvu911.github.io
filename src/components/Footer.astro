@@ -1,0 +1,21 @@
+---
+import Icon from './Icon.astro';
+import { profile } from '../data/portfolio';
+---
+
+<footer class="bg-navy py-8 text-white">
+  <div class="container-page flex flex-col items-center justify-between gap-4 sm:flex-row">
+    <p class="text-sm text-white/80">© {new Date().getFullYear()} {profile.name}. All rights reserved.</p>
+    <div class="flex items-center gap-1">
+      <a href={profile.linkedin} class="grid size-10 place-items-center rounded-md text-white/80 hover:bg-white/10 hover:text-white" aria-label="LinkedIn" target="_blank" rel="noopener">
+        <Icon name="linkedin" size={18} />
+      </a>
+      <a href={profile.github} class="grid size-10 place-items-center rounded-md text-white/80 hover:bg-white/10 hover:text-white" aria-label="GitHub" target="_blank" rel="noopener">
+        <Icon name="github" size={18} />
+      </a>
+      <a href={`mailto:${profile.email}`} class="grid size-10 place-items-center rounded-md text-white/80 hover:bg-white/10 hover:text-white" aria-label="Email">
+        <Icon name="mail" size={18} />
+      </a>
+    </div>
+  </div>
+</footer>

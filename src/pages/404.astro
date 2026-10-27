@@ -4,7 +4,11 @@ import Icon from '../components/Icon.astro';
 ---
 
 <Base title="Page not found">
-  <h1 class="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Page not found</h1>
-  <p class="mt-3 text-muted">This page doesn't exist or has moved.</p>
-  <a href="/" class="btn btn-primary mt-8"><Icon name="arrow-left" /> Back to home</a>
+  <section class="pb-24 pt-36 text-center">
+    <div class="container-page">
+      <h1 class="section-title">Page not found</h1>
+      <p class="mt-6 text-muted">This page doesn't exist or has moved.</p>
+      <a href="/" class="btn btn-teal mt-8"><Icon name="arrow-left" size={16} /> Back to Home</a>
+    </div>
+  </section>
 </Base>

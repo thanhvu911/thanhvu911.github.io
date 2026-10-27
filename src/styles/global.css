@@ -1,79 +1,37 @@
 @import "tailwindcss";
-@import "@fontsource-variable/ibm-plex-sans";
-@import "@fontsource-variable/ibm-plex-sans/wght-italic.css";
 
-/*
-  Palette comes from the original Lovable site: deep navy and a clear blue.
-  Light is the default; dark follows the system or the toggle (data-theme).
-*/
-:root {
-  --bg: #f6f8fb;
-  --surface: #ffffff;
-  --ink: #0f1b2d;
-  --muted: #4c5a70;
-  --faint: #6b7890;
-  --line: #e2e7ef;
-  --accent: #1a5bd6;
-  --accent-ink: #ffffff;
-  --accent-wash: #e8effc;
-  --glow: rgb(26 91 214 / 0.07);
-  color-scheme: light;
-}
+/* Palette and type taken from the original Lovable site. */
+@theme {
+  --color-navy: #0f2757;
+  --color-navy-2: #175e82;
+  --color-teal: #11d4d4;
+  --color-teal-ink: #0a7a82; /* teal dark enough for text on white */
+  --color-teal-wash: #e3f9f9;
+  --color-ink: #1d2025;
+  --color-muted: #5b6472;
+  --color-line: #e5e7eb;
+  --color-soft: #f3f4f6;
 
-:root[data-theme="dark"] {
-  --bg: #0b1626;
-  --surface: #11213a;
-  --ink: #e6edf7;
-  --muted: #a3b1c6;
-  --faint: #8494ab;
-  --line: rgb(163 177 198 / 0.16);
-  --accent: #7cb0ff;
-  --accent-ink: #0b1626;
-  --accent-wash: rgb(124 176 255 / 0.12);
-  --glow: rgb(29 78 168 / 0.22);
-  color-scheme: dark;
-}
-
-@theme inline {
-  --color-bg: var(--bg);
-  --color-surface: var(--surface);
-  --color-ink: var(--ink);
-  --color-muted: var(--muted);
-  --color-faint: var(--faint);
-  --color-line: var(--line);
-  --color-accent: var(--accent);
-  --color-accent-ink: var(--accent-ink);
-  --color-accent-wash: var(--accent-wash);
-
-  --font-sans: "IBM Plex Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
 @layer base {
   html {
-    background: var(--bg);
-    color: var(--ink);
+    color: var(--color-ink);
     font-family: var(--font-sans);
+    background: #fff;
     -webkit-font-smoothing: antialiased;
     scroll-behavior: smooth;
-  }
-
-  body {
-    min-height: 100dvh;
-    background:
-      radial-gradient(60rem 40rem at 0% 0%, var(--glow), transparent 70%),
-      var(--bg);
-    background-attachment: fixed;
-    font-size: 1rem;
-    line-height: 1.65;
+    scroll-padding-top: 4.5rem;
   }
 
   ::selection {
-    background: var(--accent);
-    color: var(--accent-ink);
+    background: var(--color-teal);
+    color: var(--color-navy);
   }
 
   :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--color-teal);
     outline-offset: 3px;
     border-radius: 4px;
   }
@@ -92,83 +50,146 @@
     }
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
   }
 }
 
 @layer components {
-  .tnum {
-    font-variant-numeric: tabular-nums;
+  .container-page {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 768px) {
+    .container-page {
+      padding-inline: 1.5rem;
+    }
   }
 
-  .tag {
+  .section-title {
+    text-align: center;
+    color: var(--color-navy);
+    font-size: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+  }
+  @media (min-width: 768px) {
+    .section-title {
+      font-size: 3rem;
+    }
+  }
+  .section-title::after {
+    content: "";
+    display: block;
+    width: 5rem;
+    height: 4px;
+    margin: 1rem auto 0;
+    border-radius: 999px;
+    background: var(--color-teal);
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--color-line);
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgb(15 39 87 / 0.06);
+  }
+
+  .icon-tile {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.625rem;
+    background: var(--color-teal-wash);
+    color: var(--color-teal-ink);
+  }
+
+  .pill {
     display: inline-flex;
     align-items: center;
-    padding: 0.2rem 0.625rem;
+    padding: 0.25rem 0.75rem;
     border-radius: 999px;
-    background: var(--accent-wash);
-    color: var(--accent);
+    background: var(--color-teal-wash);
+    color: var(--color-teal-ink);
     font-size: 0.75rem;
     font-weight: 500;
-    line-height: 1.5;
+  }
+
+  .dot-list > li {
+    position: relative;
+    padding-left: 1.125rem;
+  }
+  .dot-list > li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 999px;
+    background: var(--color-teal);
   }
 
   .btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    min-height: 2.5rem;
-    padding: 0 1rem;
+    min-height: 2.75rem;
+    padding: 0 1.5rem;
     border-radius: 0.5rem;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 150ms, border-color 150ms, color 150ms;
+    transition: background-color 150ms, border-color 150ms, color 150ms, transform 150ms;
   }
-  .btn-primary {
-    background: var(--accent);
-    color: var(--accent-ink);
+  .btn:active {
+    transform: scale(0.98);
   }
-  .btn-primary:hover {
-    filter: brightness(1.08);
+  .btn-teal {
+    background: var(--color-teal);
+    color: var(--color-navy);
   }
-  .btn-ghost {
-    border: 1px solid var(--line);
-    color: var(--ink);
-    background: var(--surface);
+  .btn-teal:hover {
+    background: #3ee0e0;
   }
-  .btn-ghost:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+  .btn-glass {
+    background: rgb(255 255 255 / 0.1);
+    color: #fff;
+    border: 1px solid rgb(255 255 255 / 0.3);
+  }
+  .btn-glass:hover {
+    background: rgb(255 255 255 / 0.2);
+  }
+  .btn-outline {
+    background: #fff;
+    color: var(--color-ink);
+    border: 1px solid var(--color-line);
+  }
+  .btn-outline:hover {
+    border-color: var(--color-teal);
+    color: var(--color-teal-ink);
   }
 
-  .icon-btn {
-    display: grid;
-    place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
+  .field {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--color-line);
     border-radius: 0.5rem;
-    color: var(--muted);
-    cursor: pointer;
-    transition: color 150ms, background-color 150ms;
+    background: #fff;
+    font-size: 1rem;
+    transition: border-color 150ms, box-shadow 150ms;
   }
-  .icon-btn:hover {
-    color: var(--ink);
-    background: var(--accent-wash);
-  }
-
-  .link {
-    color: var(--ink);
-    font-weight: 500;
-    text-decoration: underline;
-    text-decoration-color: var(--line);
-    text-decoration-thickness: 1.5px;
-    text-underline-offset: 3px;
-    transition: text-decoration-color 150ms, color 150ms;
-  }
-  .link:hover {
-    color: var(--accent);
-    text-decoration-color: var(--accent);
+  .field:focus {
+    outline: none;
+    border-color: var(--color-teal);
+    box-shadow: 0 0 0 3px rgb(17 212 212 / 0.25);
   }
 }
