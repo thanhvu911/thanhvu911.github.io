@@ -1,21 +1,32 @@
 ---
 import Icon from './Icon.astro';
 import { profile } from '../data/portfolio';
+
+interface Props {
+  /** Open the menu above the button (for use near the bottom of the screen). */
+  up?: boolean;
+}
+const { up = false } = Astro.props;
 ---
 
 <details class="resume-menu relative">
   <summary class="btn btn-ghost list-none [&::-webkit-details-marker]:hidden">
     <Icon name="download" />
-    Download resume
+    Resume
     <Icon name="chevron-down" size={14} class="chevron transition-transform" />
   </summary>
-  <ul class="absolute left-0 z-30 mt-2 w-64 overflow-hidden rounded-lg border border-line-strong bg-surface-2 p-1 shadow-2xl">
+  <ul
+    class:list={[
+      'absolute left-0 z-30 w-64 rounded-lg border border-line bg-surface p-1 shadow-xl shadow-black/10',
+      up ? 'bottom-full mb-2' : 'mt-2',
+    ]}
+  >
     {
       profile.resumes.map((r) => (
         <li>
-          <a href={r.href} target="_blank" class="flex min-h-12 flex-col justify-center rounded-md px-3 py-2 hover:bg-white/5">
-            <span class="text-sm text-ink">{r.label} resume</span>
-            <span class="font-mono text-[11px] text-muted">{r.note} · PDF</span>
+          <a href={r.href} target="_blank" class="flex flex-col rounded-md px-3 py-2.5 hover:bg-accent-wash">
+            <span class="text-sm font-medium text-ink">{r.label} resume</span>
+            <span class="text-xs text-muted">{r.note}, PDF</span>
           </a>
         </li>
       ))

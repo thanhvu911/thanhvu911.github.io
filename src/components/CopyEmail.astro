@@ -10,7 +10,7 @@ const { compact = false } = Astro.props;
 
 <button
   type="button"
-  class:list={['btn btn-ghost', compact && 'px-0 size-11 justify-center']}
+  class:list={[compact ? 'icon-btn' : 'btn btn-ghost']}
   data-copy-email={profile.email}
   aria-label={compact ? `Copy email address ${profile.email}` : undefined}
 >

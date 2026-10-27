@@ -14,15 +14,14 @@ npm run build      # production build into dist/
 
 | What | File |
 |---|---|
-| Name, tagline, links, stats, projects, experience, skills, certifications | `src/data/portfolio.ts` |
-| Notes (articles) | `src/pages/notes/*.md`, one Markdown file per note |
+| Name, tagline, bio, projects, experience, skills, certifications | `src/data/portfolio.ts` |
 | Project images | `src/assets/projects/<project-slug>/` (then list them in the project's `images` in `portfolio.ts`) |
-| Portrait | `src/assets/photo/thanh-cutout.png` (transparent PNG) |
-| Resume download | `public/resume.pdf` |
+| Avatar | `src/assets/photo/thanh-avatar.jpg` (square) |
+| Resume downloads | `public/thanh-vu-resume-data-engineer.pdf`, `public/thanh-vu-resume-data-analyst.pdf` |
 | Social share image | `public/og.png` (1200×630) |
-| Colors and fonts | `src/styles/global.css` (`@theme` block) |
+| Colors (light and dark) and font | `src/styles/global.css` (`:root` and `[data-theme="dark"]`) |
 
-The GitHub activity grid in **Experiments** is fetched at build time, so it refreshes each time the site is rebuilt.
+The site has a light and dark theme. It follows the visitor's system setting until they use the toggle, which is remembered.
 
 ## Deploy to GitHub Pages
 

@@ -22,17 +22,11 @@ export const profile = {
   ],
 };
 
-export const ticker = [
-  'Microsoft Certified: Fabric Data Engineer Associate (DP-700)',
-  'Data Analyst Fellow @ EDC Lancaster County',
-  'B.A. Computer Science, Franklin & Marshall College, 2026',
-  'Open to Data Engineer / Data Analyst roles',
-];
-
-export const stats = [
-  { value: '131M+', label: 'Rows modeled', href: '/work/grocery-transaction-data-warehouse' },
-  { value: '7', label: 'End-to-end projects', href: '/work' },
-  { value: 'DP-700', label: 'Fabric Data Engineer', href: '#credentials' },
+// About section, one paragraph per entry.
+export const bio = [
+  "I'm a data engineer and analyst in Lancaster, PA. I like the whole path data takes: landing raw files, cleaning and modeling them, and building the dashboard someone actually uses to make a decision.",
+  'Right now I\'m a Data Analyst Fellow at the EDC Lancaster County Center for Regional Analysis, where I build Power BI reporting on federal economic data (BLS, BEA) and a Google Apps Script dashboard with a built-in AI assistant for non-technical staff.',
+  'Before that I built buyer-prediction models at KCC Capital Partners and ETL pipelines at KPIM in Hanoi. I hold the Microsoft Fabric Data Engineer Associate certification (DP-700).',
 ];
 
 export type ImageCategory = 'Power BI' | 'Data flow' | 'Data model' | 'Code' | 'Insights';
@@ -405,68 +399,10 @@ export const projects: Project[] = [
   },
 ];
 
-export const experiments = [
-  {
-    title: 'Netflix titles ETL',
-    repo: 'netflix-etl-mysql',
-    tags: ['Python', 'MySQL', 'Power BI'],
-    summary: 'An early ETL: CSV into a normalized MySQL fact/dimension schema with PyMySQL, then a Power BI report.',
-    preview: ['extract.py', 'dim_title ← csv', 'fact_listing ← join', 'load → MySQL'],
-  },
-  {
-    title: 'AI: search, logic, probability',
-    repo: 'ai-search-logic-probability',
-    tags: ['Python', 'Jupyter'],
-    summary: 'Agents and search through logic, planning, and probabilistic reasoning, following Russell & Norvig.',
-    preview: ['bfs()  dfs()  a_star()', 'resolve(KB, α)', 'P(A | B) = …'],
-  },
-  {
-    title: 'Machine learning notebooks',
-    repo: 'machine-learning-coursework',
-    tags: ['Python', 'pandas'],
-    summary: 'Data exploration, feature engineering, and analysis on real-world datasets.',
-    preview: ['df.describe()', 'features = […]', 'model.fit(X, y)'],
-  },
-  {
-    title: 'A CPU in Logisim + RISC-V',
-    repo: 'risc-v-cpu-and-assembly',
-    tags: ['Logisim', 'RISC-V'],
-    summary: 'A simple CPU in a logic simulator, plus iterative and recursive exponentiation in RISC-V assembly.',
-    preview: ['addi a0, zero, 1', 'jal ra, pow', 'ret'],
-  },
-  {
-    title: 'Red-black tree in C++',
-    repo: 'data-structures-cpp',
-    tags: ['C++'],
-    summary: 'A self-balancing red-black tree with unit tests and a speed benchmark.',
-    preview: ['insert(k) → recolor', 'rotateLeft(x)', 'SpeedTest: n = …'],
-  },
-  {
-    title: 'Applied regression in R',
-    repo: 'applied-regression-analysis-r',
-    tags: ['R'],
-    summary: 'Multiple regression with interaction terms, residual diagnostics, and fitted lines by region.',
-    preview: ['lm(y ~ x * region)', 'plot(resid(m))', 'predict(m, new)'],
-  },
-  {
-    title: 'AdventureWorks SQL',
-    repo: 'adventureworks-sql-practice',
-    tags: ['T-SQL'],
-    summary: 'Query sets that progress from filtering to joins, subqueries, and business reporting.',
-    preview: ['SELECT TOP 10 …', 'JOIN Sales.SalesOrderHeader', 'GROUP BY Territory'],
-  },
-  {
-    title: 'Drone gem collector',
-    repo: 'unity-drone-gem-collector',
-    tags: ['Unity', 'C#'],
-    summary: 'A physics-based drone game: Rigidbody lift, auto-stabilization, and a follow camera.',
-    preview: ['rb.AddForce(lift)', 'Stabilize()', 'CameraFollow.cs'],
-  },
-];
-
 export const experience = [
   {
     role: 'Data Analyst Fellow',
+    tech: ['Power BI', 'DAX', 'BLS / BEA APIs', 'Google Apps Script', 'Gemini'],
     company: 'EDC Lancaster County, Center for Regional Analysis',
     location: 'Lancaster, PA',
     dates: 'Aug 2026 – Present',
@@ -479,6 +415,7 @@ export const experience = [
   },
   {
     role: 'Data Science Intern',
+    tech: ['Python', 'Statistics', 'Machine learning', 'Seamless.AI'],
     company: 'KCC Capital Partners',
     location: 'Sheridan, WY',
     dates: 'Jan 2026 – May 2026',
@@ -489,6 +426,7 @@ export const experience = [
   },
   {
     role: 'Technology Support Assistant',
+    tech: ['IT support', 'Imaging'],
     company: 'Quantitative Science Center, Franklin & Marshall College',
     location: 'Lancaster, PA',
     dates: 'Sep 2021 – Sep 2022',
@@ -499,6 +437,7 @@ export const experience = [
   },
   {
     role: 'Data Engineer Intern',
+    tech: ['Python', 'Pandas', 'SQL Server', 'Power BI'],
     company: 'KPIM Joint Stock Company',
     location: 'Hanoi, Vietnam',
     dates: 'Jan 2021 – Apr 2021',
@@ -553,10 +492,9 @@ export const education = {
   ],
 };
 
-export const nav = [
-  { label: 'Work', href: '/work' },
-  { label: 'Experiments', href: '/#experiments' },
-  { label: 'Notes', href: '/notes' },
-  { label: 'Experience', href: '/#experience' },
-  { label: 'Resume', href: '/resume' },
+export const sections = [
+  { id: 'about', label: 'About' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'skills', label: 'Skills' },
 ];

@@ -1,18 +1,167 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import Hero from '../components/Hero.astro';
-import SelectedWork from '../components/SelectedWork.astro';
-import Experiments from '../components/Experiments.astro';
-import Notes from '../components/Notes.astro';
-import Experience from '../components/Experience.astro';
-import Toolkit from '../components/Toolkit.astro';
+import Icon from '../components/Icon.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { bio, credentials, education, experience, profile, projects, toolkit } from '../data/portfolio';
+import { projectImage } from '../lib/images';
+
+// "Pooled Pearson r" -> "pooled Pearson r", but leave acronyms like "NAICS sectors" alone.
+const lowerFirst = (s: string) => (/^[A-Z][a-z]/.test(s) ? s[0].toLowerCase() + s.slice(1) : s);
 ---
 
 <Base>
-  <Hero />
-  <SelectedWork />
-  <Experiments />
-  <Notes />
-  <Experience />
-  <Toolkit />
+  <!-- About -->
+  <section id="about" aria-labelledby="about-title" class="scroll-mt-16">
+    <SectionHeading id="about" title="About" />
+    <div class="space-y-4 text-muted">
+      {bio.map((p) => <p>{p}</p>)}
+    </div>
+
+    <dl class="mt-10 grid gap-6 sm:grid-cols-2">
+      <div>
+        <dt class="text-sm text-faint">Education</dt>
+        <dd class="mt-1">
+          <p class="font-medium text-ink">{education.degree}</p>
+          <p class="text-sm text-muted">{education.school}, {education.date}</p>
+          <p class="tnum mt-1 text-sm text-muted">{education.gpa.replace(' · ', ', ')}</p>
+        </dd>
+      </div>
+      <div>
+        <dt class="text-sm text-faint">Certifications</dt>
+        <dd class="mt-1 space-y-2">
+          {
+            credentials.map((c) => (
+              <p>
+                <span class="block font-medium text-ink">{c.title}</span>
+                <span class="block text-sm text-muted">{c.detail.replaceAll(' · ', ', ')}</span>
+              </p>
+            ))
+          }
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- Experience -->
+  <section id="experience" aria-labelledby="experience-title" class="mt-24 scroll-mt-16 lg:mt-32">
+    <SectionHeading id="experience" title="Experience" />
+    <ol class="space-y-10">
+      {
+        experience.map((job) => (
+          <li class="grid gap-1 sm:grid-cols-[9rem_1fr] sm:gap-6">
+            <p class="tnum pt-0.5 text-sm text-faint">{job.dates}</p>
+            <div>
+              <h3 class="font-medium leading-snug text-ink">
+                {job.role}
+                <span class="text-muted"> at {job.company}</span>
+              </h3>
+              <p class="text-sm text-faint">{job.location}</p>
+              <ul class="mt-3 space-y-2 text-[0.9375rem] text-muted">
+                {job.bullets.map((b) => (
+                  <li>{b}</li>
+                ))}
+              </ul>
+              <ul class="mt-4 flex flex-wrap gap-2" aria-label="Tools used">
+                {job.tech.map((t) => (
+                  <li class="tag">{t}</li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects" aria-labelledby="projects-title" class="mt-24 scroll-mt-16 lg:mt-32">
+    <SectionHeading id="projects" title="Projects" />
+    <ul class="space-y-4">
+      {
+        projects.map((p) => (
+          <li>
+            <a
+              href={`/work/${p.slug}`}
+              class="group grid gap-4 rounded-xl p-0 transition-colors sm:grid-cols-[10rem_1fr] sm:p-4 sm:-mx-4 sm:hover:bg-surface sm:hover:shadow-sm"
+            >
+              <div class="aspect-[16/10] overflow-hidden rounded-lg border border-line bg-surface">
+                <Image
+                  src={projectImage(p.slug, p.cover)}
+                  alt=""
+                  widths={[320, 480]}
+                  sizes="(min-width: 640px) 160px, 100vw"
+                  class="size-full object-cover object-left-top"
+                />
+              </div>
+              <div>
+                <h3 class="flex items-start gap-1.5 font-medium leading-snug text-ink transition-colors group-hover:text-accent">
+                  {p.title}
+                  <Icon name="arrow-up-right" size={14} class="mt-1 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </h3>
+                <p class="mt-1.5 text-[0.9375rem] text-muted">{p.summary}</p>
+                <p class="tnum mt-2 text-sm text-ink">
+                  {p.metrics.slice(0, 2).map((m, i) => (
+                    <>
+                      {i > 0 && <span class="text-faint">, </span>}
+                      <span class="font-semibold">{m.value}</span> <span class="text-muted">{lowerFirst(m.label)}</span>
+                    </>
+                  ))}
+                </p>
+                <ul class="mt-3 flex flex-wrap gap-2" aria-label="Technologies">
+                  {p.tags.slice(0, 4).map((t) => (
+                    <li class="tag">{t}</li>
+                  ))}
+                </ul>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <a href={profile.github} target="_blank" rel="noopener" class="link mt-8 inline-flex items-center gap-1.5 text-sm">
+      More on GitHub
+      <Icon name="arrow-up-right" size={14} />
+    </a>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills" aria-labelledby="skills-title" class="mt-24 scroll-mt-16 lg:mt-32">
+    <SectionHeading id="skills" title="Skills" />
+    <dl class="space-y-6">
+      {
+        toolkit.map((g) => (
+          <div class="grid gap-2 sm:grid-cols-[9rem_1fr] sm:gap-6">
+            <dt class="pt-1 text-sm text-faint">{g.group}</dt>
+            <dd>
+              <ul class="flex flex-wrap gap-2">
+                {g.items.map((item) => (
+                  <li class="rounded-md border border-line bg-surface px-2.5 py-1 text-sm text-ink">{item}</li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <!-- Contact -->
+  <footer class="mt-24 border-t border-line pt-10 lg:mt-32">
+    <p class="text-lg font-medium text-ink">Let's work together</p>
+    <p class="mt-2 max-w-md text-muted">
+      {profile.availability}. The fastest way to reach me is email.
+    </p>
+    <div class="mt-5 flex flex-wrap gap-2">
+      <a href={`mailto:${profile.email}`} class="btn btn-primary">
+        <Icon name="mail" />
+        Email me
+      </a>
+      <a href={profile.linkedin} class="btn btn-ghost" target="_blank" rel="noopener">
+        <Icon name="linkedin" size={14} />
+        LinkedIn
+      </a>
+    </div>
+    <p class="mt-12 text-sm text-faint">© {new Date().getFullYear()} {profile.name}. Built with Astro and Tailwind CSS.</p>
+  </footer>
 </Base>
