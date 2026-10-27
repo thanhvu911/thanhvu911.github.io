@@ -1,0 +1,154 @@
+---
+import Icon from './Icon.astro';
+import { profile } from '../data/portfolio';
+
+const hasForm = Boolean(profile.web3formsKey);
+const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${profile.email}&su=${encodeURIComponent('Opportunity for Thanh Vu')}`;
+
+const quick = [
+  { icon: 'mail', title: 'Email me', detail: profile.email, href: `mailto:${profile.email}` },
+  { icon: 'external-link', title: 'Write in Gmail', detail: 'Opens Gmail in a new tab', href: gmailHref, external: true },
+  { icon: 'linkedin', title: 'Message on LinkedIn', detail: 'linkedin.com/in/thanh25', href: profile.linkedin, external: true },
+  { icon: 'phone', title: 'Call or text', detail: profile.phone, href: profile.phoneHref },
+] as const;
+---
+
+<section id="contact" class="bg-white py-24">
+  <div class="container-page max-w-5xl">
+    <h2 class="section-title" data-reveal>Get In Touch</h2>
+    <p class="mx-auto mt-6 max-w-2xl text-center text-lg text-muted" data-reveal>
+      Hiring for a data role, or want to talk about a project? Pick whatever is easiest. I usually reply within a day.
+    </p>
+
+    <div class:list={['mt-12 grid gap-8', hasForm && 'md:grid-cols-2']}>
+      <div>
+        <ul class:list={['grid gap-3', !hasForm && 'sm:grid-cols-2']} data-stagger>
+          {
+            quick.map((q) => (
+              <li>
+                <a
+                  href={q.href}
+                  target={'external' in q ? '_blank' : undefined}
+                  rel={'external' in q ? 'noopener' : undefined}
+                  class="group flex items-center gap-4 rounded-xl border border-line bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-teal hover:shadow-lg"
+                >
+                  <span class="icon-tile size-11 transition-colors group-hover:bg-teal group-hover:text-navy">
+                    <Icon name={q.icon} size={19} />
+                  </span>
+                  <span class="min-w-0 flex-1">
+                    <span class="block font-semibold text-ink">{q.title}</span>
+                    <span class="block truncate text-sm text-muted">{q.detail}</span>
+                  </span>
+                  <Icon name="arrow-right" size={18} class="shrink-0 text-muted transition-transform group-hover:translate-x-1 group-hover:text-teal-ink" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        <button
+          type="button"
+          class="mt-4 inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-medium text-teal-ink hover:bg-teal-wash"
+          data-copy-email={profile.email}
+        >
+          <Icon name="copy" size={16} />
+          <span data-copy-label>Copy email address</span>
+        </button>
+        <span class="sr-only" aria-live="polite" data-copy-status></span>
+      </div>
+
+      {
+        hasForm && (
+          <form class="card space-y-5 p-6 md:p-8" data-contact-form data-key={profile.web3formsKey} novalidate data-reveal>
+            <div>
+              <label for="cf-name" class="mb-1.5 block text-sm font-semibold text-ink">Name</label>
+              <input id="cf-name" name="name" type="text" autocomplete="name" placeholder="Your name" class="field" required />
+            </div>
+            <div>
+              <label for="cf-email" class="mb-1.5 block text-sm font-semibold text-ink">Email</label>
+              <input id="cf-email" name="email" type="email" autocomplete="email" placeholder="your.email@example.com" class="field" required />
+            </div>
+            <div>
+              <label for="cf-message" class="mb-1.5 block text-sm font-semibold text-ink">Message</label>
+              <textarea id="cf-message" name="message" rows="5" placeholder="What role or project is this about?" class="field resize-y" required />
+            </div>
+            <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
+            <p class="hidden rounded-lg px-3 py-2 text-sm" role="status" data-form-status />
+            <button type="submit" class="btn btn-teal w-full" data-submit>
+              Send Message
+            </button>
+          </form>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  // Copy email
+  const copyBtn = document.querySelector<HTMLButtonElement>('[data-copy-email]');
+  copyBtn?.addEventListener('click', async () => {
+    const label = copyBtn.querySelector('[data-copy-label]')!;
+    const status = document.querySelector('[data-copy-status]')!;
+    try {
+      await navigator.clipboard.writeText(copyBtn.dataset.copyEmail!);
+      label.textContent = 'Copied!';
+      status.textContent = 'Email address copied';
+    } catch {
+      label.textContent = copyBtn.dataset.copyEmail!;
+    }
+    setTimeout(() => {
+      label.textContent = 'Copy email address';
+      status.textContent = '';
+    }, 2200);
+  });
+
+  // Web3Forms submission (only rendered when an access key is configured).
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const status = form.querySelector<HTMLElement>('[data-form-status]')!;
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const data = new FormData(form);
+    const show = (msg: string, ok: boolean) => {
+      status.textContent = msg;
+      status.className = `rounded-lg px-3 py-2 text-sm ${ok ? 'bg-teal-wash text-teal-ink' : 'bg-red-50 text-red-700'}`;
+    };
+
+    const name = String(data.get('name') ?? '').trim();
+    const email = String(data.get('email') ?? '').trim();
+    const message = String(data.get('message') ?? '').trim();
+    if (!name || !email || !message) {
+      show('Please fill in your name, email, and message.', false);
+      form.querySelector<HTMLElement>(!name ? '#cf-name' : !email ? '#cf-email' : '#cf-message')?.focus();
+      return;
+    }
+
+    submit.disabled = true;
+    submit.textContent = 'Sending…';
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: form.dataset.key,
+          subject: `Portfolio message from ${name}`,
+          from_name: 'Thanh Vu portfolio',
+          name,
+          email,
+          message,
+          botcheck: data.get('botcheck') ? true : '',
+        }),
+      });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.message);
+      form.reset();
+      show('Message sent. Thanks! I will reply to your email soon.', true);
+    } catch {
+      show('Your message could not be sent. Please use one of the email or LinkedIn options instead.', false);
+    } finally {
+      submit.disabled = false;
+      submit.textContent = 'Send Message';
+    }
+  });
+</script>

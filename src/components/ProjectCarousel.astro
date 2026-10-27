@@ -4,38 +4,45 @@ import ProjectCard from './ProjectCard.astro';
 import { projects } from '../data/portfolio';
 ---
 
-<div class="relative" data-carousel>
-  <ul
-    class="carousel-track -mx-4 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth px-4 pb-6 pt-2"
-    aria-label="Projects"
-    tabindex="0"
-    data-track
-  >
-    {
-      projects.map((p) => (
-        <li class="w-[85%] shrink-0 snap-start sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]">
-          <ProjectCard project={p} />
-        </li>
-      ))
-    }
-  </ul>
+<div class="carousel" data-carousel>
+  <div class="carousel-viewport -mx-4 overflow-hidden px-4 py-4" data-viewport>
+    <ul class="flex touch-pan-y gap-6" aria-label="Projects, drag or swipe to see more">
+      {
+        projects.map((p) => (
+          <li class="w-[85%] min-w-0 shrink-0 sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]">
+            <ProjectCard project={p} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 
-  <div class="mt-2 flex items-center justify-center gap-3">
-    <button type="button" class="carousel-btn" aria-label="Previous projects" data-prev>
-      <Icon name="chevron-left" size={20} />
-    </button>
-    <button type="button" class="carousel-btn" aria-label="Next projects" data-next>
-      <Icon name="chevron-right" size={20} />
-    </button>
+  <div class="mt-6 flex items-center gap-5">
+    <div class="h-1 flex-1 overflow-hidden rounded-full bg-line" aria-hidden="true">
+      <div class="carousel-progress h-full w-full origin-left rounded-full bg-teal" data-progress></div>
+    </div>
+    <p class="hidden text-sm text-muted sm:block">Drag to explore</p>
+    <div class="flex gap-2">
+      <button type="button" class="carousel-btn" aria-label="Previous project" data-prev>
+        <Icon name="chevron-left" size={20} />
+      </button>
+      <button type="button" class="carousel-btn" aria-label="Next project" data-next>
+        <Icon name="chevron-right" size={20} />
+      </button>
+    </div>
   </div>
 </div>
 
 <style>
-  .carousel-track {
-    scrollbar-width: none;
+  .carousel-viewport {
+    cursor: grab;
   }
-  .carousel-track::-webkit-scrollbar {
-    display: none;
+  .carousel-viewport.is-dragging {
+    cursor: grabbing;
+  }
+  .carousel-progress {
+    transform: scaleX(0.15);
+    transition: transform 120ms linear;
   }
   .carousel-btn {
     display: grid;
@@ -58,21 +65,40 @@ import { projects } from '../data/portfolio';
 </style>
 
 <script>
+  import EmblaCarousel from 'embla-carousel';
+
   document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
-    const track = root.querySelector<HTMLElement>('[data-track]')!;
+    const viewport = root.querySelector<HTMLElement>('[data-viewport]')!;
     const prev = root.querySelector<HTMLButtonElement>('[data-prev]')!;
     const next = root.querySelector<HTMLButtonElement>('[data-next]')!;
+    const progress = root.querySelector<HTMLElement>('[data-progress]')!;
 
-    const step = () => (track.querySelector('li')?.getBoundingClientRect().width ?? 300) + 24;
+    const embla = EmblaCarousel(viewport, {
+      align: 'start',
+      dragFree: true,
+      containScroll: 'trimSnaps',
+      skipSnaps: true,
+    });
+
     const update = () => {
-      prev.disabled = track.scrollLeft <= 4;
-      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+      prev.disabled = !embla.canScrollPrev();
+      next.disabled = !embla.canScrollNext();
+      const p = Math.max(0, Math.min(1, embla.scrollProgress()));
+      progress.style.transform = `scaleX(${0.15 + p * 0.85})`;
     };
 
-    prev.addEventListener('click', () => track.scrollBy({ left: -step() }));
-    next.addEventListener('click', () => track.scrollBy({ left: step() }));
-    track.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
+    prev.addEventListener('click', () => embla.scrollPrev());
+    next.addEventListener('click', () => embla.scrollNext());
+    embla.on('select', update).on('scroll', update).on('reInit', update);
+    embla.on('pointerDown', () => viewport.classList.add('is-dragging'));
+    embla.on('pointerUp', () => viewport.classList.remove('is-dragging'));
+
+    // Arrow keys move the carousel when it has focus.
+    viewport.tabIndex = 0;
+    viewport.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') embla.scrollNext();
+      if (e.key === 'ArrowLeft') embla.scrollPrev();
+    });
     update();
   });
 </script>

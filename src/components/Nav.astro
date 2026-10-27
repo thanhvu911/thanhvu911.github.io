@@ -2,9 +2,10 @@
 import Icon from './Icon.astro';
 import { nav, profile } from '../data/portfolio';
 
-// On the home page the bar starts transparent over the blue hero and turns
+// Over a blue hero (home and project pages) the bar starts transparent and turns
 // white once the visitor scrolls. Other pages start white.
-const overHero = Astro.url.pathname === '/';
+const path = Astro.url.pathname.replace(/\/$/, '');
+const overHero = path === '' || /^\/projects\/[^/]+$/.test(path);
 ---
 
 <nav

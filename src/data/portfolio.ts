@@ -9,6 +9,10 @@ export const profile = {
   tagline: 'Transforming data into intelligence that drives impact.',
   phone: '(717) 869-9502',
   phoneHref: 'tel:+17178699502',
+  // Web3Forms access key (free, from web3forms.com). Leave empty to hide the form;
+  // the one-click email, Gmail, and LinkedIn buttons always show.
+  web3formsKey: '',
+  roles: ['Data Engineer', 'Data Analyst', 'Power BI Developer'],
   status: 'Data Analyst Fellow @ EDC Lancaster County',
   availability: 'Open to Data Engineer and Data Analyst roles',
   location: 'Lancaster, PA',
@@ -24,6 +28,13 @@ export const profile = {
 };
 
 // About section, one paragraph per entry.
+export const highlights = [
+  { value: 131, suffix: 'M+', label: 'Rows modeled in SQL Server' },
+  { value: 7, suffix: '', label: 'End-to-end data projects' },
+  { value: 3, suffix: '', label: 'Data roles, US and Vietnam' },
+  { value: 3.82, decimals: 2, suffix: '', label: 'Major GPA, Computer Science' },
+];
+
 export const bio = [
   "I'm a Computer Science graduate of Franklin & Marshall College (GPA 3.72, major GPA 3.82) and a Microsoft Certified Fabric Data Engineer Associate (DP-700). My work sits where data engineering, analytics, and statistical modeling meet.",
   "I'm currently a Data Analyst Fellow at the EDC Lancaster County Center for Regional Analysis, building Power BI reporting on federal economic data and a web dashboard with a built-in AI assistant. I enjoy turning raw data into decisions: building ETL pipelines, designing data warehouses and dashboards, and developing models that solve real-world problems.",
@@ -52,6 +63,9 @@ export interface Project {
   cover: string;
   metrics: { value: string; label: string }[];
   context?: string;
+  why: string;
+  role: string;
+  challenges: string[];
   problem: string;
   approach: string[];
   architecture: string[];
@@ -70,6 +84,9 @@ export const projects: Project[] = [
     headline: 'Testing whether the mail can see empty homes before the Census does',
     year: '2026',
     kind: 'Data engineering · Analytics',
+    why: "Knowing which neighborhoods have rising vacancy is core to how a local economic development office decides where to invest. The Census estimate is the gold standard but comes out once a year and can lag reality. USPS already tracks which addresses stop receiving mail, every quarter, for free. If it reliably tracked the Census number, it would be a much faster early-warning signal between official releases.",
+    role: "Solo project: data sourcing, the Microsoft Fabric pipeline, the semantic model, DAX measures, report design, and the analysis.",
+    challenges: ["Inconsistent USPS header casing broke column matching across quarterly files, so headers are normalized in Power Query before combining.", "Combine Files silently dropped the filename column, which carried the county key. It is restored explicitly so every row can still be attributed.", "DAX has no native correlation function, so the Pearson r measure is hand-built with SUMX.", "A Power BI chart can legend by measure or by category, never both, so the report uses small multiples to compare Census and USPS for every county at once.", "The 2012 USPS classification change shows up as a shift that looks like a trend. It is treated and documented as a data artifact, not a finding."],
     tags: ['Microsoft Fabric', 'Lakehouse', 'Dataflow Gen2', 'Power BI', 'DAX'],
     summary:
       'Tested USPS mail data as an early-warning signal for Census housing vacancy across 6 counties and 15 years, on an end-to-end Microsoft Fabric pipeline.',
@@ -101,13 +118,8 @@ export const projects: Project[] = [
       'Combine Files silently dropped the filename column, which carried the county key, so it was restored explicitly.',
       'Treated the 2012 USPS classification change as a data artifact, not a finding.',
     ],
-    results: [
-      'Pooled r = 0.77, but per county it ranges from −0.01 (Champaign) to 0.72 (Montgomery).',
-      'USPS calls the direction of change correctly 57.7% of the time.',
-      'The narrow USPS estimate reads about 5.3 points below Census and the broad one about 2.7 points above, so no single correction factor works.',
-      'Conclusion: a county-dependent early-warning signal, not a substitute for the Census.',
-    ],
-    skills: ['Microsoft Fabric', 'Power Query M', 'DAX', 'Power BI', 'Statistics'],
+    results: ["Pooled across six counties, the sources move together fairly well (r = 0.77), but by county it ranges from 0.72 (Montgomery, OH) to −0.01 (Champaign, IL).", "USPS correctly flags whether vacancy is rising or falling 57.7% of the time.", "The narrow USPS estimate reads about 5.3 points below Census and the broad one about 2.7 points above, biased in opposite directions, so no single correction factor works.", "Bottom line: a real, county-dependent early-warning signal worth watching between Census releases, but not a substitute for the Census.", "Every headline number is reproducible from the 84-row comparison table with plain arithmetic."],
+    skills: ["Microsoft Fabric (Lakehouse, Dataflow Gen2)", "Power Query M", "DAX", "Semantic models", "Power BI report design", "Statistical reasoning", "Data validation"],
     images: [
       { file: 'powerbi-dashboard-overview-all-counties.png', category: 'Power BI', caption: 'Report overview: all six counties' },
       { file: 'powerbi-filtered-lancaster-county.png', category: 'Power BI', caption: 'Filtered to Lancaster County' },
@@ -133,6 +145,9 @@ export const projects: Project[] = [
     headline: 'A Medallion warehouse over 131M+ rows, in plain SQL Server',
     year: 'Jul–Aug 2025',
     kind: 'Data engineering',
+    why: "Retail transaction data usually arrives as messy, disconnected CSV extracts that nobody fully trusts, so analysts end up cleaning the same data again for every question. A layered warehouse lands the raw data once, cleans it once, and gives the business one tested, documented model for sales, customer, and product questions.",
+    role: "Solo project: architecture, stored-procedure ETL, dimensional modeling, data-quality tests, and documentation.",
+    challenges: ["Loading 131M+ rows reliably: a truncate + BULK INSERT procedure with load timing and TRY/CATCH, so a failed load is logged instead of silently leaving partial data.", "Inconsistent source values (whitespace, gender, loyalty tier, nationality codes) are standardized in Silver and then verified by automated tests.", "Keeping Gold trustworthy: tests for surrogate-key uniqueness and fact-to-dimension referential integrity.", "Query tuning cut processing time by 25%."],
     tags: ['SQL Server', 'T-SQL', 'Medallion', 'ETL', 'Star schema'],
     summary:
       'A Bronze → Silver → Gold warehouse over 131M+ rows with stored-procedure ETL, automated data-quality tests, and a documented star schema.',
@@ -164,7 +179,7 @@ export const projects: Project[] = [
       'A Gold star schema that answers sales, customer, and product questions with simple joins.',
       'Query tuning cut processing time by 25%.',
     ],
-    skills: ['Data warehouse design', 'Dimensional modeling', 'Stored procedures', 'Data-quality testing', 'Documentation'],
+    skills: ["Data warehouse design", "Medallion architecture", "Dimensional modeling (star schema)", "T-SQL stored procedures", "Data-quality testing", "Technical documentation"],
     images: [
       { file: 'architecture-medallion.png', category: 'Data flow', caption: 'Medallion architecture: Source → Bronze → Silver → Gold → BI' },
       { file: 'dataflow.png', category: 'Data flow', caption: 'End-to-end data flow' },
@@ -184,6 +199,9 @@ export const projects: Project[] = [
     headline: 'Who is on plan, and where targets are at risk',
     year: 'Aug 2025',
     kind: 'Analytics · BI',
+    why: "Retail managers need to know early which stores, regions, and product groups are going to miss their monthly targets, so they can act before the month closes rather than explain the miss afterwards.",
+    role: "Solo project: data preparation, the galaxy-schema model, DAX measures, and report design.",
+    challenges: ["Actuals are recorded per transaction line while plans are monthly targets. A galaxy schema with two fact tables on shared dimensions lets them be compared at any grain.", "Time intelligence in DAX: plan completion, year-over-year growth, and a rolling 12-month trend that hold up under every slicer.", "Turning a wide dataset into a report a manager can use: KPI cards first, then rankings, then drill-through to the store responsible."],
     tags: ['Power BI', 'DAX', 'SQL Server', 'Galaxy schema'],
     summary:
       'A Power BI dashboard for the KPIM Mart retail chain comparing actual sales against monthly plans by store, product group, region, and time.',
@@ -214,7 +232,7 @@ export const projects: Project[] = [
       'Year-over-year and rolling 12-month views show whether a miss is a blip or a trend.',
       'Drill-through takes a manager from a regional miss straight to the store responsible.',
     ],
-    skills: ['Galaxy-schema modeling', 'DAX time intelligence', 'Power Query', 'Executive dashboards'],
+    skills: ["Galaxy-schema modeling", "DAX time intelligence", "Power Query", "SQL Server", "Executive dashboard design"],
     images: [
       { file: 'sales-analysis-dashboard.png', category: 'Power BI', caption: 'Sales analysis: KPIs, districts, trends, and managers' },
       { file: 'sales-report-dashboard.png', category: 'Power BI', caption: 'Drill-through: Dec 2022 vs. Dec 2021 by manager' },
@@ -234,6 +252,9 @@ export const projects: Project[] = [
     headline: 'Benchmarking a county economy against the state and the nation',
     year: '2026',
     kind: 'Analytics · BI',
+    why: "Economic development staff brief investors, officials, and partners on how the county is doing. They need a trusted, side-by-side view of Lancaster against Pennsylvania and the U.S. on jobs, output, and pay, built from official public data.",
+    role: "Solo project, built as a technical interview case study: data preparation, the multi-fact model, benchmarking measures, and a four-page report.",
+    challenges: ["Three sources at different grains (monthly labor data, annual GDP by industry, annual wages by NAICS sector) combined in one multi-fact model with shared geography, industry, and date dimensions.", "A dedicated measures table for benchmarking: industry share of total, Lancaster ÷ PA, and Lancaster ÷ U.S.", "Keeping comparisons honest: GDP is in chained 2017 dollars and the wage data covers private establishments only, and both are documented."],
     tags: ['Power BI', 'DAX', 'Power Query', 'BLS', 'BEA'],
     summary:
       'A multi-fact Power BI model benchmarking Lancaster County against Pennsylvania and the U.S. on jobs, GDP, and wages.',
@@ -265,7 +286,7 @@ export const projects: Project[] = [
       'Average private-sector pay grew from about $41K (2014) to about $59.5K (2024).',
       'The largest employers (health care, manufacturing, retail) pay below the county average, while the highest-paying sectors employ fewer people.',
     ],
-    skills: ['Power BI', 'DAX', 'Multi-fact modeling', 'Public economic data'],
+    skills: ["Power BI", "DAX", "Power Query", "Multi-fact modeling", "BLS and BEA public data", "Economic benchmarking"],
     images: [
       { file: 'edc-labor-lancaster.png', category: 'Power BI', caption: 'Labor market: Lancaster unemployment, labor force, and employment, 2015–2025' },
       { file: 'edc-labor-pennsylvania.png', category: 'Power BI', caption: 'Labor market: Pennsylvania statewide' },
@@ -288,6 +309,9 @@ export const projects: Project[] = [
     headline: 'Turning every customer segment into a concrete action',
     year: '2025',
     kind: 'Analytics · BI',
+    why: "Marketing budgets are limited. Treating every customer the same wastes money on low-value customers and misses the ones about to churn. RFM segmentation tells a team exactly who to reward, who to win back, and who to leave alone.",
+    role: "Solo project: scoring logic, segment mapping, data model, and report.",
+    challenges: ["Hard-coded score thresholds go stale, so they live in a configuration table by year and analysts can retune them without editing DAX.", "64 possible R-F-M combinations are mapped to named segments, each with a description and a recommended marketing action.", "Segments sit alongside revenue against the monthly plan, so marketing and sales see one picture."],
     tags: ['Power BI', 'DAX', 'Power Query'],
     summary:
       'Scores customers on recency, frequency, and monetary value with config-driven DAX, and maps each segment to a marketing action.',
@@ -311,7 +335,7 @@ export const projects: Project[] = [
       'Every customer lands in a named segment with a clear next action.',
       'Analysts can retune thresholds in a table instead of editing measures.',
     ],
-    skills: ['Customer analytics', 'Config-driven DAX', 'Power Query'],
+    skills: ["Customer analytics", "Config-driven DAX", "Power Query", "Power BI", "Turning analysis into actions"],
     images: [
       { file: 'insight-segment-playbook.png', category: 'Insights', caption: 'Segment playbook' },
       { file: 'dataflow.png', category: 'Data flow', caption: 'Data flow' },
@@ -325,6 +349,9 @@ export const projects: Project[] = [
     headline: 'Validate first, then analyze',
     year: '2025',
     kind: 'Analytics · SQL',
+    why: "Banks act on branch, product, and customer-segment insights. Analysis built on data nobody has checked leads to confident but wrong decisions, so this project proves the data can be trusted before answering any business question.",
+    role: "Solo project: validation, transformation, and analysis scripts in T-SQL.",
+    challenges: ["Every column profiled first: NULL checks, duplicate-key checks, distinct values, and distributions for categorical columns.", "Missing transaction amounts standardized in a separate transform step, so the fix is explicit and repeatable.", "A semi-structured text field (sector, years of residence, city) parsed with T-SQL so it could be analyzed."],
     tags: ['SQL Server', 'T-SQL', 'Data quality'],
     summary:
       'Proves a retail-banking dataset can be trusted before analyzing it: validation, transformation, then analysis in T-SQL.',
@@ -349,7 +376,7 @@ export const projects: Project[] = [
       'Transactions peak at 15:00.',
       'Behavior broken down by branch, currency, credit-score band, account type, sector, and city.',
     ],
-    skills: ['Data profiling', 'T-SQL', 'CASE bucketing', 'Parsing semi-structured fields'],
+    skills: ["Data profiling and validation", "T-SQL joins and aggregation", "CASE-based bucketing", "Parsing semi-structured fields", "Exploratory analysis"],
     images: [
       { file: 'insight-peak-hours.png', category: 'Insights', caption: 'Transactions by hour of day' },
       { file: 'insight-data-quality.png', category: 'Insights', caption: 'Data-quality findings' },
@@ -367,6 +394,9 @@ export const projects: Project[] = [
     headline: 'How much do age and sex explain medical charges?',
     year: '2021',
     kind: 'Statistics',
+    why: "Before pricing a policy or targeting a health program, analysts need to know which factors actually drive costs. Demographics are easy to measure, but they may explain far less than people assume.",
+    role: "Solo project: exploratory analysis, modeling, diagnostics, and an R Markdown report.",
+    challenges: ["Separating the effect of age from the effect of sex by comparing five nested models instead of trusting a single regression.", "Checking residual diagnostics so the conclusions don't rest on a model that fits badly."],
     tags: ['R', 'Linear regression', 'ggplot2'],
     summary: 'Five nested linear models on 1,338 U.S. insurance records, compared with residual diagnostics.',
     repo: 'https://github.com/thanhvu911/medical-cost-regression-r',
@@ -383,12 +413,8 @@ export const projects: Project[] = [
       'Model comparison and residual diagnostics, reported in R Markdown.',
     ],
     architecture: ['Insurance CSV', 'R / ggplot2', 'Nested models', 'Diagnostics', 'R Markdown report'],
-    results: [
-      'Age is a moderate, significant predictor of charges.',
-      'Sex has minimal effect once age is accounted for.',
-      'Most of the variation in charges comes from factors outside these two variables.',
-    ],
-    skills: ['Linear regression', 'Model comparison', 'Statistical inference', 'R Markdown'],
+    results: ["Age is a moderate, significant predictor: about +$258 in charges per year of age.", "Sex has minimal effect once age is accounted for.", "Most of the variation in charges comes from factors outside these two variables, which is itself a useful finding for anyone pricing on demographics alone."],
+    skills: ["Linear regression", "Model comparison", "Statistical inference", "ggplot2", "R Markdown"],
     images: [
       { file: 'insight-summary.png', category: 'Insights', caption: 'Summary of findings' },
       { file: 'report-page-2.png', category: 'Insights', caption: 'Report page 2' },

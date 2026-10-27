@@ -1,8 +1,10 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
 import Gallery from '../../components/Gallery.astro';
 import { projects, type Project } from '../../data/portfolio';
+import { projectImage } from '../../lib/images';
 
 export function getStaticPaths() {
   return projects.map((project, i) => ({
@@ -17,51 +19,113 @@ interface Props {
 }
 const { project, next } = Astro.props;
 const highlightIcons = ['trending-up', 'bar-chart', 'layers', 'target'] as const;
+const cover = projectImage(project.slug, project.cover);
 ---
 
 <Base title={project.title} description={project.summary}>
-  <article class="bg-gradient-to-b from-white to-soft/60 pb-20 pt-28">
-    <div class="container-page max-w-5xl">
-      <a href="/projects" class="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-teal-ink">
+  <!-- Header band in the hero colors -->
+  <header class="project-hero relative isolate overflow-hidden pb-28 pt-28 text-white">
+    <div class="project-grid" aria-hidden="true"></div>
+    <div class="container-page max-w-6xl">
+      <a href="/projects" class="inline-flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white">
         <Icon name="arrow-left" size={16} />
         Back to Projects
       </a>
+      <p class="mt-8 text-sm font-medium text-teal">{project.kind} · {project.year}</p>
+      <h1 class="mt-3 max-w-4xl text-4xl font-bold leading-tight tracking-tight md:text-6xl">{project.title}</h1>
+      <p class="mt-5 max-w-3xl text-lg text-white/85">{project.summary}</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href={project.repo} target="_blank" rel="noopener" class="btn btn-teal" data-magnetic>
+          <Icon name="github" size={16} />
+          View Code on GitHub
+        </a>
+        <a href="#gallery" class="btn btn-glass">See dashboards</a>
+      </div>
+    </div>
+  </header>
 
-      <h1 class="mt-6 text-4xl font-bold leading-tight tracking-tight text-navy md:text-5xl">{project.title}</h1>
-      <p class="mt-3 text-lg text-muted">{project.kind}, {project.year}</p>
-      <ul class="mt-5 flex flex-wrap gap-2" aria-label="Technologies">
-        {project.tags.map((t) => <li class="pill">{t}</li>)}
-      </ul>
+  <div class="container-page relative z-10 -mt-20 max-w-6xl">
+    <div class="card overflow-hidden shadow-2xl shadow-navy/15" data-reveal>
+      <Image
+        src={cover}
+        alt={project.images.find((i) => i.file === project.cover)?.caption ?? project.title}
+        widths={[800, 1280, 1800]}
+        sizes="(min-width: 1152px) 1104px, 100vw"
+        loading="eager"
+        class="h-auto w-full"
+      />
+    </div>
 
-      <section class="card mt-10 p-6 md:p-8" aria-labelledby="overview">
-        <h2 id="overview" class="text-2xl font-bold text-navy">Project Overview</h2>
-        {project.context && <p class="mt-4 rounded-lg bg-teal-wash px-4 py-3 text-sm text-ink">{project.context}</p>}
-        <p class="mt-4 leading-relaxed text-ink/85">{project.summary}</p>
-        <p class="mt-3 leading-relaxed text-ink/85">{project.problem}</p>
+    <ul class:list={['card mt-6 grid divide-line', project.metrics.length === 3 ? 'grid-cols-3 divide-x' : 'grid-cols-2 sm:grid-cols-4 sm:divide-x']} data-stagger>
+      {
+        project.metrics.map((m, i) => (
+          <li class="p-5 text-center">
+            <Icon name={highlightIcons[i % highlightIcons.length]} size={20} class="mx-auto text-teal-ink" />
+            <p class="mt-2 text-2xl font-bold text-navy">{m.value}</p>
+            <p class="text-xs text-muted">{m.label}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 
-        <ul class:list={['mt-8 grid gap-4', project.metrics.length === 3 ? 'sm:grid-cols-3' : 'grid-cols-2 sm:grid-cols-4']}>
+  <div class="container-page grid max-w-6xl gap-10 py-16 lg:grid-cols-[1fr_20rem]">
+    <div class="min-w-0 space-y-6">
+      {project.context && <p class="rounded-xl border border-teal/30 bg-teal-wash px-5 py-4 text-ink" data-reveal>{project.context}</p>}
+
+      <section class="card p-6 md:p-8" aria-labelledby="why" data-reveal>
+        <h2 id="why" class="text-2xl font-bold text-navy">The business problem</h2>
+        <p class="mt-4 text-lg leading-relaxed text-ink/90">{project.problem}</p>
+        <h3 class="mt-6 font-semibold text-ink">Why it matters</h3>
+        <p class="mt-2 leading-relaxed text-ink/80">{project.why}</p>
+      </section>
+
+      <section class="card p-6 md:p-8" aria-labelledby="built" data-reveal>
+        <h2 id="built" class="text-2xl font-bold text-navy">My role and what I built</h2>
+        <p class="mt-3 text-muted">{project.role}</p>
+        <ol class="mt-6 space-y-5">
           {
-            project.metrics.map((m, i) => (
-              <li class="rounded-xl border border-teal/30 bg-teal-wash/60 p-4 text-center">
-                <Icon name={highlightIcons[i % highlightIcons.length]} size={20} class="mx-auto text-teal-ink" />
-                <p class="mt-2 text-xl font-bold text-navy">{m.value}</p>
-                <p class="text-xs text-muted">{m.label}</p>
+            project.approach.map((step, i) => (
+              <li class="flex gap-4">
+                <span class="grid size-8 shrink-0 place-items-center rounded-full bg-navy text-sm font-semibold text-white">{i + 1}</span>
+                <p class="pt-1 leading-relaxed text-ink/85">{step}</p>
+              </li>
+            ))
+          }
+        </ol>
+        <div class="mt-8 overflow-x-auto">
+          <ol class="flex min-w-max items-center gap-2 text-sm" aria-label="Pipeline">
+            {
+              project.architecture.map((node, i) => (
+                <li class="flex items-center gap-2">
+                  <span class:list={['rounded-lg border px-3 py-2 font-medium', i === project.architecture.length - 1 ? 'border-teal bg-teal-wash text-teal-ink' : 'border-line bg-soft text-ink']}>{node}</span>
+                  {i < project.architecture.length - 1 && <Icon name="arrow-right" size={16} class="text-muted" />}
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </section>
+
+      <section class="card p-6 md:p-8" aria-labelledby="challenges" data-reveal>
+        <h2 id="challenges" class="text-2xl font-bold text-navy">Challenges I solved</h2>
+        <ul class="mt-5 space-y-4">
+          {
+            project.challenges.map((c) => (
+              <li class="flex gap-3 leading-relaxed text-ink/85">
+                <span class="icon-tile size-8 rounded-lg">
+                  <Icon name="wrench" size={15} />
+                </span>
+                <span class="pt-1">{c}</span>
               </li>
             ))
           }
         </ul>
       </section>
 
-      <section class="card mt-6 p-6 md:p-8" aria-labelledby="approach">
-        <h2 id="approach" class="text-2xl font-bold text-navy">What I Did</h2>
-        <ul class="dot-list mt-4 space-y-2.5 leading-relaxed text-ink/85">
-          {project.approach.map((a) => <li>{a}</li>)}
-        </ul>
-      </section>
-
-      <section class="card mt-6 p-6 md:p-8" aria-labelledby="results">
-        <h2 id="results" class="text-2xl font-bold text-navy">Key Results</h2>
-        <ul class="mt-4 space-y-3">
+      <section class="card p-6 md:p-8" aria-labelledby="impact" data-reveal>
+        <h2 id="impact" class="text-2xl font-bold text-navy">Impact and results</h2>
+        <ul class="mt-5 space-y-3">
           {
             project.results.map((r) => (
               <li class="flex gap-3 leading-relaxed text-ink/85">
@@ -73,23 +137,73 @@ const highlightIcons = ['trending-up', 'bar-chart', 'layers', 'target'] as const
         </ul>
       </section>
 
-      <section class="card mt-6 p-6 md:p-8" aria-labelledby="gallery">
-        <h2 id="gallery" class="text-2xl font-bold text-navy">Dashboards &amp; Diagrams</h2>
+      <section id="gallery" class="card scroll-mt-24 p-6 md:p-8" aria-labelledby="gallery-title" data-reveal>
+        <h2 id="gallery-title" class="text-2xl font-bold text-navy">Dashboards, models, and code</h2>
+        <p class="mt-2 text-sm text-muted">Click any image to view it full size.</p>
         <div class="mt-6">
           <Gallery project={project} />
         </div>
       </section>
-
-      <div class="mt-8 flex flex-wrap gap-3">
-        <a href={project.repo} target="_blank" rel="noopener" class="btn btn-teal">
-          <Icon name="github" size={16} />
-          View Code on GitHub
-        </a>
-        <a href={`/projects/${next.slug}`} class="btn btn-outline">
-          Next: {next.title}
-          <Icon name="arrow-right" size={16} />
-        </a>
-      </div>
     </div>
-  </article>
+
+    <!-- Quick facts for a recruiter skimming the page -->
+    <aside class="lg:sticky lg:top-24 lg:self-start">
+      <div class="card p-6" data-reveal>
+        <h2 class="font-bold text-navy">At a glance</h2>
+        <dl class="mt-4 space-y-4 text-sm">
+          <div>
+            <dt class="text-muted">Year</dt>
+            <dd class="font-medium text-ink">{project.year}</dd>
+          </div>
+          <div>
+            <dt class="text-muted">Type</dt>
+            <dd class="font-medium text-ink">{project.kind}</dd>
+          </div>
+          <div>
+            <dt class="text-muted">Tools</dt>
+            <dd class="mt-2 flex flex-wrap gap-1.5">{project.tags.map((t) => <span class="pill">{t}</span>)}</dd>
+          </div>
+          <div>
+            <dt class="text-muted">Skills demonstrated</dt>
+            <dd>
+              <ul class="dot-list mt-2 space-y-1.5 text-ink">{project.skills.map((s) => <li>{s}</li>)}</ul>
+            </dd>
+          </div>
+        </dl>
+        <a href={project.repo} target="_blank" rel="noopener" class="btn btn-teal mt-6 w-full">
+          <Icon name="github" size={16} />
+          Repository
+        </a>
+        <a href="/#contact" class="btn btn-outline mt-3 w-full">Contact me about this</a>
+      </div>
+    </aside>
+  </div>
+
+  <a href={`/projects/${next.slug}`} class="group block border-t border-line bg-soft/60">
+    <div class="container-page flex max-w-6xl items-center justify-between gap-6 py-12">
+      <div class="min-w-0">
+        <p class="text-sm text-muted">Next project</p>
+        <p class="mt-1 text-2xl font-bold text-navy transition-colors group-hover:text-teal-ink md:text-3xl">{next.title}</p>
+      </div>
+      <span class="grid size-14 shrink-0 place-items-center rounded-full bg-navy text-white transition-transform group-hover:translate-x-1">
+        <Icon name="arrow-right" size={22} />
+      </span>
+    </div>
+  </a>
 </Base>
+
+<style>
+  .project-hero {
+    background: linear-gradient(135deg, #0f2757 0%, #175e82 100%);
+  }
+  .project-grid {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at 30% 40%, #000 20%, transparent 75%);
+  }
+</style>

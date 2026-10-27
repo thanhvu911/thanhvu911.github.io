@@ -10,14 +10,14 @@ interface Props {
 const { project } = Astro.props;
 ---
 
-<article class="card flex h-full flex-col overflow-hidden transition-shadow hover:shadow-lg">
-  <a href={`/projects/${project.slug}`} class="block aspect-[16/9] overflow-hidden border-b border-line bg-soft" tabindex="-1" aria-hidden="true">
+<article class="card sheen flex h-full flex-col overflow-hidden transition-shadow hover:shadow-xl" data-tilt>
+  <a href={`/projects/${project.slug}`} class="block aspect-[16/9] overflow-hidden border-b border-line bg-soft" tabindex="-1" aria-hidden="true" draggable="false">
     <Image
       src={projectImage(project.slug, project.cover)}
       alt=""
       widths={[400, 640]}
       sizes="(min-width: 1024px) 360px, (min-width: 768px) 50vw, 90vw"
-      class="size-full object-cover object-left-top"
+      class="size-full object-cover object-left-top" draggable="false"
     />
   </a>
   <div class="flex flex-1 flex-col p-6">
@@ -29,11 +29,11 @@ const { project } = Astro.props;
       {project.tags.map((t) => <li class="pill">{t}</li>)}
     </ul>
     <div class="mt-6 grid grid-cols-2 gap-3">
-      <a href={project.repo} target="_blank" rel="noopener" class="btn btn-outline px-3">
+      <a href={project.repo} target="_blank" rel="noopener" class="btn btn-outline px-3" draggable="false">
         <Icon name="github" size={15} />
         Code
       </a>
-      <a href={`/projects/${project.slug}`} class="btn btn-teal px-3">
+      <a href={`/projects/${project.slug}`} class="btn btn-teal px-3" draggable="false">
         <Icon name="external-link" size={15} />
         View Details
       </a>
