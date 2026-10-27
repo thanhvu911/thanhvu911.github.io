@@ -18,10 +18,10 @@ import { projects } from '../data/portfolio';
   </div>
 
   <div class="mt-6 flex items-center gap-5">
-    <div class="h-1 flex-1 overflow-hidden rounded-full bg-line" aria-hidden="true">
+    <div class="h-1 flex-1 overflow-hidden rounded-full bg-white/15" aria-hidden="true">
       <div class="carousel-progress h-full w-full origin-left rounded-full bg-teal" data-progress></div>
     </div>
-    <p class="hidden text-sm text-muted sm:block">Drag to explore</p>
+    <p class="hidden items-center gap-2 text-sm text-white/70 sm:flex"><span aria-hidden="true">←</span> Drag to explore <span aria-hidden="true">→</span></p>
     <div class="flex gap-2">
       <button type="button" class="carousel-btn" aria-label="Previous project" data-prev>
         <Icon name="chevron-left" size={20} />
@@ -50,13 +50,16 @@ import { projects } from '../data/portfolio';
     width: 2.75rem;
     height: 2.75rem;
     border-radius: 999px;
-    background: var(--color-navy);
+    border: 1px solid rgb(255 255 255 / 0.25);
+    background: rgb(255 255 255 / 0.08);
     color: #fff;
     cursor: pointer;
-    transition: background-color 150ms, opacity 150ms;
+    transition: background-color 150ms, border-color 150ms, opacity 150ms;
   }
   .carousel-btn:hover {
-    background: var(--color-navy-2);
+    background: var(--color-teal);
+    border-color: var(--color-teal);
+    color: var(--color-navy);
   }
   .carousel-btn:disabled {
     opacity: 0.35;

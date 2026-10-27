@@ -5,7 +5,10 @@ import Icon from '../components/Icon.astro';
 import ProjectCarousel from '../components/ProjectCarousel.astro';
 import ContactSection from '../components/ContactSection.astro';
 import heroPhoto from '../assets/photo/thanh-hero.jpg';
-import { bio, credentials, education, experience, highlights, profile, projects, skills } from '../data/portfolio';
+import { bio, courseworkGroups, credentials, education, experience, profile, projects, skills } from '../data/portfolio';
+import { projectImage } from '../lib/images';
+
+const featuredCover = projectImage(projects[0].slug, projects[0].cover);
 ---
 
 <Base>
@@ -75,21 +78,80 @@ import { bio, credentials, education, experience, highlights, profile, projects,
     </a>
   </section>
 
-  <!-- Highlights -->
-  <section aria-label="Highlights" class="relative z-10 -mt-16">
+  <!-- Bento highlights -->
+  <section aria-label="Highlights" class="relative z-10 -mt-20">
     <div class="container-page">
-      <ul class="card grid grid-cols-2 divide-line overflow-hidden shadow-xl shadow-navy/10 md:grid-cols-4 md:divide-x" data-stagger>
-        {
-          highlights.map((h) => (
-            <li class="p-6 text-center md:p-8">
-              <p class="text-3xl font-bold tabular-nums text-navy md:text-4xl">
-                <span data-count={h.value} data-decimals={h.decimals ?? 0}>{h.value.toFixed(h.decimals ?? 0)}</span>{h.suffix}
+      <div class="bento grid gap-4 md:grid-cols-4 md:grid-rows-[auto_auto]" data-stagger>
+        <!-- Current role -->
+        <div class="card sheen p-6 md:col-span-2 md:p-8" data-tilt>
+          <p class="flex items-center gap-2 text-sm font-semibold text-teal-ink">
+            <span class="relative flex size-2"><span class="absolute inline-flex size-full animate-ping rounded-full bg-teal opacity-70 motion-reduce:hidden"></span><span class="relative inline-flex size-2 rounded-full bg-teal"></span></span>
+            Now
+          </p>
+          <h3 class="mt-3 text-2xl font-bold leading-snug text-navy">Data Analyst Fellow at EDC Lancaster County</h3>
+          <p class="mt-3 text-muted">
+            Building automated Power BI reporting on federal economic data (BLS, BEA) and a Google Apps Script dashboard with a Gemini AI assistant for non-technical staff.
+          </p>
+          <ul class="mt-5 flex flex-wrap gap-2">
+            {['Power BI', 'Microsoft Fabric', 'Apps Script', 'APIs'].map((t) => <li class="pill">{t}</li>)}
+          </ul>
+        </div>
+
+        <!-- Certification -->
+        <div class="bento-cert relative overflow-hidden rounded-xl p-6 text-white md:p-8">
+          <span class="icon-tile bg-white/15 text-teal"><Icon name="award" size={22} /></span>
+          <p class="mt-4 text-sm text-white/75">Microsoft Certified</p>
+          <h3 class="mt-1 text-xl font-bold leading-snug">Fabric Data Engineer Associate</h3>
+          <p class="mt-3 inline-flex rounded-full bg-teal px-3 py-1 text-sm font-bold text-navy">DP-700</p>
+          <p class="mt-3 text-xs text-white/60">Credential ID 5CE20E8CF4AC4CE3</p>
+        </div>
+
+        <!-- Rows count -->
+        <div class="card flex flex-col justify-between p-6 md:p-8">
+          <span class="icon-tile"><Icon name="database" size={22} /></span>
+          <div class="mt-6">
+            <p class="text-5xl font-bold tabular-nums tracking-tight text-navy"><span data-count="131">131</span>M+</p>
+            <p class="mt-1 text-sm text-muted">rows modeled in a Medallion warehouse</p>
+          </div>
+        </div>
+
+        <!-- Featured project -->
+        <a href={`/projects/${projects[0].slug}`} class="card sheen group relative overflow-hidden md:col-span-2" data-tilt>
+          <div class="grid h-full sm:grid-cols-[1fr_1.1fr]">
+            <div class="flex flex-col justify-between p-6 md:p-8">
+              <div>
+                <p class="text-sm font-semibold text-teal-ink">Featured project</p>
+                <h3 class="mt-2 text-xl font-bold leading-snug text-navy group-hover:text-teal-ink">{projects[0].title}</h3>
+                <p class="mt-2 text-sm text-muted">Microsoft Fabric pipeline testing USPS data against the Census across 6 counties and 15 years.</p>
+              </div>
+              <p class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-navy">
+                Read the case study <Icon name="arrow-right" size={15} class="transition-transform group-hover:translate-x-1" />
               </p>
-              <p class="mt-1 text-sm text-muted">{h.label}</p>
-            </li>
-          ))
-        }
-      </ul>
+            </div>
+            <div class="relative min-h-40 overflow-hidden bg-soft">
+              <Image src={featuredCover} alt="" widths={[480, 720]} sizes="(min-width: 768px) 360px, 100vw" class="absolute inset-0 size-full object-cover object-[65%_0%] transition-transform duration-500 group-hover:scale-105" />
+            </div>
+          </div>
+        </a>
+
+        <!-- Projects count -->
+        <div class="card flex flex-col justify-between p-6 md:p-8">
+          <span class="icon-tile"><Icon name="layers" size={22} /></span>
+          <div class="mt-6">
+            <p class="text-5xl font-bold tabular-nums tracking-tight text-navy"><span data-count={projects.length}>{projects.length}</span></p>
+            <p class="mt-1 text-sm text-muted">end-to-end data projects, all on GitHub</p>
+          </div>
+        </div>
+
+        <!-- Education -->
+        <div class="card flex flex-col justify-between p-6 md:p-8">
+          <span class="icon-tile"><Icon name="graduation-cap" size={22} /></span>
+          <div class="mt-6">
+            <p class="text-5xl font-bold tabular-nums tracking-tight text-navy"><span data-count="3.82" data-decimals="2">3.82</span></p>
+            <p class="mt-1 text-sm text-muted">major GPA, B.A. Computer Science, Franklin &amp; Marshall</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -101,10 +163,24 @@ import { bio, credentials, education, experience, highlights, profile, projects,
         {bio.map((p) => <p>{p}</p>)}
       </div>
 
-      <h3 class="mt-12 text-2xl font-bold text-navy" data-reveal>Relevant Coursework</h3>
-      <ul class="mt-5 flex flex-wrap gap-2" data-stagger>
-        {education.coursework.map((c) => <li class="rounded-lg border border-line bg-white px-3.5 py-2 text-sm font-medium text-ink">{c}</li>)}
-      </ul>
+      <h3 class="mt-14 text-2xl font-bold text-navy" data-reveal>Relevant Coursework</h3>
+      <div class="mt-6 grid gap-6 md:grid-cols-3" data-stagger>
+        {
+          courseworkGroups.map((g) => (
+            <div class="card sheen p-6" data-tilt>
+              <div class="flex items-center gap-3">
+                <span class="icon-tile">
+                  <Icon name={g.icon as 'code'} size={22} />
+                </span>
+                <h4 class="text-lg font-bold leading-snug text-navy">{g.group}</h4>
+              </div>
+              <ul class="dot-list mt-5 space-y-2 text-[0.9375rem] text-ink/85">
+                {g.items.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
     </div>
   </section>
 
@@ -134,7 +210,7 @@ import { bio, credentials, education, experience, highlights, profile, projects,
               <div>
                 <h4 class="flex items-center gap-2 font-semibold text-ink"><Icon name="award" size={18} class="text-teal-ink" /> Certifications</h4>
                 <ul class="mt-3 space-y-1.5 text-sm text-muted">
-                  {credentials.map((c) => <li><span class="text-ink">{c.title}</span>, {c.detail.split(' · ').slice(-2).join(', ')}</li>)}
+                  {credentials.map((c) => <li><span class="text-ink">{c.title}</span>, {c.detail.split(' · ').slice(-2).join(', ')}{'note' in c && <span class="block text-xs text-muted">{c.note}</span>}</li>)}
                 </ul>
               </div>
             </div>
@@ -144,40 +220,46 @@ import { bio, credentials, education, experience, highlights, profile, projects,
     </div>
   </section>
 
-  <!-- Experience -->
-  <section id="experience" class="bg-gradient-to-b from-soft/60 to-white py-24">
+  <!-- Experience (dark) -->
+  <section id="experience" class="dark-section relative isolate overflow-hidden py-24 text-white">
+    <div class="dark-glow" aria-hidden="true"></div>
     <div class="container-page max-w-5xl">
-      <h2 class="section-title" data-reveal>Experience</h2>
-      <ol class="timeline relative mt-12 space-y-6">
+      <h2 class="section-title section-title-light" data-reveal>Experience</h2>
+      <p class="mx-auto mt-6 max-w-2xl text-center text-white/75" data-reveal>
+        From ETL pipelines in Hanoi to economic dashboards in Lancaster: four roles, three of them in data.
+      </p>
+      <div class="timeline relative mt-14 pl-10 md:pl-14" data-timeline>
+        <span class="timeline-track" aria-hidden="true"></span>
+        <span class="timeline-fill" aria-hidden="true" data-timeline-fill></span>
+        <ol class="space-y-8">
         {
           experience.map((job) => (
-            <li class="card relative p-6 md:p-8" data-reveal>
-              <div class="flex gap-4">
-                <span class="icon-tile">
-                  <Icon name="briefcase" size={22} />
-                </span>
-                <div class="min-w-0 flex-1">
-                  <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-                    <h3 class="text-xl font-bold text-navy md:text-2xl">{job.role}</h3>
-                    {job.current && <span class="pill">Current</span>}
+            <li class="relative" data-reveal>
+              <span class:list={['timeline-dot', job.current && 'is-current']} aria-hidden="true" />
+              <article class="glass-card p-6 md:p-8">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h3 class="text-xl font-bold md:text-2xl">{job.role}</h3>
+                    <p class="mt-0.5 text-white/80">{job.company}</p>
                   </div>
-                  <p class="mt-0.5 text-muted">{job.company}</p>
-                  <p class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
-                    <span class="inline-flex items-center gap-1.5"><Icon name="calendar" size={15} /> {job.dates}</span>
-                    <span class="inline-flex items-center gap-1.5"><Icon name="map-pin" size={15} /> {job.location}</span>
-                  </p>
-                  <ul class="dot-list mt-4 space-y-2 text-[0.9375rem] leading-relaxed text-ink/85">
-                    {job.bullets.map((b) => <li>{b}</li>)}
-                  </ul>
-                  <ul class="mt-4 flex flex-wrap gap-2" aria-label="Tools used">
-                    {job.tech.map((t) => <li class="pill">{t}</li>)}
-                  </ul>
+                  {job.current && <span class="rounded-full bg-teal px-3 py-1 text-xs font-bold text-navy">Current</span>}
                 </div>
-              </div>
+                <p class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-white/70">
+                  <span class="inline-flex items-center gap-1.5"><Icon name="calendar" size={15} /> {job.dates}</span>
+                  <span class="inline-flex items-center gap-1.5"><Icon name="map-pin" size={15} /> {job.location}</span>
+                </p>
+                <ul class="dot-list mt-4 space-y-2 text-[0.9375rem] leading-relaxed text-white/85">
+                  {job.bullets.map((b) => <li>{b}</li>)}
+                </ul>
+                <ul class="mt-5 flex flex-wrap gap-2" aria-label="Tools used">
+                  {job.tech.map((t) => <li class="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium text-white">{t}</li>)}
+                </ul>
+              </article>
             </li>
           ))
         }
-      </ol>
+        </ol>
+      </div>
     </div>
   </section>
 
@@ -185,7 +267,7 @@ import { bio, credentials, education, experience, highlights, profile, projects,
   <section id="skills" class="bg-white py-24">
     <div class="container-page">
       <h2 class="section-title" data-reveal>Skills</h2>
-      <div class="mt-12 grid gap-6 md:grid-cols-3" data-stagger>
+      <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4" data-stagger>
         {
           skills.map((g) => (
             <div class="card sheen p-6" data-tilt>
@@ -206,14 +288,15 @@ import { bio, credentials, education, experience, highlights, profile, projects,
   </section>
 
   <!-- Projects -->
-  <section id="projects" class="overflow-hidden bg-gradient-to-b from-white to-soft/60 py-24">
+  <section id="projects" class="dark-section relative isolate overflow-hidden py-24 text-white">
+    <div class="dark-glow dark-glow-right" aria-hidden="true"></div>
     <div class="container-page">
-      <h2 class="section-title" data-reveal>Featured Projects</h2>
-      <p class="mx-auto mt-6 max-w-2xl text-center text-muted" data-reveal>
+      <h2 class="section-title section-title-light" data-reveal>Featured Projects</h2>
+      <p class="mx-auto mt-6 max-w-2xl text-center text-white/75" data-reveal>
         End-to-end work on real public and business data. Each project has the business problem, what I built, the challenges I solved, and the results.
       </p>
       <p class="mt-4 text-center" data-reveal>
-        <a href="/projects" class="inline-flex items-center gap-1.5 font-medium text-teal-ink hover:underline">
+        <a href="/projects" class="inline-flex items-center gap-1.5 font-medium text-teal hover:underline">
           View All Projects ({projects.length})
           <Icon name="external-link" size={15} />
         </a>

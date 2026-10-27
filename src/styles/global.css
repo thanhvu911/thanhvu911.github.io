@@ -218,6 +218,93 @@
     color: var(--color-teal-ink);
   }
 
+  /* Deep navy sections that break up the white page. */
+  .dark-section {
+    background: linear-gradient(160deg, #0b1f47 0%, #0f2757 45%, #123f63 100%);
+  }
+  .dark-glow {
+    position: absolute;
+    z-index: -1;
+    width: 40rem;
+    height: 40rem;
+    left: -14rem;
+    top: -12rem;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgb(17 212 212 / 0.22), transparent 65%);
+    pointer-events: none;
+  }
+  .dark-glow-right {
+    left: auto;
+    right: -14rem;
+    top: auto;
+    bottom: -16rem;
+  }
+  .section-title-light {
+    color: #fff;
+  }
+  .glass-card {
+    border: 1px solid rgb(255 255 255 / 0.12);
+    border-radius: 0.875rem;
+    background: rgb(255 255 255 / 0.06);
+    backdrop-filter: blur(10px);
+    transition: border-color 200ms, background-color 200ms;
+  }
+  .glass-card:hover {
+    border-color: rgb(17 212 212 / 0.45);
+    background: rgb(255 255 255 / 0.09);
+  }
+
+  /* Timeline: a faint track with a glowing fill that grows on scroll. */
+  .timeline-track,
+  .timeline-fill {
+    position: absolute;
+    left: 0.6875rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 2px;
+    border-radius: 2px;
+  }
+  @media (min-width: 768px) {
+    .timeline-track,
+    .timeline-fill {
+      left: 1.1875rem;
+    }
+  }
+  .timeline-track {
+    background: rgb(255 255 255 / 0.12);
+  }
+  .timeline-fill {
+    background: linear-gradient(to bottom, #11d4d4, #3b82f6);
+    box-shadow: 0 0 12px rgb(17 212 212 / 0.7);
+    transform-origin: top;
+  }
+  .timeline-dot {
+    position: absolute;
+    left: -2.0625rem;
+    top: 1.75rem;
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 999px;
+    background: #0f2757;
+    border: 2px solid #11d4d4;
+  }
+  @media (min-width: 768px) {
+    .timeline-dot {
+      left: -2.5625rem;
+    }
+  }
+  .timeline-dot.is-current {
+    background: #11d4d4;
+    box-shadow: 0 0 0 6px rgb(17 212 212 / 0.2), 0 0 18px rgb(17 212 212 / 0.8);
+  }
+
+  .bento-cert {
+    background:
+      radial-gradient(circle at 100% 0%, rgb(17 212 212 / 0.35), transparent 55%),
+      linear-gradient(150deg, #0f2757, #175e82);
+    box-shadow: 0 10px 30px rgb(15 39 87 / 0.25);
+  }
+
   /* Light sheen that follows the cursor on tilting cards (set by motion.ts). */
   .sheen {
     position: relative;

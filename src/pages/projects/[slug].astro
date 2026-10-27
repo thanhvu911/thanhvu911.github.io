@@ -3,6 +3,8 @@ import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
 import Gallery from '../../components/Gallery.astro';
+import ProjectDetails from '../../components/ProjectDetails.astro';
+import { details } from '../../data/details';
 import { projects, type Project } from '../../data/portfolio';
 import { projectImage } from '../../lib/images';
 
@@ -20,6 +22,7 @@ interface Props {
 const { project, next } = Astro.props;
 const highlightIcons = ['trending-up', 'bar-chart', 'layers', 'target'] as const;
 const cover = projectImage(project.slug, project.cover);
+const detail = details[project.slug];
 ---
 
 <Base title={project.title} description={project.summary}>
@@ -39,7 +42,7 @@ const cover = projectImage(project.slug, project.cover);
           <Icon name="github" size={16} />
           View Code on GitHub
         </a>
-        <a href="#gallery" class="btn btn-glass">See dashboards</a>
+        <a href="#walkthrough" class="btn btn-glass">See the walkthrough</a>
       </div>
     </div>
   </header>
@@ -72,6 +75,8 @@ const cover = projectImage(project.slug, project.cover);
   <div class="container-page grid max-w-6xl gap-10 py-16 lg:grid-cols-[1fr_20rem]">
     <div class="min-w-0 space-y-6">
       {project.context && <p class="rounded-xl border border-teal/30 bg-teal-wash px-5 py-4 text-ink" data-reveal>{project.context}</p>}
+
+      {detail && <ProjectDetails slug={project.slug} detail={detail} />}
 
       <section class="card p-6 md:p-8" aria-labelledby="why" data-reveal>
         <h2 id="why" class="text-2xl font-bold text-navy">The business problem</h2>
@@ -138,7 +143,7 @@ const cover = projectImage(project.slug, project.cover);
       </section>
 
       <section id="gallery" class="card scroll-mt-24 p-6 md:p-8" aria-labelledby="gallery-title" data-reveal>
-        <h2 id="gallery-title" class="text-2xl font-bold text-navy">Dashboards, models, and code</h2>
+        <h2 id="gallery-title" class="text-2xl font-bold text-navy">All images</h2>
         <p class="mt-2 text-sm text-muted">Click any image to view it full size.</p>
         <div class="mt-6">
           <Gallery project={project} />

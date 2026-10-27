@@ -107,6 +107,17 @@ function magnetic() {
   });
 }
 
+function timeline() {
+  const root = document.querySelector<HTMLElement>('[data-timeline]');
+  const fill = root?.querySelector<HTMLElement>('[data-timeline-fill]');
+  if (!root || !fill) return;
+  gsap.fromTo(
+    fill,
+    { scaleY: 0 },
+    { scaleY: 1, ease: 'none', scrollTrigger: { trigger: root, start: 'top 70%', end: 'bottom 60%', scrub: 0.6 } },
+  );
+}
+
 function rotatingRole() {
   const el = document.querySelector<HTMLElement>('[data-rotate]');
   if (!el) return;
@@ -126,6 +137,7 @@ if (!reduceMotion) {
   smoothScroll();
   reveals();
   countUps();
+  timeline();
   rotatingRole();
   if (finePointer) {
     tiltCards();

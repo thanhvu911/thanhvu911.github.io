@@ -14,7 +14,7 @@ export const profile = {
   web3formsKey: '',
   roles: ['Data Engineer', 'Data Analyst', 'Power BI Developer'],
   status: 'Data Analyst Fellow @ EDC Lancaster County',
-  availability: 'Open to Data Engineer and Data Analyst roles',
+  availability: 'Open to Data Engineer, Analytics Engineer, and Data Analyst roles',
   location: 'Lancaster, PA',
   locationNote: 'Open to New York and remote',
   email: 'vulethanh07112002@gmail.com',
@@ -140,6 +140,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'grocery-transaction-data-warehouse',
+    context: 'Built on the public Supermarket Transactional Data dataset by Nadin Ramadan on Kaggle. The warehouse design, ETL, tests, and documentation are my own work.',
     number: '02',
     title: 'Grocery Transaction Data Warehouse',
     headline: 'A Medallion warehouse over 131M+ rows, in plain SQL Server',
@@ -360,7 +361,8 @@ export const projects: Project[] = [
     metrics: [
       { value: '1,000', label: 'Transactions' },
       { value: '800', label: 'Accounts' },
-      { value: '15:00', label: 'Peak hour' },
+      { value: '12.3%', label: 'Rows with missing fields' },
+      { value: '17', label: 'Invalid currency codes' },
     ],
     problem:
       'Which branches and currencies carry the most activity? How does behavior differ by credit-score band, account type, customer sector, and city? When are the peak transaction hours?',
@@ -392,7 +394,7 @@ export const projects: Project[] = [
     number: '07',
     title: 'Medical Cost Regression',
     headline: 'How much do age and sex explain medical charges?',
-    year: '2021',
+    year: 'Nov 2021',
     kind: 'Statistics',
     why: "Before pricing a policy or targeting a health program, analysts need to know which factors actually drive costs. Demographics are easy to measure, but they may explain far less than people assume.",
     role: "Solo project: exploratory analysis, modeling, diagnostics, and an R Markdown report.",
@@ -478,22 +480,45 @@ export const skills = [
   {
     group: 'Programming Languages',
     icon: 'code',
-    items: ['Python (Pandas, NumPy)', 'SQL (T-SQL, MySQL)', 'R', 'DAX', 'Power Query M', 'JavaScript (Apps Script)', 'HTML/CSS'],
+    items: ['SQL (T-SQL, Spark SQL)', 'Python (Pandas, NumPy, PySpark)', 'KQL', 'DAX', 'Power Query M', 'R', 'JavaScript (Google Apps Script)'],
   },
   {
-    group: 'Tools & Platforms',
-    icon: 'wrench',
-    items: ['Power BI', 'Microsoft Fabric', 'SQL Server', 'Power Query', 'Excel', 'Power Automate', 'Google Sheets / Apps Script', 'Git / GitHub'],
+    group: 'Microsoft Fabric (DP-700)',
+    icon: 'layers',
+    items: ['Lakehouse, Warehouse, OneLake', 'Delta Lake', 'Data Factory pipelines', 'Dataflow Gen2', 'Notebooks (PySpark, Spark SQL)', 'Eventstream, Eventhouse / KQL', 'Semantic models, deployment pipelines'],
   },
   {
-    group: 'Data Engineering & Analytics',
+    group: 'Data Engineering',
     icon: 'database',
-    items: ['ETL / ELT pipelines', 'Medallion architecture', 'Dimensional modeling', 'Data-quality testing', 'Statistical modeling', 'Machine learning', 'Predictive analytics'],
+    items: ['ETL / ELT pipelines', 'Medallion architecture', 'Dimensional modeling (star, galaxy)', 'Stored procedures', 'Data-quality testing', 'Data documentation'],
+  },
+  {
+    group: 'Platforms & Tools',
+    icon: 'wrench',
+    items: ['Power BI', 'SQL Server', 'MySQL', 'Power Automate', 'Google Sheets / Apps Script', 'Excel', 'Git / GitHub'],
+  },
+];
+
+export const courseworkGroups = [
+  {
+    group: 'Data & Statistics',
+    icon: 'bar-chart',
+    items: ['Data Science', 'Statistical Modeling', 'Probability & Statistics', 'Applied Regression Analysis'],
+  },
+  {
+    group: 'AI & Machine Learning',
+    icon: 'target',
+    items: ['Artificial Intelligence', 'Machine Learning', 'Information Theory'],
+  },
+  {
+    group: 'Computer Science Foundations',
+    icon: 'code',
+    items: ['Algorithms', 'Theory of Computation'],
   },
 ];
 
 export const credentials = [
-  { title: 'Microsoft Certified: Fabric Data Engineer Associate', detail: 'DP-700 · Microsoft · Oct 2026' },
+  { title: 'Microsoft Certified: Fabric Data Engineer Associate', detail: 'DP-700 · Microsoft · Oct 2026', note: 'Credential ID 5CE20E8CF4AC4CE3' },
   { title: 'SQL (Advanced) Certificate', detail: 'HackerRank · Sep 2025' },
 ];
 
