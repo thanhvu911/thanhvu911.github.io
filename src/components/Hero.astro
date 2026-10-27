@@ -1,0 +1,102 @@
+---
+import { Image } from 'astro:assets';
+import PipelineGraph from './PipelineGraph.astro';
+import Icon from './Icon.astro';
+import CopyEmail from './CopyEmail.astro';
+import ResumeMenu from './ResumeMenu.astro';
+import portrait from '../assets/photo/thanh-cutout.png';
+import { profile, stats } from '../data/portfolio';
+---
+
+<section class="relative overflow-hidden">
+  <div class="container-page grid items-center gap-10 pb-12 pt-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:pb-20 lg:pt-16">
+    <!-- Visual: pipeline network with the portrait in front -->
+    <div class="relative mx-auto aspect-[19/15] w-full max-w-[40rem]">
+      <div class="absolute inset-0">
+        <PipelineGraph />
+      </div>
+      <div class="portrait absolute inset-x-0 bottom-0 mx-auto w-[44%]">
+        <Image
+          src={portrait}
+          alt="Portrait of Thanh Vu in a navy suit"
+          widths={[320, 480, 640]}
+          sizes="(min-width: 1024px) 280px, 44vw"
+          loading="eager"
+          fetchpriority="high"
+          class="h-auto w-full"
+        />
+      </div>
+    </div>
+
+    <!-- Copy -->
+    <div>
+      <p class="eyebrow">{profile.eyebrow}</p>
+      <h1 class="mt-4 text-5xl font-semibold tracking-[-0.035em] text-ink sm:text-6xl lg:text-7xl">
+        {profile.name}
+      </h1>
+      <p class="mt-6 max-w-xl text-[1.0625rem] leading-relaxed text-muted">
+        {profile.tagline}
+      </p>
+      <p class="mt-4 max-w-xl text-[1.0625rem] leading-relaxed text-muted">
+        Currently a Data Analyst Fellow at the{' '}
+        <a href="#experience" class="link-underline text-ink">EDC Lancaster County</a> Center for Regional Analysis,
+        building pipelines and dashboards on federal economic data. Microsoft-certified{' '}
+        <a href="#credentials" class="link-underline text-ink">Fabric Data Engineer (DP-700)</a>, and a 2026 Computer
+        Science graduate of Franklin &amp; Marshall. Previously built ETL pipelines at KPIM and buyer-prediction models
+        at KCC Capital Partners.
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <a href="#contact" class="btn btn-primary">
+          Get in touch
+          <Icon name="arrow-right" />
+        </a>
+        <ResumeMenu />
+        <CopyEmail compact />
+      </div>
+
+      <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs text-muted">
+        <span class="inline-flex items-center gap-2">
+          <span class="relative flex size-2">
+            <span class="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden"></span>
+            <span class="relative inline-flex size-2 rounded-full bg-accent"></span>
+          </span>
+          {profile.availability}
+        </span>
+        <span class="inline-flex items-center gap-1.5">
+          <Icon name="map-pin" size={13} />
+          {profile.location} · {profile.locationNote}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="container-page">
+    <div class="grid grid-cols-3 border-t border-line">
+      {
+        stats.map((s, i) => (
+          <a
+            href={s.href}
+            class:list={[
+              'group py-6 pr-4 transition-colors md:py-8',
+              i > 0 && 'border-l border-line pl-4 md:pl-8',
+            ]}
+          >
+            <p class="label">{s.label}</p>
+            <p class="mt-2 font-mono text-2xl font-medium tracking-tight text-ink transition-colors group-hover:text-accent sm:text-4xl">
+              {s.value}
+            </p>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .portrait {
+    mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+    filter: drop-shadow(0 20px 40px rgb(0 0 0 / 0.5));
+  }
+</style>

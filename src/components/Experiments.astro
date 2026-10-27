@@ -1,0 +1,161 @@
+---
+import SectionHeader from './SectionHeader.astro';
+import Icon from './Icon.astro';
+import { experiments, profile } from '../data/portfolio';
+
+// GitHub contribution calendar, fetched once at build time. If the request
+// fails the grid is simply left out, so builds never break on it.
+interface Day {
+  date: string;
+  count: number;
+  level: number;
+}
+let days: Day[] = [];
+let total = 0;
+try {
+  const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${profile.githubUser}?y=last`);
+  if (res.ok) {
+    const data = await res.json();
+    days = data.contributions ?? [];
+    total = data.total?.lastYear ?? days.reduce((s: number, d: Day) => s + d.count, 0);
+  }
+} catch {
+  days = [];
+}
+
+// Pad the start so the first column begins on Sunday, then chunk into weeks.
+const pad = days.length ? new Date(days[0].date + 'T00:00:00Z').getUTCDay() : 0;
+const cells: (Day | null)[] = [...Array(pad).fill(null), ...days];
+const weeks: (Day | null)[][] = [];
+for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
+
+const CELL = 11;
+const GAP = 3;
+const width = weeks.length * (CELL + GAP);
+const height = 7 * (CELL + GAP);
+const opacity = [0.06, 0.3, 0.5, 0.75, 1];
+
+// Month labels at the first week of each month.
+const months: { x: number; label: string }[] = [];
+weeks.forEach((w, i) => {
+  const first = w.find(Boolean);
+  if (!first) return;
+  const d = new Date(first.date + 'T00:00:00Z');
+  if (d.getUTCDate() <= 7) {
+    months.push({ x: i * (CELL + GAP), label: d.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }) });
+  }
+});
+---
+
+<section id="experiments" class="border-t border-line" aria-labelledby="experiments-title">
+  <div class="container-page py-20 md:py-28">
+    <SectionHeader
+      id="experiments-title"
+      eyebrow="Lab"
+      title="Experiments"
+      description="Smaller builds and coursework where I picked up the fundamentals: ETL, search, machine learning, data structures, even a CPU."
+    />
+
+    {
+      weeks.length > 0 && (
+        <div class="card mt-10 p-5 md:p-6" data-reveal>
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
+            <p class="font-mono text-sm text-ink">
+              <span class="text-accent">{total.toLocaleString('en-US')}</span> contributions in the last year
+            </p>
+            <a
+              href={profile.github}
+              class="inline-flex items-center gap-1 font-mono text-xs text-muted hover:text-ink"
+              target="_blank"
+              rel="noopener"
+            >
+              @{profile.githubUser}
+              <Icon name="arrow-up-right" size={12} />
+            </a>
+          </div>
+          <div class="mt-5 overflow-x-auto">
+            <svg
+              viewBox={`0 -16 ${width} ${height + 16}`}
+              class="block h-auto w-full min-w-[640px]"
+              role="img"
+              aria-label={`GitHub contribution calendar: ${total} contributions in the last year`}
+            >
+              {months.map((m) => (
+                <text x={m.x} y="-5" font-size="9" fill="#6b737c" font-family="JetBrains Mono Variable, monospace">
+                  {m.label}
+                </text>
+              ))}
+              {weeks.map((w, wi) =>
+                w.map((d, di) =>
+                  d ? (
+                    <rect
+                      x={wi * (CELL + GAP)}
+                      y={di * (CELL + GAP)}
+                      width={CELL}
+                      height={CELL}
+                      rx="2"
+                      fill={d.level === 0 ? '#ffffff' : '#22d3ee'}
+                      fill-opacity={opacity[d.level] ?? 0.06}
+                    >
+                      <title>{`${d.count} on ${d.date}`}</title>
+                    </rect>
+                  ) : null,
+                ),
+              )}
+            </svg>
+          </div>
+          <div class="mt-3 flex items-center justify-end gap-1.5 font-mono text-[10px] text-faint">
+            Less
+            {opacity.map((o, i) => (
+              <span
+                class="inline-block size-2.5 rounded-[2px]"
+                style={`background:${i === 0 ? '#ffffff' : '#22d3ee'};opacity:${o}`}
+              />
+            ))}
+            More
+          </div>
+        </div>
+      )
+    }
+
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        experiments.map((e) => (
+          <a
+            href={`${profile.github}/${e.repo}`}
+            target="_blank"
+            rel="noopener"
+            class="card group flex flex-col overflow-hidden transition-colors hover:border-line-strong"
+            data-reveal
+          >
+            <div class="border-b border-line bg-bg/60 px-4 py-3 font-mono text-[11px] leading-6 text-faint">
+              <div class="mb-1 flex gap-1.5" aria-hidden="true">
+                <span class="size-2 rounded-full bg-white/10" />
+                <span class="size-2 rounded-full bg-white/10" />
+                <span class="size-2 rounded-full bg-white/10" />
+              </div>
+              {e.preview.map((line, i) => (
+                <p class="truncate">
+                  <span class="mr-3 select-none text-white/15">{i + 1}</span>
+                  <span class={i === 0 ? 'text-accent/90' : ''}>{line}</span>
+                </p>
+              ))}
+            </div>
+            <div class="flex flex-1 flex-col p-4">
+              <h3 class="flex items-start justify-between gap-2 font-medium text-ink">
+                {e.title}
+                <Icon name="arrow-up-right" size={14} class="mt-1 shrink-0 text-faint transition-colors group-hover:text-accent" />
+              </h3>
+              <p class="mt-2 flex-1 text-sm text-muted">{e.summary}</p>
+              <div class="mt-4 flex flex-wrap gap-1.5">
+                {e.tags.map((t) => (
+                  <span class="chip">{t}</span>
+                ))}
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>

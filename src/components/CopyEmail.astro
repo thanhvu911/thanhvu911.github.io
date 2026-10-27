@@ -1,0 +1,53 @@
+---
+import Icon from './Icon.astro';
+import { profile } from '../data/portfolio';
+
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={['btn btn-ghost', compact && 'px-0 size-11 justify-center']}
+  data-copy-email={profile.email}
+  aria-label={compact ? `Copy email address ${profile.email}` : undefined}
+>
+  <span class="copy-idle inline-flex items-center gap-2">
+    <Icon name="copy" />
+    {!compact && <span>Copy email</span>}
+  </span>
+  <span class="copy-done hidden items-center gap-2 text-accent">
+    <Icon name="check" />
+    {!compact && <span>Copied</span>}
+  </span>
+  <span class="sr-only" aria-live="polite" data-copy-status></span>
+</button>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-email]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const email = btn.dataset.copyEmail!;
+      try {
+        await navigator.clipboard.writeText(email);
+      } catch {
+        window.location.href = `mailto:${email}`;
+        return;
+      }
+      const idle = btn.querySelector('.copy-idle')!;
+      const done = btn.querySelector('.copy-done')!;
+      const status = btn.querySelector('[data-copy-status]')!;
+      idle.classList.add('hidden');
+      done.classList.remove('hidden');
+      done.classList.add('inline-flex');
+      status.textContent = 'Email address copied';
+      setTimeout(() => {
+        idle.classList.remove('hidden');
+        done.classList.add('hidden');
+        done.classList.remove('inline-flex');
+        status.textContent = '';
+      }, 2000);
+    });
+  });
+</script>

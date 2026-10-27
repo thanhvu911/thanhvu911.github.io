@@ -1,0 +1,18 @@
+---
+import Base from '../../layouts/Base.astro';
+import NoteCard from '../../components/NoteCard.astro';
+import { notes } from '../../lib/notes';
+---
+
+<Base title="Notes" description="Notes by Thanh Vu on data engineering, data quality, and analytics lessons from real projects.">
+  <section class="container-page py-14 md:py-20">
+    <p class="eyebrow">Notes</p>
+    <h1 class="mt-4 max-w-3xl font-serif text-5xl leading-[1.02] tracking-tight text-ink md:text-7xl">Lessons from the pipeline</h1>
+    <p class="mt-6 max-w-2xl text-lg text-muted">
+      Short write-ups on what my projects taught me: the bugs, the misleading numbers, and the habits that stuck.
+    </p>
+    <div class="mt-14 grid gap-x-6 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
+      {notes.map((n) => <NoteCard note={n} />)}
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { profile } from '../data/portfolio';
+---
+
+<Base title="Resume" description="Download Thanh Vu's resume: Data Engineer or Data Analyst version.">
+  <section class="container-page py-14 md:py-20">
+    <p class="eyebrow">Resume</p>
+    <h1 class="mt-4 max-w-3xl font-serif text-5xl leading-[1.02] tracking-tight text-ink md:text-7xl">Two versions, same person</h1>
+    <p class="mt-6 max-w-2xl text-lg text-muted">Pick the one that fits the role. Both are one-page PDFs.</p>
+
+    <div class="mt-12 grid gap-6 md:grid-cols-2">
+      {
+        profile.resumes.map((r) => (
+          <div class="card flex flex-col overflow-hidden">
+            <object data={`${r.href}#toolbar=0&view=FitH`} type="application/pdf" class="hidden aspect-[8.5/11] w-full border-b border-line bg-white md:block" aria-label={`${r.label} resume preview`}>
+              <p class="p-6 text-sm text-muted">Preview not available in this browser.</p>
+            </object>
+            <div class="flex flex-1 flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 class="text-xl font-medium tracking-tight text-ink">{r.label}</h2>
+                <p class="mt-1 font-mono text-xs text-muted">{r.note}</p>
+              </div>
+              <a href={r.href} download class="btn btn-primary shrink-0">
+                <Icon name="download" />
+                Download PDF
+              </a>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</Base>

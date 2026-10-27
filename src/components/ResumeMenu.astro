@@ -1,0 +1,46 @@
+---
+import Icon from './Icon.astro';
+import { profile } from '../data/portfolio';
+---
+
+<details class="resume-menu relative">
+  <summary class="btn btn-ghost list-none [&::-webkit-details-marker]:hidden">
+    <Icon name="download" />
+    Download resume
+    <Icon name="chevron-down" size={14} class="chevron transition-transform" />
+  </summary>
+  <ul class="absolute left-0 z-30 mt-2 w-64 overflow-hidden rounded-lg border border-line-strong bg-surface-2 p-1 shadow-2xl">
+    {
+      profile.resumes.map((r) => (
+        <li>
+          <a href={r.href} target="_blank" class="flex min-h-12 flex-col justify-center rounded-md px-3 py-2 hover:bg-white/5">
+            <span class="text-sm text-ink">{r.label} resume</span>
+            <span class="font-mono text-[11px] text-muted">{r.note} · PDF</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</details>
+
+<style>
+  .resume-menu[open] .chevron {
+    transform: rotate(180deg);
+  }
+</style>
+
+<script>
+  // Close any open resume menu on outside click or Escape.
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll<HTMLDetailsElement>('.resume-menu[open]').forEach((d) => {
+      if (!d.contains(e.target as Node)) d.open = false;
+    });
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll<HTMLDetailsElement>('.resume-menu[open]').forEach((d) => {
+      d.open = false;
+      d.querySelector('summary')?.focus();
+    });
+  });
+</script>

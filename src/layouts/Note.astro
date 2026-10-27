@@ -1,0 +1,49 @@
+---
+import { Image } from 'astro:assets';
+import Base from './Base.astro';
+import Icon from '../components/Icon.astro';
+import { projects } from '../data/portfolio';
+import { projectImage } from '../lib/images';
+import { formatDate, type NoteFrontmatter } from '../lib/notes';
+
+interface Props {
+  frontmatter: NoteFrontmatter;
+}
+const { frontmatter: fm } = Astro.props;
+const project = projects.find((p) => p.slug === fm.project);
+---
+
+<Base title={fm.title} description={fm.description}>
+  <article class="container-page py-12 md:py-20">
+    <div class="mx-auto max-w-3xl">
+      <a href="/notes" class="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-faint hover:text-ink">
+        <Icon name="arrow-left" size={12} /> Notes
+      </a>
+      <h1 class="mt-6 font-serif text-4xl leading-[1.05] tracking-tight text-ink md:text-6xl">{fm.title}</h1>
+      <p class="mt-5 text-lg text-muted">{fm.description}</p>
+      <p class="mt-5 font-mono text-[11px] uppercase tracking-[0.12em] text-faint">
+        {formatDate(fm.date)} · {fm.readingTime}
+      </p>
+    </div>
+
+    <div class="mx-auto mt-10 max-w-4xl overflow-hidden rounded-xl border border-line bg-surface">
+      <Image src={projectImage(fm.project, fm.cover)} alt="" widths={[800, 1280]} sizes="(min-width: 1024px) 896px, 100vw" loading="eager" class="h-auto w-full" />
+    </div>
+
+    <div class="prose-page mx-auto mt-12 max-w-3xl">
+      <slot />
+    </div>
+
+    {
+      project && (
+        <a href={`/work/${project.slug}`} class="card group mx-auto mt-16 flex max-w-3xl items-center justify-between gap-4 p-5 transition-colors hover:border-line-strong">
+          <span>
+            <span class="label block">From the case study</span>
+            <span class="mt-1 block font-medium text-ink transition-colors group-hover:text-accent">{project.title}</span>
+          </span>
+          <Icon name="arrow-right" size={18} class="shrink-0 text-muted group-hover:text-accent" />
+        </a>
+      )
+    }
+  </article>
+</Base>

@@ -1,0 +1,20 @@
+---
+import SectionHeader from './SectionHeader.astro';
+import NoteCard from './NoteCard.astro';
+import { notes } from '../lib/notes';
+---
+
+<section id="notes" class="border-t border-line" aria-labelledby="notes-title">
+  <div class="container-page py-20 md:py-28">
+    <SectionHeader
+      id="notes-title"
+      eyebrow="Notes"
+      title="Lessons from the pipeline"
+      description="Short write-ups on what the data taught me: the bugs, the misleading numbers, and the habits that stuck."
+      link={{ href: '/notes', label: 'All notes' }}
+    />
+    <div class="mt-12 grid gap-x-6 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
+      {notes.slice(0, 3).map((n) => <NoteCard note={n} />)}
+    </div>
+  </div>
+</section>

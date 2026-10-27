@@ -1,0 +1,193 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Icon from './Icon.astro';
+import type { Project, ImageCategory } from '../data/portfolio';
+import { projectImage } from '../lib/images';
+
+interface Props {
+  project: Project;
+}
+const { project } = Astro.props;
+
+const order: ImageCategory[] = ['Power BI', 'Data flow', 'Data model', 'Code', 'Insights'];
+const categories = order.filter((c) => project.images.some((img) => img.category === c));
+
+// Full-size versions for the lightbox (large WebP, capped width).
+const items = await Promise.all(
+  project.images.map(async (img) => {
+    const src = projectImage(project.slug, img.file);
+    const full = await getImage({ src, width: Math.min(src.width, 2000), format: 'webp' });
+    return { ...img, src, full: full.src };
+  }),
+);
+---
+
+<div data-gallery>
+  <div class="flex flex-wrap gap-2" role="group" aria-label="Filter images">
+    <button type="button" class="filter-btn" aria-pressed="true" data-filter="all">All · {items.length}</button>
+    {
+      categories.map((c) => (
+        <button type="button" class="filter-btn" aria-pressed="false" data-filter={c}>
+          {c} · {items.filter((i) => i.category === c).length}
+        </button>
+      ))
+    }
+  </div>
+
+  <ul class="mt-6 grid gap-4 sm:grid-cols-2">
+    {
+      items.map((img, i) => (
+        <li data-category={img.category}>
+          <button
+            type="button"
+            class="group block w-full text-left"
+            data-open={i}
+            data-full={img.full}
+            data-caption={img.caption}
+            data-cat={img.category}
+          >
+            <span class="relative block aspect-[16/10] overflow-hidden rounded-lg border border-line bg-surface transition-colors group-hover:border-line-strong">
+              <Image
+                src={img.src}
+                alt={img.caption}
+                widths={[480, 800]}
+                sizes="(min-width: 640px) 50vw, 100vw"
+                class="size-full object-cover object-left-top transition-transform duration-500 group-hover:scale-[1.03]"
+              />
+              <span class="absolute right-3 top-3 grid size-8 place-items-center rounded-md bg-bg/80 text-ink opacity-0 backdrop-blur transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                <Icon name="maximize" size={14} />
+              </span>
+            </span>
+            <span class="mt-2 flex items-baseline justify-between gap-3">
+              <span class="text-sm text-ink">{img.caption}</span>
+              <span class="shrink-0 font-mono text-[10px] uppercase tracking-wider text-faint">{img.category}</span>
+            </span>
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+
+  <dialog class="lightbox" aria-label="Image viewer" data-lightbox>
+    <div class="flex h-full flex-col">
+      <div class="flex items-center justify-between gap-4 px-4 py-3 md:px-6">
+        <p class="min-w-0 truncate text-sm text-ink" data-lb-caption></p>
+        <div class="flex items-center gap-1">
+          <span class="mr-2 font-mono text-xs text-muted" data-lb-count></span>
+          <button type="button" class="lb-btn" aria-label="Previous image" data-lb-prev><Icon name="arrow-left" /></button>
+          <button type="button" class="lb-btn" aria-label="Next image" data-lb-next><Icon name="arrow-right" /></button>
+          <button type="button" class="lb-btn" aria-label="Close viewer" data-lb-close><Icon name="x" /></button>
+        </div>
+      </div>
+      <div class="flex min-h-0 flex-1 items-center justify-center p-4 md:p-8">
+        <img alt="" class="max-h-full max-w-full rounded-md object-contain" data-lb-img />
+      </div>
+    </div>
+  </dialog>
+</div>
+
+<style>
+  .filter-btn {
+    min-height: 2.25rem;
+    padding: 0 0.875rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: color 150ms, border-color 150ms, background-color 150ms;
+  }
+  .filter-btn:hover {
+    color: var(--color-ink);
+    border-color: var(--color-line-strong);
+  }
+  .filter-btn[aria-pressed='true'] {
+    color: var(--color-on-accent);
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .lightbox {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgb(7 8 10 / 0.96);
+    color: var(--color-ink);
+  }
+  .lightbox::backdrop {
+    background: rgb(0 0 0 / 0.7);
+  }
+  .lb-btn {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.5rem;
+    color: var(--color-muted);
+    cursor: pointer;
+  }
+  .lb-btn:hover {
+    color: var(--color-ink);
+    background: var(--color-surface-2);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((root) => {
+    const filters = [...root.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+    const tiles = [...root.querySelectorAll<HTMLLIElement>('[data-category]')];
+    const openers = [...root.querySelectorAll<HTMLButtonElement>('[data-open]')];
+    const dialog = root.querySelector<HTMLDialogElement>('[data-lightbox]')!;
+    const img = dialog.querySelector<HTMLImageElement>('[data-lb-img]')!;
+    const caption = dialog.querySelector<HTMLElement>('[data-lb-caption]')!;
+    const count = dialog.querySelector<HTMLElement>('[data-lb-count]')!;
+
+    let active = 'all';
+    let index = 0;
+    let opener: HTMLElement | null = null;
+
+    const visible = () => openers.filter((b) => active === 'all' || b.dataset.cat === active);
+
+    filters.forEach((btn) =>
+      btn.addEventListener('click', () => {
+        active = btn.dataset.filter!;
+        filters.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+        tiles.forEach((t) => (t.hidden = active !== 'all' && t.dataset.category !== active));
+      }),
+    );
+
+    const show = (i: number) => {
+      const list = visible();
+      index = (i + list.length) % list.length;
+      const b = list[index];
+      img.src = b.dataset.full!;
+      img.alt = b.dataset.caption!;
+      caption.textContent = b.dataset.caption!;
+      count.textContent = `${index + 1} / ${list.length}`;
+    };
+
+    openers.forEach((b) =>
+      b.addEventListener('click', () => {
+        opener = b;
+        show(visible().indexOf(b));
+        dialog.showModal();
+      }),
+    );
+
+    dialog.querySelector('[data-lb-prev]')!.addEventListener('click', () => show(index - 1));
+    dialog.querySelector('[data-lb-next]')!.addEventListener('click', () => show(index + 1));
+    dialog.querySelector('[data-lb-close]')!.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(index - 1);
+      if (e.key === 'ArrowRight') show(index + 1);
+    });
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('close', () => opener?.focus());
+  });
+</script>

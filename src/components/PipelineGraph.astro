@@ -1,0 +1,221 @@
+---
+// Animated data-pipeline network that sits behind the portrait.
+// Sources (left) flow over an arch through Bronze → Silver → Gold to outputs (right).
+const C = 300;
+
+type Kind = 'source' | 'layer' | 'output';
+interface Node {
+  id: string;
+  label: string;
+  r: number;
+  deg: number;
+  kind: Kind;
+}
+
+const nodes: Node[] = [
+  { id: 'usps', label: 'USPS', r: 270, deg: 202, kind: 'source' },
+  { id: 'census', label: 'Census', r: 270, deg: 180, kind: 'source' },
+  { id: 'bls', label: 'BLS', r: 270, deg: 158, kind: 'source' },
+  { id: 'bea', label: 'BEA', r: 270, deg: 136, kind: 'source' },
+  { id: 'bronze', label: 'Bronze', r: 205, deg: 222, kind: 'layer' },
+  { id: 'silver', label: 'Silver', r: 205, deg: 270, kind: 'layer' },
+  { id: 'gold', label: 'Gold', r: 205, deg: 318, kind: 'layer' },
+  { id: 'model', label: 'Model', r: 270, deg: 338, kind: 'output' },
+  { id: 'pbi', label: 'Power BI', r: 270, deg: 0, kind: 'output' },
+  { id: 'insight', label: 'Insight', r: 270, deg: 22, kind: 'output' },
+  { id: 'ai', label: 'AI', r: 270, deg: 44, kind: 'output' },
+];
+
+const pos = (n: Node) => {
+  const a = (n.deg * Math.PI) / 180;
+  return { x: C + n.r * Math.cos(a), y: C + n.r * Math.sin(a) };
+};
+const byId = Object.fromEntries(nodes.map((n) => [n.id, { ...n, ...pos(n) }]));
+
+const edges: [string, string][] = [
+  ['usps', 'bronze'],
+  ['census', 'bronze'],
+  ['bls', 'bronze'],
+  ['bea', 'bronze'],
+  ['bronze', 'silver'],
+  ['silver', 'gold'],
+  ['gold', 'model'],
+  ['gold', 'pbi'],
+  ['gold', 'insight'],
+  ['gold', 'ai'],
+];
+
+// Quadratic curve bowed away from the center so lines arc around the portrait.
+const edgePath = ([a, b]: [string, string]) => {
+  const p = byId[a];
+  const q = byId[b];
+  const mx = (p.x + q.x) / 2;
+  const my = (p.y + q.y) / 2;
+  const dx = mx - C;
+  const dy = my - C;
+  const len = Math.hypot(dx, dy) || 1;
+  const bow = 26;
+  const cx = mx + (dx / len) * bow;
+  const cy = my + (dy / len) * bow;
+  return `M${p.x.toFixed(1)} ${p.y.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${q.x.toFixed(1)} ${q.y.toFixed(1)}`;
+};
+
+// Label sits just outside the node, away from the center.
+const labelPos = (n: (typeof byId)[string]) => {
+  const a = (n.deg * Math.PI) / 180;
+  const off = n.kind === 'layer' ? 22 : 18;
+  const x = C + (n.r + off) * Math.cos(a);
+  const y = C + (n.r + off) * Math.sin(a);
+  const cos = Math.cos(a);
+  const anchor = Math.abs(cos) < 0.25 ? 'middle' : cos > 0 ? 'start' : 'end';
+  return { x, y: y + 4, anchor };
+};
+
+// Faint dot field for texture.
+const dots: { x: number; y: number }[] = [];
+for (let y = 20; y <= 580; y += 20) {
+  for (let x = 20; x <= 580; x += 20) {
+    const d = Math.hypot(x - C, y - C);
+    if (d < 290 && d > 60) dots.push({ x, y });
+  }
+}
+---
+
+<svg class="pipeline-graph h-full w-full overflow-visible" viewBox="-80 0 760 600" aria-hidden="true" data-pipeline>
+  <defs>
+    <radialGradient id="pg-glow" cx="50%" cy="58%" r="50%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.28"></stop>
+      <stop offset="45%" stop-color="#22d3ee" stop-opacity="0.07"></stop>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"></stop>
+    </radialGradient>
+    <linearGradient id="pg-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.15"></stop>
+      <stop offset="50%" stop-color="#22d3ee" stop-opacity="0.5"></stop>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0.15"></stop>
+    </linearGradient>
+  </defs>
+
+  <circle cx={C} cy={C} r="300" fill="url(#pg-glow)"></circle>
+
+  <g fill="#ffffff" fill-opacity="0.07">
+    {dots.map((d) => <circle cx={d.x} cy={d.y} r="1" />)}
+  </g>
+
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-dasharray="2 6">
+    <circle cx={C} cy={C} r="205"></circle>
+    <circle cx={C} cy={C} r="270"></circle>
+  </g>
+
+  <g fill="none" stroke="url(#pg-edge)" stroke-width="1.25">
+    {edges.map((e) => <path d={edgePath(e)} data-edge />)}
+  </g>
+
+  <g data-particles></g>
+
+  {
+    Object.values(byId).map((n) => {
+      const l = labelPos(n);
+      return (
+        <g>
+          {n.kind === 'layer' ? (
+            <>
+              <circle cx={n.x} cy={n.y} r="11" fill="#07080a" stroke="#22d3ee" stroke-opacity="0.6" />
+              <circle cx={n.x} cy={n.y} r="4" fill="#22d3ee" class="pg-pulse" />
+            </>
+          ) : (
+            <circle cx={n.x} cy={n.y} r="4.5" fill="#07080a" stroke="#ffffff" stroke-opacity="0.5" />
+          )}
+          <text
+            x={l.x}
+            y={l.y}
+            text-anchor={l.anchor}
+            font-family="JetBrains Mono Variable, monospace"
+            font-size={n.kind === 'layer' ? 12 : 11}
+            fill={n.kind === 'layer' ? '#22d3ee' : '#9aa3ad'}
+            letter-spacing="0.06em"
+          >
+            {n.label.toUpperCase()}
+          </text>
+        </g>
+      );
+    })
+  }
+</svg>
+
+<style>
+  .pg-pulse {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pg-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pg-pulse {
+    50% {
+      transform: scale(1.6);
+      opacity: 0.5;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pg-pulse {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  document.querySelectorAll<SVGSVGElement>('[data-pipeline]').forEach((svg) => {
+    if (reduce.matches) return;
+    const layer = svg.querySelector('[data-particles]')!;
+    const edges = [...svg.querySelectorAll<SVGPathElement>('[data-edge]')];
+
+    // A few particles per edge, staggered so the flow reads as continuous.
+    const particles = edges.flatMap((path, i) => {
+      const len = path.getTotalLength();
+      return [0, 0.5].map((offset) => {
+        const dot = document.createElementNS(SVG_NS, 'circle');
+        dot.setAttribute('r', '2.2');
+        dot.setAttribute('fill', '#a5f3fc');
+        layer.appendChild(dot);
+        return { path, len, dot, offset: (offset + i * 0.13) % 1, speed: 0.18 + (i % 3) * 0.03 };
+      });
+    });
+
+    let raf = 0;
+    let visible = true;
+    let last = performance.now();
+    let t = 0;
+
+    const tick = (now: number) => {
+      t += Math.min(now - last, 50) / 1000;
+      last = now;
+      for (const p of particles) {
+        const u = (p.offset + t * p.speed) % 1;
+        const pt = p.path.getPointAtLength(u * p.len);
+        p.dot.setAttribute('cx', pt.x.toFixed(1));
+        p.dot.setAttribute('cy', pt.y.toFixed(1));
+        // Fade in and out at the ends of each edge.
+        p.dot.setAttribute('opacity', String(Math.sin(u * Math.PI).toFixed(2)));
+      }
+      raf = requestAnimationFrame(tick);
+    };
+
+    const start = () => {
+      if (raf || !visible || document.hidden) return;
+      last = performance.now();
+      raf = requestAnimationFrame(tick);
+    };
+    const stop = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      visible ? start() : stop();
+    }).observe(svg);
+    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+    start();
+  });
+</script>

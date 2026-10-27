@@ -1,0 +1,248 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Gallery from '../../components/Gallery.astro';
+import { projects, type Project } from '../../data/portfolio';
+import { projectImage } from '../../lib/images';
+
+export function getStaticPaths() {
+  return projects.map((project, i) => ({
+    params: { slug: project.slug },
+    props: { project, next: projects[(i + 1) % projects.length] },
+  }));
+}
+
+interface Props {
+  project: Project;
+  next: Project;
+}
+const { project, next } = Astro.props;
+const cover = projectImage(project.slug, project.cover);
+
+const sections = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'approach', label: 'Approach' },
+  { id: 'architecture', label: 'Architecture' },
+  project.dataModel && { id: 'data-model', label: 'Data model' },
+  project.dataQuality && { id: 'data-quality', label: 'Data quality' },
+  { id: 'results', label: 'Results' },
+  { id: 'gallery', label: 'Gallery' },
+].filter(Boolean) as { id: string; label: string }[];
+---
+
+<Base title={project.title} description={project.summary}>
+  <article>
+    <!-- Hero -->
+    <header class="container-page pt-10 md:pt-16">
+      <nav aria-label="Breadcrumb" class="font-mono text-[11px] uppercase tracking-[0.12em] text-faint">
+        <a href="/work" class="hover:text-ink">Work</a>
+        <span class="mx-2">/</span>
+        <span class="text-muted">{project.number}</span>
+      </nav>
+      <h1 class="mt-6 max-w-4xl font-serif text-5xl leading-[1.02] tracking-tight text-ink md:text-7xl">
+        {project.headline}
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg text-muted"><span class="text-ink">{project.title}</span> — {project.summary}</p>
+      <div class="mt-6 flex flex-wrap items-center gap-2">
+        <span class="chip text-ink">{project.year}</span>
+        {project.tags.map((t) => <span class="chip">{t}</span>)}
+        <a href={project.repo} target="_blank" rel="noopener" class="chip text-ink transition-colors hover:border-accent hover:text-accent">
+          <Icon name="github" size={12} /> Repository <Icon name="arrow-up-right" size={11} />
+        </a>
+      </div>
+    </header>
+
+    <div class="container-page mt-10">
+      <div class="overflow-hidden rounded-2xl border border-line bg-surface">
+        <Image
+          src={cover}
+          alt={project.images.find((i) => i.file === project.cover)?.caption ?? project.title}
+          widths={[800, 1280, 1800]}
+          sizes="(min-width: 1280px) 1216px, 100vw"
+          loading="eager"
+          class="h-auto w-full"
+        />
+      </div>
+
+      <div class="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line md:grid-cols-4">
+        {
+          project.metrics.map((m) => (
+            <div class="bg-bg p-5">
+              <p class="font-mono text-2xl font-medium tracking-tight text-accent md:text-3xl">{m.value}</p>
+              <p class="label mt-1.5">{m.label}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="container-page grid gap-12 py-16 md:py-24 lg:grid-cols-[13rem_1fr] lg:gap-16">
+      <aside class="hidden lg:block">
+        <nav class="sticky top-24" aria-label="On this page">
+          <p class="label">On this page</p>
+          <ul class="mt-4 space-y-1 border-l border-line">
+            {
+              sections.map((s) => (
+                <li>
+                  <a href={`#${s.id}`} class="toc-link -ml-px block border-l border-transparent py-1.5 pl-4 text-sm text-muted transition-colors hover:text-ink" data-toc={s.id}>
+                    {s.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </aside>
+
+      <div class="min-w-0 max-w-3xl">
+        <section id="overview" data-section>
+          <p class="eyebrow">Overview</p>
+          {project.context && <p class="mt-4 rounded-lg border border-line bg-surface p-4 text-sm text-muted">{project.context}</p>}
+          <p class="mt-4 font-serif text-2xl leading-snug text-ink md:text-3xl">{project.problem}</p>
+        </section>
+
+        <section id="approach" class="mt-16" data-section>
+          <p class="eyebrow">Approach</p>
+          <ol class="mt-6 space-y-5">
+            {
+              project.approach.map((step, i) => (
+                <li class="grid grid-cols-[2.25rem_1fr] gap-3">
+                  <span class="font-mono text-sm text-faint">{String(i + 1).padStart(2, '0')}</span>
+                  <p class="leading-relaxed text-muted">{step}</p>
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+
+        <section id="architecture" class="mt-16" data-section>
+          <p class="eyebrow">Architecture</p>
+          <ol class="mt-6 flex flex-col gap-2 md:flex-row md:items-stretch md:gap-0">
+            {
+              project.architecture.map((node, i) => (
+                <li class="flex items-center md:flex-1 md:flex-col md:items-stretch">
+                  <div class="flex md:flex-1 md:items-center">
+                    <div
+                      class:list={[
+                        'w-full rounded-lg border px-3 py-3 text-sm md:h-full',
+                        i === project.architecture.length - 1 ? 'border-accent/60 bg-accent-soft text-ink' : 'border-line bg-surface text-ink',
+                      ]}
+                    >
+                      <span class="block font-mono text-[10px] text-faint">{String(i + 1).padStart(2, '0')}</span>
+                      {node}
+                    </div>
+                    {i < project.architecture.length - 1 && (
+                      <span class="hidden w-4 shrink-0 text-center text-faint md:block" aria-hidden="true">
+                        →
+                      </span>
+                    )}
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+
+        {
+          project.dataModel && (
+            <section id="data-model" class="mt-16" data-section>
+              <p class="eyebrow">Data model</p>
+              <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                <div class="card p-5">
+                  <p class="label">Facts</p>
+                  <ul class="mt-3 flex flex-wrap gap-2">
+                    {project.dataModel.facts.map((f) => (
+                      <li class="rounded-md border border-accent/40 bg-accent-soft px-2.5 py-1 font-mono text-xs text-ink">{f}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div class="card p-5">
+                  <p class="label">Dimensions</p>
+                  <ul class="mt-3 flex flex-wrap gap-2">
+                    {project.dataModel.dims.map((d) => (
+                      <li class="rounded-md border border-line bg-bg px-2.5 py-1 font-mono text-xs text-ink">{d}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              {project.dataModel.note && <p class="mt-4 text-sm text-muted">{project.dataModel.note}</p>}
+            </section>
+          )
+        }
+
+        {
+          project.dataQuality && (
+            <section id="data-quality" class="mt-16" data-section>
+              <p class="eyebrow">Data quality</p>
+              <ul class="mt-6 space-y-3">
+                {project.dataQuality.map((q) => (
+                  <li class="card flex gap-3 p-4 text-[0.9375rem] leading-relaxed text-muted">
+                    <Icon name="check" size={16} class="mt-1 shrink-0 text-accent" />
+                    {q}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+
+        <section id="results" class="mt-16" data-section>
+          <p class="eyebrow">Results</p>
+          <ul class="mt-6 divide-y divide-line border-y border-line">
+            {project.results.map((r) => <li class="py-4 text-lg leading-relaxed text-ink">{r}</li>)}
+          </ul>
+          <div class="mt-6 flex flex-wrap gap-2">
+            {project.skills.map((s) => <span class="chip">{s}</span>)}
+          </div>
+        </section>
+
+        <section id="gallery" class="mt-16" data-section>
+          <p class="eyebrow">Gallery</p>
+          <div class="mt-6">
+            <Gallery project={project} />
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Next project -->
+    <a href={`/work/${next.slug}`} class="group block border-t border-line">
+      <div class="container-page flex items-center justify-between gap-6 py-14 md:py-20">
+        <div class="min-w-0">
+          <p class="label">Next project · {next.number}</p>
+          <p class="mt-3 font-serif text-4xl leading-tight text-ink transition-colors group-hover:text-accent md:text-6xl">{next.title}</p>
+        </div>
+        <span class="grid size-14 shrink-0 place-items-center rounded-full border border-line text-ink transition-all group-hover:border-accent group-hover:bg-accent group-hover:text-on-accent">
+          <Icon name="arrow-right" size={20} />
+        </span>
+      </div>
+    </a>
+  </article>
+</Base>
+
+<style>
+  .toc-link.is-active {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+</style>
+
+<script>
+  // Highlight the table-of-contents entry for the section in view.
+  const links = new Map(
+    [...document.querySelectorAll<HTMLAnchorElement>('[data-toc]')].map((a) => [a.dataset.toc!, a]),
+  );
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        links.forEach((a) => a.classList.remove('is-active'));
+        links.get(e.target.id)?.classList.add('is-active');
+      }
+    },
+    { rootMargin: '-20% 0px -70% 0px' },
+  );
+  document.querySelectorAll('[data-section]').forEach((s) => io.observe(s));
+</script>
