@@ -1,0 +1,141 @@
+{
+ "scoring": "In the Power BI model, DAX calculated columns on dim_customer score recency, frequency, and monetary value from 1 to 4; the R-F-M code (for example 444) links to the segment table.",
+ "segments": [
+  {
+   "segment": "VIP",
+   "segmentVi": "VIP",
+   "description": "Bought recently and often, and spends a lot.",
+   "action": "Retain: VIP perks, loyalty appreciation programs, or special experiences.",
+   "codes": [
+    "444",
+    "443",
+    "434",
+    "433"
+   ]
+  },
+  {
+   "segment": "Loyal",
+   "segmentVi": "Khách hàng trung thành",
+   "description": "Buys recently and often.",
+   "action": "Encourage repeat purchases with reminder emails, exclusive promotions, or a loyalty program.",
+   "codes": [
+    "442",
+    "441",
+    "432",
+    "431",
+    "344",
+    "343",
+    "342",
+    "341"
+   ]
+  },
+  {
+   "segment": "Potential",
+   "segmentVi": "Khách hàng tiềm năng",
+   "description": "Bought recently and spends a lot, but not often.",
+   "action": "Raise purchase frequency with next-purchase discounts or reward points.",
+   "codes": [
+    "424",
+    "423",
+    "414",
+    "413",
+    "334",
+    "324",
+    "314"
+   ]
+  },
+  {
+   "segment": "Steady",
+   "segmentVi": "Khách hàng ổn định",
+   "description": "Bought recently, with average frequency and spend.",
+   "action": "Grow basket size with related-product suggestions or bundle deals.",
+   "codes": [
+    "333",
+    "332",
+    "331",
+    "323",
+    "322",
+    "321"
+   ]
+  },
+  {
+   "segment": "High value",
+   "segmentVi": "Khách hàng có giá trị",
+   "description": "Not very recent, but high value.",
+   "action": "Maintain the relationship: personalized gifts and special offers on occasions like birthdays.",
+   "codes": [
+    "244",
+    "234",
+    "224",
+    "214"
+   ]
+  },
+  {
+   "segment": "Regular",
+   "segmentVi": "Khách hàng thông thường",
+   "description": "Recent but low frequency and spend, or frequent and high value but not recent.",
+   "action": "Stay in touch: periodic emails with small offers to keep interest.",
+   "codes": [
+    "422",
+    "421",
+    "412",
+    "411",
+    "313",
+    "312",
+    "311",
+    "243",
+    "242",
+    "241",
+    "233",
+    "232",
+    "231"
+   ]
+  },
+  {
+   "segment": "Hibernating",
+   "segmentVi": "Khách hàng ngủ đông",
+   "description": "Hasn't bought in a while; average spend.",
+   "action": "Reactivate with a big offer or reminders about products they bought before.",
+   "codes": [
+    "223",
+    "222",
+    "221",
+    "213",
+    "212",
+    "211",
+    "143",
+    "142",
+    "141"
+   ]
+  },
+  {
+   "segment": "Lapsed high value",
+   "segmentVi": "Khách hàng cũ có giá trị cao",
+   "description": "Used to be high value but hasn't bought recently.",
+   "action": "Run appreciation campaigns and send reminders with special offers to win them back.",
+   "codes": [
+    "144",
+    "134",
+    "124"
+   ]
+  },
+  {
+   "segment": "Inactive",
+   "segmentVi": "Khách hàng không hoạt động",
+   "description": "Hasn't bought in a very long time.",
+   "action": "Find out why they left: customer surveys and special offers to bring them back.",
+   "codes": [
+    "133",
+    "132",
+    "131",
+    "123",
+    "122",
+    "121",
+    "114",
+    "113",
+    "112",
+    "111"
+   ]
+  }
+ ]
+}

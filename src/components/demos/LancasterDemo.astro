@@ -1,0 +1,92 @@
+---
+// Interactive version of the Lancaster labor-market and wage pages.
+---
+
+<div class="demo" data-lancaster-demo>
+  <div role="group" aria-label="Geography" class="flex flex-wrap gap-2">
+    <button type="button" class="demo-chip" aria-pressed="false" data-geo="lancaster">Lancaster</button>
+    <button type="button" class="demo-chip" aria-pressed="false" data-geo="pennsylvania">Pennsylvania</button>
+    <button type="button" class="demo-chip" aria-pressed="true" data-geo="both">Both</button>
+  </div>
+
+  <div class="mt-6 grid gap-6 lg:grid-cols-2">
+    <figure class="demo-chart-card">
+      <figcaption class="demo-chart-title">Annual unemployment rate, 2015–2025</figcaption>
+      <div class="demo-chart"><canvas data-unemployment role="img" aria-label="Line chart of annual unemployment rate for Lancaster and Pennsylvania"></canvas></div>
+      <p class="demo-takeaway" data-unemp-takeaway></p>
+    </figure>
+    <figure class="demo-chart-card">
+      <figcaption class="demo-chart-title">Lancaster average annual private-sector pay, 2014–2024</figcaption>
+      <div class="demo-chart"><canvas data-wages role="img" aria-label="Bar chart of Lancaster average annual pay by year"></canvas></div>
+      <p class="demo-takeaway" data-wage-takeaway></p>
+    </figure>
+  </div>
+  <p class="mt-4 text-xs text-muted" data-notes></p>
+</div>
+
+<script>
+  import econ from '../../data/demos/lancaster-economy.json';
+  import { Chart, palette, axisTitle } from '../../lib/charts';
+
+  const root = document.querySelector<HTMLElement>('[data-lancaster-demo]');
+  if (root) {
+    const u = econ.unemploymentRate;
+    const w = econ.wages;
+    root.querySelector('[data-notes]')!.textContent = econ.notes;
+
+    const years = u.map((r) => r.year);
+    const ds = {
+      lancaster: { label: 'Lancaster', data: u.map((r) => r.lancaster), borderColor: palette.teal, backgroundColor: palette.teal, tension: 0.3, pointRadius: 3 },
+      pennsylvania: { label: 'Pennsylvania', data: u.map((r) => r.pennsylvania), borderColor: palette.navy, backgroundColor: palette.navy, tension: 0.3, pointRadius: 3 },
+    };
+
+    const chart = new Chart(root.querySelector<HTMLCanvasElement>('[data-unemployment]')!, {
+      type: 'line',
+      data: { labels: years, datasets: [ds.lancaster, ds.pennsylvania] },
+      options: {
+        interaction: { mode: 'index', intersect: false },
+        scales: {
+          x: { title: axisTitle('Year (2025 = months available)') },
+          y: { title: axisTitle('Unemployment rate'), ticks: { callback: (v) => `${v}%` } },
+        },
+        plugins: { tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${Number(c.parsed.y).toFixed(2)}%` } } },
+      },
+    });
+
+    const below = u.filter((r) => r.lancaster < r.pennsylvania).length;
+    root.querySelector('[data-unemp-takeaway]')!.textContent =
+      `Lancaster's rate was below Pennsylvania's in ${below} of ${u.length} years, including the 2020 spike.`;
+
+    root.querySelectorAll<HTMLButtonElement>('[data-geo]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const g = btn.dataset.geo as 'lancaster' | 'pennsylvania' | 'both';
+        root.querySelectorAll('[data-geo]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+        chart.data.datasets = g === 'both' ? [ds.lancaster, ds.pennsylvania] : [ds[g]];
+        chart.update();
+      }),
+    );
+
+    new Chart(root.querySelector<HTMLCanvasElement>('[data-wages]')!, {
+      type: 'bar',
+      data: {
+        labels: w.map((r) => r.year),
+        datasets: [{ label: 'Average annual pay', data: w.map((r) => r.avgAnnualPay), backgroundColor: w.map((_, i) => (i === w.length - 1 ? palette.teal : palette.navy)), borderRadius: 4 }],
+      },
+      options: {
+        scales: {
+          x: { title: axisTitle('Year') },
+          y: { title: axisTitle('Average annual pay (USD)'), ticks: { callback: (v) => `$${Math.round(Number(v) / 1000)}K` } },
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: (c) => `$${Number(c.parsed.y).toLocaleString('en-US')}` } },
+        },
+      },
+    });
+    const first = w[0];
+    const last = w[w.length - 1];
+    const growth = ((last.avgAnnualPay / first.avgAnnualPay - 1) * 100).toFixed(0);
+    root.querySelector('[data-wage-takeaway]')!.textContent =
+      `Pay rose from $${first.avgAnnualPay.toLocaleString('en-US')} in ${first.year} to $${last.avgAnnualPay.toLocaleString('en-US')} in ${last.year}, up ${growth}%.`;
+  }
+</script>

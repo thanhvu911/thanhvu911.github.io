@@ -1,0 +1,758 @@
+[
+ {
+  "county": "Lancaster",
+  "state": "PA",
+  "year": 2010,
+  "census": 0.045,
+  "uspsNarrow": 0.0077,
+  "uspsBroad": 0.0781,
+  "directionMatch": null
+ },
+ {
+  "county": "Lancaster",
+  "state": "PA",
+  "year": 2011,
+  "census": 0.0562,
+  "uspsNarrow": 0.0081,
+  "uspsBroad": 0.0765,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Lancaster",
+  "state": "PA",
+  "year": 2012,
+  "census": 0.0516,
+  "uspsNarrow": 0.0084,
+  "uspsBroad": 0.0982,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Lancaster",
+  "state": "PA",
+  "year": 2013,
+  "census": 0.0513,
+  "uspsNarrow": 0.0089,
+  "uspsBroad": 0.0984,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Lancaster",
+  "state": "PA",
+  "year": 2014,
+  "census": 0.0565,
+  "uspsNarrow": 0.008,
+  "uspsBroad": 0.1022,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Lancaster",
+  "state": "PA",
+  "year": 2015,
+  "census": 0.0455,
+  "uspsNarrow": 0.007,
+  "uspsBroad": 0.1008,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Lancaster",
+  "state": "PA",
+  "year": 2016,
+  "census": 0.0529,
+  "uspsNarrow": 0.0059,
+  "uspsBroad": 0.0981,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Lancaster",
+  "state": "PA",
+  "year": 2017,
+  "census": 0.0462,
+  "uspsNarrow": 0.0057,
+  "uspsBroad": 0.0983,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Lancaster",
+  "state": "PA",
+  "year": 2018,
+  "census": 0.046,
+  "uspsNarrow": 0.0054,
+  "uspsBroad": 0.0974,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Lancaster",
+  "state": "PA",
+  "year": 2019,
+  "census": 0.0403,
+  "uspsNarrow": 0.0058,
+  "uspsBroad": 0.0989,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Lancaster",
+  "state": "PA",
+  "year": 2021,
+  "census": 0.0366,
+  "uspsNarrow": 0.0062,
+  "uspsBroad": 0.0983,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Lancaster",
+  "state": "PA",
+  "year": 2022,
+  "census": 0.0318,
+  "uspsNarrow": 0.0061,
+  "uspsBroad": 0.097,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Lancaster",
+  "state": "PA",
+  "year": 2023,
+  "census": 0.0392,
+  "uspsNarrow": 0.0068,
+  "uspsBroad": 0.1039,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Lancaster",
+  "state": "PA",
+  "year": 2024,
+  "census": 0.019,
+  "uspsNarrow": 0.0073,
+  "uspsBroad": 0.1091,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Montgomery",
+  "state": "OH",
+  "year": 2010,
+  "census": 0.1237,
+  "uspsNarrow": 0.0782,
+  "uspsBroad": 0.0972,
+  "directionMatch": null
+ },
+ {
+  "county": "Montgomery",
+  "state": "OH",
+  "year": 2011,
+  "census": 0.1211,
+  "uspsNarrow": 0.0769,
+  "uspsBroad": 0.0997,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Montgomery",
+  "state": "OH",
+  "year": 2012,
+  "census": 0.1298,
+  "uspsNarrow": 0.0753,
+  "uspsBroad": 0.1359,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Montgomery",
+  "state": "OH",
+  "year": 2013,
+  "census": 0.1307,
+  "uspsNarrow": 0.0769,
+  "uspsBroad": 0.1381,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Montgomery",
+  "state": "OH",
+  "year": 2014,
+  "census": 0.1284,
+  "uspsNarrow": 0.0726,
+  "uspsBroad": 0.1332,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Montgomery",
+  "state": "OH",
+  "year": 2015,
+  "census": 0.1212,
+  "uspsNarrow": 0.0648,
+  "uspsBroad": 0.1247,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Montgomery",
+  "state": "OH",
+  "year": 2016,
+  "census": 0.1224,
+  "uspsNarrow": 0.0604,
+  "uspsBroad": 0.1192,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Montgomery",
+  "state": "OH",
+  "year": 2017,
+  "census": 0.1166,
+  "uspsNarrow": 0.0619,
+  "uspsBroad": 0.1216,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Montgomery",
+  "state": "OH",
+  "year": 2018,
+  "census": 0.1201,
+  "uspsNarrow": 0.0627,
+  "uspsBroad": 0.123,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Montgomery",
+  "state": "OH",
+  "year": 2019,
+  "census": 0.1186,
+  "uspsNarrow": 0.0618,
+  "uspsBroad": 0.1226,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Montgomery",
+  "state": "OH",
+  "year": 2021,
+  "census": 0.1004,
+  "uspsNarrow": 0.061,
+  "uspsBroad": 0.1238,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Montgomery",
+  "state": "OH",
+  "year": 2022,
+  "census": 0.0682,
+  "uspsNarrow": 0.0583,
+  "uspsBroad": 0.1187,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Montgomery",
+  "state": "OH",
+  "year": 2023,
+  "census": 0.0709,
+  "uspsNarrow": 0.0561,
+  "uspsBroad": 0.1177,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Montgomery",
+  "state": "OH",
+  "year": 2024,
+  "census": 0.0867,
+  "uspsNarrow": 0.0549,
+  "uspsBroad": 0.1161,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Champaign",
+  "state": "IL",
+  "year": 2010,
+  "census": 0.1043,
+  "uspsNarrow": 0.0336,
+  "uspsBroad": 0.1182,
+  "directionMatch": null
+ },
+ {
+  "county": "Champaign",
+  "state": "IL",
+  "year": 2011,
+  "census": 0.1037,
+  "uspsNarrow": 0.0349,
+  "uspsBroad": 0.1246,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Champaign",
+  "state": "IL",
+  "year": 2012,
+  "census": 0.0928,
+  "uspsNarrow": 0.036,
+  "uspsBroad": 0.1662,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Champaign",
+  "state": "IL",
+  "year": 2013,
+  "census": 0.1132,
+  "uspsNarrow": 0.0364,
+  "uspsBroad": 0.1675,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Champaign",
+  "state": "IL",
+  "year": 2014,
+  "census": 0.0881,
+  "uspsNarrow": 0.0308,
+  "uspsBroad": 0.1613,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Champaign",
+  "state": "IL",
+  "year": 2015,
+  "census": 0.1195,
+  "uspsNarrow": 0.028,
+  "uspsBroad": 0.1552,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Champaign",
+  "state": "IL",
+  "year": 2016,
+  "census": 0.1058,
+  "uspsNarrow": 0.026,
+  "uspsBroad": 0.1524,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Champaign",
+  "state": "IL",
+  "year": 2017,
+  "census": 0.1041,
+  "uspsNarrow": 0.0268,
+  "uspsBroad": 0.1493,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Champaign",
+  "state": "IL",
+  "year": 2018,
+  "census": 0.0976,
+  "uspsNarrow": 0.0291,
+  "uspsBroad": 0.1498,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Champaign",
+  "state": "IL",
+  "year": 2019,
+  "census": 0.1366,
+  "uspsNarrow": 0.0302,
+  "uspsBroad": 0.1494,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Champaign",
+  "state": "IL",
+  "year": 2021,
+  "census": 0.1107,
+  "uspsNarrow": 0.0274,
+  "uspsBroad": 0.1468,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Champaign",
+  "state": "IL",
+  "year": 2022,
+  "census": 0.1105,
+  "uspsNarrow": 0.0264,
+  "uspsBroad": 0.1448,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Champaign",
+  "state": "IL",
+  "year": 2023,
+  "census": 0.0714,
+  "uspsNarrow": 0.0271,
+  "uspsBroad": 0.1533,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Champaign",
+  "state": "IL",
+  "year": 2024,
+  "census": 0.0711,
+  "uspsNarrow": 0.0305,
+  "uspsBroad": 0.1634,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "King",
+  "state": "WA",
+  "year": 2010,
+  "census": 0.075,
+  "uspsNarrow": 0.0253,
+  "uspsBroad": 0.059,
+  "directionMatch": null
+ },
+ {
+  "county": "King",
+  "state": "WA",
+  "year": 2011,
+  "census": 0.0667,
+  "uspsNarrow": 0.0248,
+  "uspsBroad": 0.0574,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "King",
+  "state": "WA",
+  "year": 2012,
+  "census": 0.0648,
+  "uspsNarrow": 0.0212,
+  "uspsBroad": 0.0975,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "King",
+  "state": "WA",
+  "year": 2013,
+  "census": 0.0564,
+  "uspsNarrow": 0.0203,
+  "uspsBroad": 0.0971,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "King",
+  "state": "WA",
+  "year": 2014,
+  "census": 0.0628,
+  "uspsNarrow": 0.0182,
+  "uspsBroad": 0.0959,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "King",
+  "state": "WA",
+  "year": 2015,
+  "census": 0.0528,
+  "uspsNarrow": 0.0141,
+  "uspsBroad": 0.0961,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "King",
+  "state": "WA",
+  "year": 2016,
+  "census": 0.0538,
+  "uspsNarrow": 0.0126,
+  "uspsBroad": 0.0934,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "King",
+  "state": "WA",
+  "year": 2017,
+  "census": 0.062,
+  "uspsNarrow": 0.0132,
+  "uspsBroad": 0.0945,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "King",
+  "state": "WA",
+  "year": 2018,
+  "census": 0.0579,
+  "uspsNarrow": 0.0137,
+  "uspsBroad": 0.097,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "King",
+  "state": "WA",
+  "year": 2019,
+  "census": 0.0645,
+  "uspsNarrow": 0.0138,
+  "uspsBroad": 0.0984,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "King",
+  "state": "WA",
+  "year": 2021,
+  "census": 0.0615,
+  "uspsNarrow": 0.0136,
+  "uspsBroad": 0.0989,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "King",
+  "state": "WA",
+  "year": 2022,
+  "census": 0.0594,
+  "uspsNarrow": 0.014,
+  "uspsBroad": 0.0987,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "King",
+  "state": "WA",
+  "year": 2023,
+  "census": 0.0704,
+  "uspsNarrow": 0.0133,
+  "uspsBroad": 0.105,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "King",
+  "state": "WA",
+  "year": 2024,
+  "census": 0.0613,
+  "uspsNarrow": 0.013,
+  "uspsBroad": 0.1069,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Cook",
+  "state": "IL",
+  "year": 2010,
+  "census": 0.1182,
+  "uspsNarrow": 0.0505,
+  "uspsBroad": 0.0776,
+  "directionMatch": null
+ },
+ {
+  "county": "Cook",
+  "state": "IL",
+  "year": 2011,
+  "census": 0.1191,
+  "uspsNarrow": 0.0494,
+  "uspsBroad": 0.0761,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Cook",
+  "state": "IL",
+  "year": 2012,
+  "census": 0.1096,
+  "uspsNarrow": 0.0458,
+  "uspsBroad": 0.1125,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Cook",
+  "state": "IL",
+  "year": 2013,
+  "census": 0.1062,
+  "uspsNarrow": 0.0444,
+  "uspsBroad": 0.1145,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Cook",
+  "state": "IL",
+  "year": 2014,
+  "census": 0.109,
+  "uspsNarrow": 0.0417,
+  "uspsBroad": 0.1136,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Cook",
+  "state": "IL",
+  "year": 2015,
+  "census": 0.1027,
+  "uspsNarrow": 0.0349,
+  "uspsBroad": 0.1072,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Cook",
+  "state": "IL",
+  "year": 2016,
+  "census": 0.0998,
+  "uspsNarrow": 0.0314,
+  "uspsBroad": 0.1033,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Cook",
+  "state": "IL",
+  "year": 2017,
+  "census": 0.1116,
+  "uspsNarrow": 0.0328,
+  "uspsBroad": 0.1042,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Cook",
+  "state": "IL",
+  "year": 2018,
+  "census": 0.0993,
+  "uspsNarrow": 0.0331,
+  "uspsBroad": 0.1041,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Cook",
+  "state": "IL",
+  "year": 2019,
+  "census": 0.0991,
+  "uspsNarrow": 0.0335,
+  "uspsBroad": 0.1056,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Cook",
+  "state": "IL",
+  "year": 2021,
+  "census": 0.0863,
+  "uspsNarrow": 0.0329,
+  "uspsBroad": 0.104,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Cook",
+  "state": "IL",
+  "year": 2022,
+  "census": 0.0707,
+  "uspsNarrow": 0.0321,
+  "uspsBroad": 0.1042,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Cook",
+  "state": "IL",
+  "year": 2023,
+  "census": 0.0718,
+  "uspsNarrow": 0.0327,
+  "uspsBroad": 0.1042,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Cook",
+  "state": "IL",
+  "year": 2024,
+  "census": 0.0702,
+  "uspsNarrow": 0.0323,
+  "uspsBroad": 0.1034,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Onondaga",
+  "state": "NY",
+  "year": 2010,
+  "census": 0.0881,
+  "uspsNarrow": 0.029,
+  "uspsBroad": 0.0619,
+  "directionMatch": null
+ },
+ {
+  "county": "Onondaga",
+  "state": "NY",
+  "year": 2011,
+  "census": 0.1058,
+  "uspsNarrow": 0.0293,
+  "uspsBroad": 0.0622,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Onondaga",
+  "state": "NY",
+  "year": 2012,
+  "census": 0.0846,
+  "uspsNarrow": 0.0301,
+  "uspsBroad": 0.1113,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Onondaga",
+  "state": "NY",
+  "year": 2013,
+  "census": 0.0951,
+  "uspsNarrow": 0.0321,
+  "uspsBroad": 0.1164,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Onondaga",
+  "state": "NY",
+  "year": 2014,
+  "census": 0.0929,
+  "uspsNarrow": 0.0326,
+  "uspsBroad": 0.1135,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Onondaga",
+  "state": "NY",
+  "year": 2015,
+  "census": 0.1094,
+  "uspsNarrow": 0.0291,
+  "uspsBroad": 0.1098,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Onondaga",
+  "state": "NY",
+  "year": 2016,
+  "census": 0.1095,
+  "uspsNarrow": 0.0309,
+  "uspsBroad": 0.112,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Onondaga",
+  "state": "NY",
+  "year": 2017,
+  "census": 0.1094,
+  "uspsNarrow": 0.0332,
+  "uspsBroad": 0.116,
+  "directionMatch": "No Match"
+ },
+ {
+  "county": "Onondaga",
+  "state": "NY",
+  "year": 2018,
+  "census": 0.1161,
+  "uspsNarrow": 0.0341,
+  "uspsBroad": 0.1184,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Onondaga",
+  "state": "NY",
+  "year": 2019,
+  "census": 0.1265,
+  "uspsNarrow": 0.0349,
+  "uspsBroad": 0.1193,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Onondaga",
+  "state": "NY",
+  "year": 2021,
+  "census": 0.064,
+  "uspsNarrow": 0.0309,
+  "uspsBroad": 0.1173,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Onondaga",
+  "state": "NY",
+  "year": 2022,
+  "census": 0.0553,
+  "uspsNarrow": 0.0303,
+  "uspsBroad": 0.1178,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Onondaga",
+  "state": "NY",
+  "year": 2023,
+  "census": 0.0641,
+  "uspsNarrow": 0.0319,
+  "uspsBroad": 0.1233,
+  "directionMatch": "Match"
+ },
+ {
+  "county": "Onondaga",
+  "state": "NY",
+  "year": 2024,
+  "census": 0.0587,
+  "uspsNarrow": 0.0331,
+  "uspsBroad": 0.1275,
+  "directionMatch": "No Match"
+ }
+]

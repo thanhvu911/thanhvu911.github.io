@@ -1,0 +1,106 @@
+{
+ "unemploymentRate": [
+  {
+   "year": 2015,
+   "lancaster": 4.22,
+   "pennsylvania": 5.42
+  },
+  {
+   "year": 2016,
+   "lancaster": 4.11,
+   "pennsylvania": 5.32
+  },
+  {
+   "year": 2017,
+   "lancaster": 3.9,
+   "pennsylvania": 4.97
+  },
+  {
+   "year": 2018,
+   "lancaster": 3.46,
+   "pennsylvania": 4.41
+  },
+  {
+   "year": 2019,
+   "lancaster": 3.38,
+   "pennsylvania": 4.29
+  },
+  {
+   "year": 2020,
+   "lancaster": 7.31,
+   "pennsylvania": 8.85
+  },
+  {
+   "year": 2021,
+   "lancaster": 4.59,
+   "pennsylvania": 5.86
+  },
+  {
+   "year": 2022,
+   "lancaster": 3.36,
+   "pennsylvania": 4.14
+  },
+  {
+   "year": 2023,
+   "lancaster": 2.9,
+   "pennsylvania": 3.66
+  },
+  {
+   "year": 2024,
+   "lancaster": 2.88,
+   "pennsylvania": 3.64
+  },
+  {
+   "year": 2025,
+   "lancaster": 3.27,
+   "pennsylvania": 4.09
+  }
+ ],
+ "wages": [
+  {
+   "year": 2014,
+   "avgAnnualPay": 41348
+  },
+  {
+   "year": 2015,
+   "avgAnnualPay": 42843
+  },
+  {
+   "year": 2016,
+   "avgAnnualPay": 43472
+  },
+  {
+   "year": 2017,
+   "avgAnnualPay": 44729
+  },
+  {
+   "year": 2018,
+   "avgAnnualPay": 45829
+  },
+  {
+   "year": 2019,
+   "avgAnnualPay": 47283
+  },
+  {
+   "year": 2020,
+   "avgAnnualPay": 51583
+  },
+  {
+   "year": 2021,
+   "avgAnnualPay": 53803
+  },
+  {
+   "year": 2022,
+   "avgAnnualPay": 56008
+  },
+  {
+   "year": 2023,
+   "avgAnnualPay": 57513
+  },
+  {
+   "year": 2024,
+   "avgAnnualPay": 59515
+  }
+ ],
+ "notes": "Annual averages of monthly LAUS unemployment rates (not seasonally adjusted). Lancaster = Lancaster, PA MSA; Pennsylvania rate computed as unemployment / labor force. 2025 averages the months available. Wages: QCEW average annual private-sector pay, Lancaster County."
+}

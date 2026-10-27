@@ -1,0 +1,163 @@
+---
+// Interactive version of the KPIM Mart actual-vs-plan pages.
+---
+
+<div class="demo" data-sales-demo>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <label class="block">
+      <span class="demo-label">District</span>
+      <select class="field mt-2" data-district></select>
+    </label>
+    <div>
+      <span class="demo-label" id="sales-year-label">Year</span>
+      <div class="mt-2 flex flex-wrap gap-2" role="group" aria-labelledby="sales-year-label" data-years></div>
+    </div>
+  </div>
+
+  <div class="mt-6 grid gap-3 sm:grid-cols-3" aria-live="polite">
+    <div class="demo-kpi">
+      <p class="demo-kpi-value" data-kpi-actual>–</p>
+      <p class="demo-kpi-label">Actual revenue</p>
+    </div>
+    <div class="demo-kpi">
+      <p class="demo-kpi-value" data-kpi-plan>–</p>
+      <p class="demo-kpi-label">Plan</p>
+    </div>
+    <div class="demo-kpi">
+      <p class="demo-kpi-value" data-kpi-completion>–</p>
+      <p class="demo-kpi-label">Plan completion (actual ÷ plan)</p>
+    </div>
+  </div>
+  <p class="demo-takeaway" data-takeaway></p>
+
+  <div class="mt-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+    <figure class="demo-chart-card">
+      <figcaption class="demo-chart-title">Monthly actual revenue vs. plan</figcaption>
+      <div class="demo-chart"><canvas data-monthly role="img" aria-label="Bar chart of monthly actual revenue with a plan line"></canvas></div>
+    </figure>
+    <figure class="demo-chart-card">
+      <figcaption class="demo-chart-title">Plan completion by district</figcaption>
+      <div class="demo-chart demo-chart-tall"><canvas data-districts role="img" aria-label="Horizontal bar chart of plan completion by district"></canvas></div>
+    </figure>
+  </div>
+  <p class="mt-4 text-xs text-muted" data-notes></p>
+</div>
+
+<script>
+  import sales from '../../data/demos/sales-plan-vs-actual.json';
+  import { Chart, palette, axisTitle } from '../../lib/charts';
+
+  type Row = { district: string; month: string; actual: number; plan: number };
+  const rows = sales.rows as Row[];
+  const root = document.querySelector<HTMLElement>('[data-sales-demo]');
+
+  // Compact VND, e.g. "37.0M ₫" or "1.2B ₫".
+  const vnd = (v: number) =>
+    v >= 1e9 ? `${(v / 1e9).toFixed(2)}B ₫` : v >= 1e6 ? `${(v / 1e6).toFixed(1)}M ₫` : `${Math.round(v / 1e3)}K ₫`;
+
+  if (root) {
+    root.querySelector('[data-notes]')!.textContent = `${sales.notes} Based on ${sales.transactions.toLocaleString('en-US')} transactions.`;
+    const districts = [...new Set(rows.map((r) => r.district))].sort((a, b) => a.localeCompare(b, 'vi'));
+    const years = [...new Set(rows.map((r) => r.month.slice(0, 4)))].sort();
+    const selectedYears = new Set(years);
+    let district = 'all';
+
+    const select = root.querySelector<HTMLSelectElement>('[data-district]')!;
+    select.innerHTML = `<option value="all">All districts</option>` + districts.map((d) => `<option value="${d}">${d}</option>`).join('');
+    select.addEventListener('change', () => {
+      district = select.value;
+      update();
+    });
+
+    const yearBox = root.querySelector<HTMLElement>('[data-years]')!;
+    years.forEach((y) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'demo-chip';
+      b.textContent = y;
+      b.setAttribute('aria-pressed', 'true');
+      b.addEventListener('click', () => {
+        if (selectedYears.has(y) && selectedYears.size === 1) return;
+        selectedYears.has(y) ? selectedYears.delete(y) : selectedYears.add(y);
+        b.setAttribute('aria-pressed', String(selectedYears.has(y)));
+        update();
+      });
+      yearBox.appendChild(b);
+    });
+
+    const monthly = new Chart(root.querySelector<HTMLCanvasElement>('[data-monthly]')!, {
+      type: 'bar',
+      data: { labels: [], datasets: [] },
+      options: {
+        interaction: { mode: 'index', intersect: false },
+        scales: {
+          x: { title: axisTitle('Month'), ticks: { maxRotation: 0, autoSkipPadding: 12 } },
+          y: { title: axisTitle('Revenue (VND)'), ticks: { callback: (v) => vnd(Number(v)) } },
+        },
+        plugins: { tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${vnd(Number(c.parsed.y))}` } } },
+      },
+    });
+
+    const byDistrict = new Chart(root.querySelector<HTMLCanvasElement>('[data-districts]')!, {
+      type: 'bar',
+      data: { labels: [], datasets: [] },
+      options: {
+        indexAxis: 'y',
+        scales: {
+          x: { title: axisTitle('Plan completion'), min: 80, max: 105, ticks: { callback: (v) => `${v}%` } },
+        },
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => `${Number(c.parsed.x).toFixed(1)}% of plan` } } },
+      },
+    });
+
+    function update() {
+      const inYears = rows.filter((r) => selectedYears.has(r.month.slice(0, 4)));
+      const subset = district === 'all' ? inYears : inYears.filter((r) => r.district === district);
+      const actual = subset.reduce((s, r) => s + r.actual, 0);
+      const plan = subset.reduce((s, r) => s + r.plan, 0);
+      const completion = plan ? (actual / plan) * 100 : NaN;
+      root!.querySelector('[data-kpi-actual]')!.textContent = vnd(actual);
+      root!.querySelector('[data-kpi-plan]')!.textContent = vnd(plan);
+      root!.querySelector('[data-kpi-completion]')!.textContent = `${completion.toFixed(1)}%`;
+
+      // Monthly series (summed across districts when "All").
+      const months = [...new Set(subset.map((r) => r.month))].sort();
+      const sum = (m: string, k: 'actual' | 'plan') => subset.filter((r) => r.month === m).reduce((s, r) => s + r[k], 0);
+      monthly.data.labels = months;
+      monthly.data.datasets = [
+        { label: 'Actual', data: months.map((m) => sum(m, 'actual')), backgroundColor: palette.navy, borderRadius: 3, order: 2 },
+        { label: 'Plan', type: 'line' as const, data: months.map((m) => sum(m, 'plan')), borderColor: palette.teal, backgroundColor: palette.teal, pointRadius: 0, borderWidth: 2, order: 1 },
+      ];
+      monthly.update();
+
+      // District ranking for the selected years.
+      const ranking = districts
+        .map((d) => {
+          const r = inYears.filter((x) => x.district === d);
+          const a = r.reduce((s, x) => s + x.actual, 0);
+          const p = r.reduce((s, x) => s + x.plan, 0);
+          return { d, pct: p ? (a / p) * 100 : 0 };
+        })
+        .sort((a, b) => b.pct - a.pct);
+      byDistrict.data.labels = ranking.map((r) => r.d);
+      byDistrict.data.datasets = [
+        {
+          label: 'Plan completion',
+          data: ranking.map((r) => r.pct),
+          backgroundColor: ranking.map((r) => (district === 'all' || r.d === district ? palette.teal : '#cfe9ea')),
+          borderRadius: 3,
+        },
+      ];
+      byDistrict.update();
+
+      const best = ranking[0];
+      const worst = ranking[ranking.length - 1];
+      root!.querySelector('[data-takeaway]')!.textContent =
+        `${district === 'all' ? 'The chain' : district} reached ${completion.toFixed(1)}% of plan. Across districts, completion ranges from ${worst.pct.toFixed(1)}% (${worst.d}) to ${best.pct.toFixed(1)}% (${best.d}): no district fully hit its target.`;
+      if (best.pct >= 100) {
+        root!.querySelector('[data-takeaway]')!.textContent = `${district === 'all' ? 'The chain' : district} reached ${completion.toFixed(1)}% of plan. Districts range from ${worst.pct.toFixed(1)}% (${worst.d}) to ${best.pct.toFixed(1)}% (${best.d}).`;
+      }
+    }
+    update();
+  }
+</script>

@@ -7,6 +7,18 @@ import ProjectDetails from '../../components/ProjectDetails.astro';
 import { details } from '../../data/details';
 import { projects, type Project } from '../../data/portfolio';
 import { projectImage } from '../../lib/images';
+import VacancyDemo from '../../components/demos/VacancyDemo.astro';
+import LancasterDemo from '../../components/demos/LancasterDemo.astro';
+import SalesDemo from '../../components/demos/SalesDemo.astro';
+import RfmDemo from '../../components/demos/RfmDemo.astro';
+
+// Client-side dashboards rebuilt from each project's data.
+const demos: Record<string, typeof VacancyDemo> = {
+  'can-mail-data-predict-housing-vacancy': VacancyDemo,
+  'lancaster-economic-indicators-dashboard': LancasterDemo,
+  'sales-planning-analysis': SalesDemo,
+  'rfm-customer-segmentation': RfmDemo,
+};
 
 export function getStaticPaths() {
   return projects.map((project, i) => ({
@@ -23,6 +35,14 @@ const { project, next } = Astro.props;
 const highlightIcons = ['trending-up', 'bar-chart', 'layers', 'target'] as const;
 const cover = projectImage(project.slug, project.cover);
 const detail = details[project.slug];
+const Demo = demos[project.slug];
+const hasDashboard = Boolean(Demo || project.powerbiEmbed);
+const tabs = [
+  { id: 'overview', label: 'Overview' },
+  hasDashboard && { id: 'dashboard', label: 'Interactive dashboard' },
+  detail && { id: 'walkthrough', label: 'Walkthrough' },
+  { id: 'gallery', label: 'Gallery' },
+].filter(Boolean) as { id: string; label: string }[];
 ---
 
 <Base title={project.title} description={project.summary}>
@@ -42,7 +62,11 @@ const detail = details[project.slug];
           <Icon name="github" size={16} />
           View Code on GitHub
         </a>
-        <a href="#walkthrough" class="btn btn-glass">See the walkthrough</a>
+        {hasDashboard ? (
+          <a href="#dashboard" class="btn btn-glass" data-tab-link="dashboard">Try the interactive dashboard</a>
+        ) : (
+          <a href="#walkthrough" class="btn btn-glass" data-tab-link="walkthrough">See the walkthrough</a>
+        )}
       </div>
     </div>
   </header>
@@ -70,13 +94,27 @@ const detail = details[project.slug];
         ))
       }
     </ul>
+
+    <div class="tabbar mt-8 hidden" data-tabbar>
+      <div class="flex gap-1 overflow-x-auto rounded-xl border border-line bg-white/90 p-1 shadow-sm backdrop-blur" role="tablist" aria-label="Project sections">
+        {
+          tabs.map((t, i) => (
+            <button type="button" role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} class="tab-btn" data-tab={t.id}>
+              {t.id === 'dashboard' && <span class="size-2 rounded-full bg-teal" aria-hidden="true" />}
+              {t.label}
+            </button>
+          ))
+        }
+      </div>
+    </div>
   </div>
 
-  <div class="container-page grid max-w-6xl gap-10 py-16 lg:grid-cols-[1fr_20rem]">
+  <div class="container-page grid max-w-6xl gap-10 pb-16 pt-8 lg:grid-cols-[1fr_20rem]">
     <div class="min-w-0 space-y-6">
+    <div class="space-y-6" role="tabpanel" id="panel-overview" aria-labelledby="tab-overview" data-panel="overview">
       {project.context && <p class="rounded-xl border border-teal/30 bg-teal-wash px-5 py-4 text-ink" data-reveal>{project.context}</p>}
 
-      {detail && <ProjectDetails slug={project.slug} detail={detail} />}
+      {detail && <ProjectDetails slug={project.slug} detail={detail} part="intro" />}
 
       <section class="card p-6 md:p-8" aria-labelledby="why" data-reveal>
         <h2 id="why" class="text-2xl font-bold text-navy">The business problem</h2>
@@ -142,6 +180,41 @@ const detail = details[project.slug];
         </ul>
       </section>
 
+    </div>
+
+    {
+      hasDashboard && (
+        <div class="space-y-6" role="tabpanel" id="panel-dashboard" aria-labelledby="tab-dashboard" data-panel="dashboard">
+          {project.powerbiEmbed && (
+            <section class="card overflow-hidden" aria-labelledby="pbi-title">
+              <h2 id="pbi-title" class="px-6 pt-6 text-2xl font-bold text-navy md:px-8">Live Power BI report</h2>
+              <div class="mt-4 aspect-[16/10] w-full bg-soft">
+                <iframe title={`${project.title} Power BI report`} src={project.powerbiEmbed} class="size-full" loading="lazy" allowfullscreen />
+              </div>
+            </section>
+          )}
+          {Demo && (
+            <section class="card p-6 md:p-8" aria-labelledby="dash-title">
+              <h2 id="dash-title" class="text-2xl font-bold text-navy">Explore the data</h2>
+              <p class="mt-2 text-sm text-muted">An interactive version of the report, rebuilt from the project's data so it works in any browser without a Power BI login. Use the filters; every number recalculates.</p>
+              <div class="mt-6">
+                <Demo />
+              </div>
+            </section>
+          )}
+        </div>
+      )
+    }
+
+    {
+      detail && (
+        <div class="space-y-6" role="tabpanel" id="panel-walkthrough" aria-labelledby="tab-walkthrough" data-panel="walkthrough">
+          <ProjectDetails slug={project.slug} detail={detail} part="walkthrough" />
+        </div>
+      )
+    }
+
+    <div class="space-y-6" role="tabpanel" id="panel-gallery" aria-labelledby="tab-gallery" data-panel="gallery">
       <section id="gallery" class="card scroll-mt-24 p-6 md:p-8" aria-labelledby="gallery-title" data-reveal>
         <h2 id="gallery-title" class="text-2xl font-bold text-navy">All images</h2>
         <p class="mt-2 text-sm text-muted">Click any image to view it full size.</p>
@@ -149,6 +222,7 @@ const detail = details[project.slug];
           <Gallery project={project} />
         </div>
       </section>
+    </div>
     </div>
 
     <!-- Quick facts for a recruiter skimming the page -->
@@ -198,6 +272,29 @@ const detail = details[project.slug];
 </Base>
 
 <style>
+  .tab-btn {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 1.125rem;
+    border-radius: 0.625rem;
+    color: var(--color-muted);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 150ms, color 150ms;
+  }
+  .tab-btn:hover {
+    color: var(--color-navy);
+    background: var(--color-soft);
+  }
+  .tab-btn[aria-selected='true'] {
+    color: #fff;
+    background: var(--color-navy);
+  }
   .project-hero {
     background: linear-gradient(135deg, #0f2757 0%, #175e82 100%);
   }
@@ -212,3 +309,57 @@ const detail = details[project.slug];
     mask-image: radial-gradient(ellipse at 30% 40%, #000 20%, transparent 75%);
   }
 </style>
+
+<script>
+  // Tabs: one panel at a time, deep-linkable with #overview, #dashboard, #walkthrough, #gallery.
+  // Without JavaScript the tab bar stays hidden and every panel shows in order.
+  const bar = document.querySelector<HTMLElement>('[data-tabbar]');
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+  const panels = [...document.querySelectorAll<HTMLElement>('[data-panel]')];
+  if (bar && tabs.length) {
+    bar.classList.remove('hidden');
+    const ids = tabs.map((t) => t.dataset.tab!);
+
+    const activate = (id: string, focus = false) => {
+      if (!ids.includes(id)) id = ids[0];
+      tabs.forEach((t) => {
+        const on = t.dataset.tab === id;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        if (on && focus) t.focus();
+      });
+      panels.forEach((p) => (p.hidden = p.dataset.panel !== id));
+      // Charts inside a hidden panel need a resize once shown.
+      window.dispatchEvent(new Event('resize'));
+    };
+
+    const fromHash = () => location.hash.replace('#', '');
+    const show = (id: string, scroll: boolean) => {
+      activate(id);
+      history.replaceState(null, '', `#${id}`);
+      if (scroll) bar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => show(t.dataset.tab!, false));
+      t.addEventListener('keydown', (e) => {
+        const dir = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!dir) return;
+        e.preventDefault();
+        const next = tabs[(i + dir + tabs.length) % tabs.length];
+        activate(next.dataset.tab!, true);
+        history.replaceState(null, '', `#${next.dataset.tab}`);
+      });
+    });
+
+    document.querySelectorAll<HTMLAnchorElement>('[data-tab-link]').forEach((a) =>
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        show(a.dataset.tabLink!, true);
+      }),
+    );
+
+    activate(ids.includes(fromHash()) ? fromHash() : ids[0]);
+    if (ids.includes(fromHash()) && fromHash() !== ids[0]) bar.scrollIntoView({ block: 'start' });
+  }
+</script>

@@ -1,0 +1,1741 @@
+{
+ "currency": "VND",
+ "transactions": 58414,
+ "rows": [
+  {
+   "district": "Ba Đình",
+   "month": "2020-01",
+   "actual": 37043500,
+   "plan": 33449700
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2020-02",
+   "actual": 36354500,
+   "plan": 31970600
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2020-03",
+   "actual": 36452500,
+   "plan": 36356600
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2020-04",
+   "actual": 40234000,
+   "plan": 46918900
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2020-05",
+   "actual": 63434000,
+   "plan": 63618300
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2020-06",
+   "actual": 89938000,
+   "plan": 99820300
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2020-07",
+   "actual": 76851000,
+   "plan": 63531800
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2020-08",
+   "actual": 40738000,
+   "plan": 39586000
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2020-09",
+   "actual": 48890000,
+   "plan": 62666300
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2020-10",
+   "actual": 64706500,
+   "plan": 52804400
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2020-11",
+   "actual": 64719000,
+   "plan": 71646200
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2020-12",
+   "actual": 92696100,
+   "plan": 114011400
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2021-01",
+   "actual": 73514300,
+   "plan": 78127300
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2021-02",
+   "actual": 48301200,
+   "plan": 48319100
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2021-03",
+   "actual": 20248800,
+   "plan": 19634000
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2021-04",
+   "actual": 60833200,
+   "plan": 57968100
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2021-05",
+   "actual": 68580200,
+   "plan": 97589000
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2021-06",
+   "actual": 84561600,
+   "plan": 88582500
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2021-07",
+   "actual": 94368400,
+   "plan": 119956700
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2021-08",
+   "actual": 58946800,
+   "plan": 81206300
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2021-09",
+   "actual": 59080600,
+   "plan": 67159300
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2021-10",
+   "actual": 64685900,
+   "plan": 59010200
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2021-11",
+   "actual": 59599500,
+   "plan": 64309300
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2021-12",
+   "actual": 80876600,
+   "plan": 99059200
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2022-01",
+   "actual": 31665575,
+   "plan": 33193200
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2022-02",
+   "actual": 30388750,
+   "plan": 37451000
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2022-03",
+   "actual": 28214400,
+   "plan": 24666200
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2022-04",
+   "actual": 41833700,
+   "plan": 38871600
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2022-05",
+   "actual": 64366550,
+   "plan": 51963100
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2022-06",
+   "actual": 86964700,
+   "plan": 60782500
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2022-07",
+   "actual": 54471950,
+   "plan": 54634900
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2022-08",
+   "actual": 60818050,
+   "plan": 63891400
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2022-09",
+   "actual": 76610800,
+   "plan": 68842400
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2022-10",
+   "actual": 81897000,
+   "plan": 102514900
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2022-11",
+   "actual": 102090150,
+   "plan": 91500100
+  },
+  {
+   "district": "Ba Đình",
+   "month": "2022-12",
+   "actual": 117572550,
+   "plan": 140096900
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2020-01",
+   "actual": 147714500,
+   "plan": 156203100
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2020-02",
+   "actual": 137527000,
+   "plan": 157641600
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2020-03",
+   "actual": 132465000,
+   "plan": 140646500
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2020-04",
+   "actual": 150054000,
+   "plan": 149974300
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2020-05",
+   "actual": 149346000,
+   "plan": 149425800
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2020-06",
+   "actual": 186598000,
+   "plan": 214945700
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2020-07",
+   "actual": 147748000,
+   "plan": 152461600
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2020-08",
+   "actual": 143367000,
+   "plan": 149172200
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2020-09",
+   "actual": 147832000,
+   "plan": 139859700
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2020-10",
+   "actual": 152756000,
+   "plan": 184672800
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2020-11",
+   "actual": 142634000,
+   "plan": 147430000
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2020-12",
+   "actual": 135785000,
+   "plan": 155729100
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2021-01",
+   "actual": 137927400,
+   "plan": 144870600
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2021-02",
+   "actual": 185719300,
+   "plan": 211378900
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2021-03",
+   "actual": 103135200,
+   "plan": 99907500
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2021-04",
+   "actual": 201224900,
+   "plan": 219043500
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2021-05",
+   "actual": 45307200,
+   "plan": 52171500
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2021-06",
+   "actual": 237607900,
+   "plan": 257997400
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2021-07",
+   "actual": 308061900,
+   "plan": 340892700
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2021-08",
+   "actual": 334510000,
+   "plan": 365583800
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2021-09",
+   "actual": 295723100,
+   "plan": 309149300
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2021-10",
+   "actual": 272952800,
+   "plan": 316577600
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2021-11",
+   "actual": 290937300,
+   "plan": 304315400
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2021-12",
+   "actual": 238748100,
+   "plan": 244760300
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2022-01",
+   "actual": 85743050,
+   "plan": 84544800
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2022-02",
+   "actual": 67929250,
+   "plan": 68442300
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2022-03",
+   "actual": 121326050,
+   "plan": 127833200
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2022-04",
+   "actual": 104991250,
+   "plan": 100648800
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2022-05",
+   "actual": 117633650,
+   "plan": 109211900
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2022-06",
+   "actual": 158289650,
+   "plan": 186422400
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2022-07",
+   "actual": 144024000,
+   "plan": 176665400
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2022-08",
+   "actual": 155361650,
+   "plan": 176606800
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2022-09",
+   "actual": 138099450,
+   "plan": 183457400
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2022-10",
+   "actual": 174295350,
+   "plan": 191669300
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2022-11",
+   "actual": 162681000,
+   "plan": 175155600
+  },
+  {
+   "district": "Cầu Giấy",
+   "month": "2022-12",
+   "actual": 175471150,
+   "plan": 179537400
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2020-01",
+   "actual": 54380000,
+   "plan": 70568500
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2020-02",
+   "actual": 68410500,
+   "plan": 62445800
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2020-03",
+   "actual": 90041500,
+   "plan": 99653400
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2020-04",
+   "actual": 85122000,
+   "plan": 82175200
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2020-05",
+   "actual": 91400000,
+   "plan": 81182600
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2020-06",
+   "actual": 118592000,
+   "plan": 115432400
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2020-07",
+   "actual": 83986500,
+   "plan": 90899500
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2020-08",
+   "actual": 45640000,
+   "plan": 50076400
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2020-09",
+   "actual": 115035000,
+   "plan": 126257000
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2020-10",
+   "actual": 141034000,
+   "plan": 166046100
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2020-11",
+   "actual": 114903000,
+   "plan": 158415700
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2020-12",
+   "actual": 116892200,
+   "plan": 111654900
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2021-01",
+   "actual": 66175200,
+   "plan": 67428800
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2021-02",
+   "actual": 70026000,
+   "plan": 72268600
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2021-03",
+   "actual": 105312800,
+   "plan": 104543200
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2021-04",
+   "actual": 46883800,
+   "plan": 46547100
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2021-05",
+   "actual": 107037000,
+   "plan": 121875900
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2021-06",
+   "actual": 169443900,
+   "plan": 170715100
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2021-07",
+   "actual": 110253900,
+   "plan": 127969000
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2021-08",
+   "actual": 54304100,
+   "plan": 49060700
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2021-09",
+   "actual": 67060900,
+   "plan": 69905300
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2021-10",
+   "actual": 61675800,
+   "plan": 59629700
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2021-11",
+   "actual": 130713700,
+   "plan": 120245500
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2021-12",
+   "actual": 109890500,
+   "plan": 131991700
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2022-01",
+   "actual": 52554975,
+   "plan": 54664100
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2022-02",
+   "actual": 52820500,
+   "plan": 54890300
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2022-03",
+   "actual": 64718275,
+   "plan": 76276200
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2022-04",
+   "actual": 67585150,
+   "plan": 73931200
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2022-05",
+   "actual": 97883850,
+   "plan": 98095700
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2022-06",
+   "actual": 90951050,
+   "plan": 114833600
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2022-07",
+   "actual": 79534400,
+   "plan": 77767400
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2022-08",
+   "actual": 107471850,
+   "plan": 112169500
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2022-09",
+   "actual": 125153200,
+   "plan": 125267500
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2022-10",
+   "actual": 133290250,
+   "plan": 127474100
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2022-11",
+   "actual": 132521400,
+   "plan": 148765300
+  },
+  {
+   "district": "Hai Bà Trưng",
+   "month": "2022-12",
+   "actual": 119323050,
+   "plan": 133741200
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2020-01",
+   "actual": 26300000,
+   "plan": 26486100
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2020-02",
+   "actual": 37218000,
+   "plan": 41358300
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2020-03",
+   "actual": 48654000,
+   "plan": 46980300
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2020-04",
+   "actual": 39637000,
+   "plan": 37078300
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2020-05",
+   "actual": 19598000,
+   "plan": 20263000
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2020-06",
+   "actual": 39130000,
+   "plan": 46350400
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2020-07",
+   "actual": 51151000,
+   "plan": 51606600
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2020-08",
+   "actual": 39434000,
+   "plan": 46397800
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2020-09",
+   "actual": 22090000,
+   "plan": 22087400
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2020-10",
+   "actual": 24830000,
+   "plan": 22046900
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2020-11",
+   "actual": 24474000,
+   "plan": 28313200
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2020-12",
+   "actual": 22600000,
+   "plan": 22897800
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2021-01",
+   "actual": 83202900,
+   "plan": 69186400
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2021-02",
+   "actual": 34066100,
+   "plan": 39638200
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2021-03",
+   "actual": 60462300,
+   "plan": 82096200
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2021-04",
+   "actual": 36790000,
+   "plan": 36470600
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2021-05",
+   "actual": 46610400,
+   "plan": 43970600
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2021-06",
+   "actual": 107204600,
+   "plan": 117795600
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2021-07",
+   "actual": 83230900,
+   "plan": 90559600
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2021-08",
+   "actual": 103124000,
+   "plan": 127876100
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2021-09",
+   "actual": 56829700,
+   "plan": 72652300
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2021-10",
+   "actual": 75721900,
+   "plan": 99121600
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2021-11",
+   "actual": 41455700,
+   "plan": 51438900
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2021-12",
+   "actual": 68281000,
+   "plan": 64771500
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2022-01",
+   "actual": 52943550,
+   "plan": 50806800
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2022-02",
+   "actual": 37455300,
+   "plan": 39134100
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2022-03",
+   "actual": 42799925,
+   "plan": 43544600
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2022-04",
+   "actual": 42687750,
+   "plan": 42382500
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2022-05",
+   "actual": 70635650,
+   "plan": 78776700
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2022-06",
+   "actual": 74747400,
+   "plan": 77930300
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2022-07",
+   "actual": 58699550,
+   "plan": 76004200
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2022-08",
+   "actual": 77918700,
+   "plan": 81544700
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2022-09",
+   "actual": 54909600,
+   "plan": 66323500
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2022-10",
+   "actual": 65584750,
+   "plan": 61857200
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2022-11",
+   "actual": 74370050,
+   "plan": 69137400
+  },
+  {
+   "district": "Hoàn Kiếm",
+   "month": "2022-12",
+   "actual": 89152400,
+   "plan": 117249200
+  },
+  {
+   "district": "Hoàng Mai",
+   "month": "2021-11",
+   "actual": 7800000,
+   "plan": 8863700
+  },
+  {
+   "district": "Hoàng Mai",
+   "month": "2022-04",
+   "actual": 315600,
+   "plan": 265300
+  },
+  {
+   "district": "Hoàng Mai",
+   "month": "2022-05",
+   "actual": 32100,
+   "plan": 37400
+  },
+  {
+   "district": "Hoàng Mai",
+   "month": "2022-06",
+   "actual": 12300,
+   "plan": 10700
+  },
+  {
+   "district": "Hoàng Mai",
+   "month": "2022-08",
+   "actual": 30400,
+   "plan": 30800
+  },
+  {
+   "district": "Hoàng Mai",
+   "month": "2022-11",
+   "actual": 47700,
+   "plan": 43000
+  },
+  {
+   "district": "Hoàng Mai",
+   "month": "2022-12",
+   "actual": 17000,
+   "plan": 14500
+  },
+  {
+   "district": "Long Biên",
+   "month": "2020-01",
+   "actual": 15275000,
+   "plan": 13837100
+  },
+  {
+   "district": "Long Biên",
+   "month": "2020-02",
+   "actual": 17772000,
+   "plan": 15729100
+  },
+  {
+   "district": "Long Biên",
+   "month": "2020-03",
+   "actual": 13300000,
+   "plan": 12968000
+  },
+  {
+   "district": "Long Biên",
+   "month": "2020-04",
+   "actual": 7100000,
+   "plan": 8810100
+  },
+  {
+   "district": "Long Biên",
+   "month": "2020-05",
+   "actual": 23030000,
+   "plan": 23527900
+  },
+  {
+   "district": "Long Biên",
+   "month": "2020-06",
+   "actual": 27161000,
+   "plan": 29077700
+  },
+  {
+   "district": "Long Biên",
+   "month": "2020-07",
+   "actual": 37356500,
+   "plan": 39027800
+  },
+  {
+   "district": "Long Biên",
+   "month": "2020-08",
+   "actual": 124582500,
+   "plan": 126002300
+  },
+  {
+   "district": "Long Biên",
+   "month": "2020-09",
+   "actual": 22816000,
+   "plan": 25704800
+  },
+  {
+   "district": "Long Biên",
+   "month": "2020-10",
+   "actual": 56960000,
+   "plan": 51294300
+  },
+  {
+   "district": "Long Biên",
+   "month": "2020-11",
+   "actual": 32540000,
+   "plan": 38468200
+  },
+  {
+   "district": "Long Biên",
+   "month": "2020-12",
+   "actual": 50736000,
+   "plan": 62138500
+  },
+  {
+   "district": "Long Biên",
+   "month": "2021-01",
+   "actual": 42392400,
+   "plan": 47546300
+  },
+  {
+   "district": "Long Biên",
+   "month": "2021-02",
+   "actual": 34217700,
+   "plan": 32098100
+  },
+  {
+   "district": "Long Biên",
+   "month": "2021-03",
+   "actual": 10851000,
+   "plan": 14183200
+  },
+  {
+   "district": "Long Biên",
+   "month": "2021-04",
+   "actual": 19654000,
+   "plan": 24472900
+  },
+  {
+   "district": "Long Biên",
+   "month": "2021-05",
+   "actual": 7340800,
+   "plan": 10489800
+  },
+  {
+   "district": "Long Biên",
+   "month": "2021-06",
+   "actual": 26143000,
+   "plan": 23352400
+  },
+  {
+   "district": "Long Biên",
+   "month": "2021-07",
+   "actual": 14612100,
+   "plan": 12876400
+  },
+  {
+   "district": "Long Biên",
+   "month": "2021-08",
+   "actual": 54072900,
+   "plan": 55038100
+  },
+  {
+   "district": "Long Biên",
+   "month": "2021-09",
+   "actual": 27406000,
+   "plan": 36601400
+  },
+  {
+   "district": "Long Biên",
+   "month": "2021-10",
+   "actual": 43067100,
+   "plan": 38992000
+  },
+  {
+   "district": "Long Biên",
+   "month": "2021-11",
+   "actual": 43098800,
+   "plan": 47618400
+  },
+  {
+   "district": "Long Biên",
+   "month": "2021-12",
+   "actual": 7819600,
+   "plan": 9550600
+  },
+  {
+   "district": "Long Biên",
+   "month": "2022-01",
+   "actual": 13249900,
+   "plan": 13373200
+  },
+  {
+   "district": "Long Biên",
+   "month": "2022-02",
+   "actual": 14949950,
+   "plan": 17196200
+  },
+  {
+   "district": "Long Biên",
+   "month": "2022-03",
+   "actual": 18460150,
+   "plan": 16385400
+  },
+  {
+   "district": "Long Biên",
+   "month": "2022-04",
+   "actual": 16812300,
+   "plan": 15312200
+  },
+  {
+   "district": "Long Biên",
+   "month": "2022-05",
+   "actual": 36379200,
+   "plan": 48566500
+  },
+  {
+   "district": "Long Biên",
+   "month": "2022-06",
+   "actual": 41558400,
+   "plan": 44723500
+  },
+  {
+   "district": "Long Biên",
+   "month": "2022-07",
+   "actual": 36472100,
+   "plan": 52307900
+  },
+  {
+   "district": "Long Biên",
+   "month": "2022-08",
+   "actual": 31139450,
+   "plan": 36134600
+  },
+  {
+   "district": "Long Biên",
+   "month": "2022-09",
+   "actual": 32630150,
+   "plan": 33580000
+  },
+  {
+   "district": "Long Biên",
+   "month": "2022-10",
+   "actual": 32720000,
+   "plan": 30969100
+  },
+  {
+   "district": "Long Biên",
+   "month": "2022-11",
+   "actual": 53479300,
+   "plan": 60727400
+  },
+  {
+   "district": "Long Biên",
+   "month": "2022-12",
+   "actual": 44979400,
+   "plan": 56257000
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2020-04",
+   "actual": 3190000,
+   "plan": 3127500
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2020-07",
+   "actual": 3190000,
+   "plan": 2981400
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2020-11",
+   "actual": 3190000,
+   "plan": 4089800
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2021-08",
+   "actual": 15925000,
+   "plan": 16250000
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2021-11",
+   "actual": 3250000,
+   "plan": 2850900
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2022-01",
+   "actual": 13300,
+   "plan": 13100
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2022-02",
+   "actual": 18500,
+   "plan": 16000
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2022-03",
+   "actual": 46000,
+   "plan": 52300
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2022-04",
+   "actual": 2400,
+   "plan": 2300
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2022-05",
+   "actual": 2278800,
+   "plan": 2959500
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2022-06",
+   "actual": 83400,
+   "plan": 103000
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2022-07",
+   "actual": 9800,
+   "plan": 9100
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2022-08",
+   "actual": 3189800,
+   "plan": 4430300
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2022-09",
+   "actual": 451850,
+   "plan": 491200
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2022-10",
+   "actual": 9310300,
+   "plan": 8867000
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2022-11",
+   "actual": 712000,
+   "plan": 647300
+  },
+  {
+   "district": "Nam Từ Liêm",
+   "month": "2022-12",
+   "actual": 74300,
+   "plan": 114400
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2020-01",
+   "actual": 28820000,
+   "plan": 38886700
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2020-02",
+   "actual": 33136500,
+   "plan": 26913600
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2020-03",
+   "actual": 16724000,
+   "plan": 19090000
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2020-04",
+   "actual": 30844000,
+   "plan": 30206400
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2020-05",
+   "actual": 28248000,
+   "plan": 30075400
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2020-06",
+   "actual": 35977500,
+   "plan": 37264900
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2020-07",
+   "actual": 4990000,
+   "plan": 5355800
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2020-08",
+   "actual": 39359000,
+   "plan": 51389000
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2020-09",
+   "actual": 43081000,
+   "plan": 52050400
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2020-10",
+   "actual": 33149500,
+   "plan": 39155400
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2020-11",
+   "actual": 35262000,
+   "plan": 39915000
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2020-12",
+   "actual": 32291000,
+   "plan": 33305300
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2021-01",
+   "actual": 43566000,
+   "plan": 45781600
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2021-02",
+   "actual": 30173100,
+   "plan": 27872400
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2021-03",
+   "actual": 20222100,
+   "plan": 21266200
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2021-04",
+   "actual": 15186100,
+   "plan": 21950400
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2021-05",
+   "actual": 60637000,
+   "plan": 61337000
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2021-06",
+   "actual": 55468100,
+   "plan": 53225300
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2021-07",
+   "actual": 9933100,
+   "plan": 10599600
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2021-08",
+   "actual": 86701300,
+   "plan": 114086900
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2021-09",
+   "actual": 104373900,
+   "plan": 118657300
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2021-10",
+   "actual": 83099100,
+   "plan": 104451000
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2021-11",
+   "actual": 71462500,
+   "plan": 77002100
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2021-12",
+   "actual": 84392300,
+   "plan": 101725700
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2022-01",
+   "actual": 28400400,
+   "plan": 31571500
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2022-02",
+   "actual": 37177650,
+   "plan": 38694400
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2022-03",
+   "actual": 44619250,
+   "plan": 48043100
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2022-04",
+   "actual": 41457800,
+   "plan": 41040000
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2022-05",
+   "actual": 42117450,
+   "plan": 53991300
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2022-06",
+   "actual": 60773000,
+   "plan": 63254600
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2022-07",
+   "actual": 62347250,
+   "plan": 73287600
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2022-08",
+   "actual": 49893100,
+   "plan": 51381600
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2022-09",
+   "actual": 54749500,
+   "plan": 74428400
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2022-10",
+   "actual": 74830250,
+   "plan": 72383000
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2022-11",
+   "actual": 77612800,
+   "plan": 87763400
+  },
+  {
+   "district": "Thanh Xuân",
+   "month": "2022-12",
+   "actual": 74889350,
+   "plan": 88942500
+  },
+  {
+   "district": "Tây Hồ",
+   "month": "2021-01",
+   "actual": 158000,
+   "plan": 190400
+  },
+  {
+   "district": "Tây Hồ",
+   "month": "2021-06",
+   "actual": 121000,
+   "plan": 111100
+  },
+  {
+   "district": "Tây Hồ",
+   "month": "2021-11",
+   "actual": 295000,
+   "plan": 254400
+  },
+  {
+   "district": "Tây Hồ",
+   "month": "2022-01",
+   "actual": 2000,
+   "plan": 1900
+  },
+  {
+   "district": "Tây Hồ",
+   "month": "2022-02",
+   "actual": 15300,
+   "plan": 17900
+  },
+  {
+   "district": "Tây Hồ",
+   "month": "2022-03",
+   "actual": 25500,
+   "plan": 27000
+  },
+  {
+   "district": "Tây Hồ",
+   "month": "2022-04",
+   "actual": 13000,
+   "plan": 15500
+  },
+  {
+   "district": "Tây Hồ",
+   "month": "2022-05",
+   "actual": 41000,
+   "plan": 58100
+  },
+  {
+   "district": "Tây Hồ",
+   "month": "2022-07",
+   "actual": 399100,
+   "plan": 374700
+  },
+  {
+   "district": "Tây Hồ",
+   "month": "2022-08",
+   "actual": 41500,
+   "plan": 39800
+  },
+  {
+   "district": "Tây Hồ",
+   "month": "2022-10",
+   "actual": 582400,
+   "plan": 642400
+  },
+  {
+   "district": "Tây Hồ",
+   "month": "2022-11",
+   "actual": 597300,
+   "plan": 601700
+  },
+  {
+   "district": "Tây Hồ",
+   "month": "2022-12",
+   "actual": 26000,
+   "plan": 25800
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2020-01",
+   "actual": 28484000,
+   "plan": 27138700
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2020-02",
+   "actual": 4950000,
+   "plan": 5190200
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2020-03",
+   "actual": 26332000,
+   "plan": 25242300
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2020-04",
+   "actual": 7330000,
+   "plan": 8181000
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2020-05",
+   "actual": 28546000,
+   "plan": 31111600
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2020-06",
+   "actual": 23159500,
+   "plan": 26287100
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2020-07",
+   "actual": 22912000,
+   "plan": 19147400
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2020-08",
+   "actual": 22155000,
+   "plan": 25019600
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2020-09",
+   "actual": 23360000,
+   "plan": 23048200
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2020-10",
+   "actual": 30339000,
+   "plan": 34270000
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2020-11",
+   "actual": 40812500,
+   "plan": 51702500
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2020-12",
+   "actual": 22898500,
+   "plan": 21044000
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2021-01",
+   "actual": 20655900,
+   "plan": 23196100
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2021-02",
+   "actual": 79274100,
+   "plan": 101371700
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2021-03",
+   "actual": 37739100,
+   "plan": 32374100
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2021-04",
+   "actual": 35631900,
+   "plan": 33407900
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2021-05",
+   "actual": 7459100,
+   "plan": 6519500
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2021-06",
+   "actual": 102095000,
+   "plan": 105409000
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2021-07",
+   "actual": 46270900,
+   "plan": 50761000
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2021-08",
+   "actual": 33284800,
+   "plan": 40685600
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2021-09",
+   "actual": 29362000,
+   "plan": 27076700
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2021-10",
+   "actual": 43578000,
+   "plan": 56538200
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2021-11",
+   "actual": 68704800,
+   "plan": 59409800
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2021-12",
+   "actual": 96433700,
+   "plan": 94995100
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2022-01",
+   "actual": 37397650,
+   "plan": 45642500
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2022-02",
+   "actual": 23924675,
+   "plan": 23840800
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2022-03",
+   "actual": 41198750,
+   "plan": 43399200
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2022-04",
+   "actual": 27595700,
+   "plan": 29651200
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2022-05",
+   "actual": 46141900,
+   "plan": 57762000
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2022-06",
+   "actual": 64127100,
+   "plan": 81206400
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2022-07",
+   "actual": 37850900,
+   "plan": 36460300
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2022-08",
+   "actual": 72336700,
+   "plan": 89709100
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2022-09",
+   "actual": 57755000,
+   "plan": 61601600
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2022-10",
+   "actual": 67559750,
+   "plan": 73798800
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2022-11",
+   "actual": 57924650,
+   "plan": 67872500
+  },
+  {
+   "district": "Đống Đa",
+   "month": "2022-12",
+   "actual": 76550400,
+   "plan": 71340300
+  }
+ ],
+ "notes": "Actual = sum of 'Tổng doanh thu' (net revenue) per district per month from 58,414 transactions; plan = monthly district targets. Districts are in Hanoi."
+}

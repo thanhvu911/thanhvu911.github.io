@@ -108,7 +108,7 @@ export const details: Record<string, ProjectDetail> = {
     overview: [
       'An end-to-end data warehouse in SQL Server that turns raw grocery-transaction CSV extracts into a business-ready star schema. It is built on the public Supermarket Transactional Data dataset on Kaggle; the warehouse design, ETL, tests, and documentation are my own work.',
       'It follows the Medallion pattern: Bronze keeps an untouched copy of the six source files, Silver cleans and standardizes them, and Gold exposes a star schema of views that BI tools and analysts can query directly.',
-      'The whole load is automated with stored procedures that log their timing and catch errors, and automated test suites check the data after each layer, so the warehouse can be re-run and audited instead of patched by hand.',
+      'The whole load is automated with stored procedures that log their timing and catch errors, and 21 automated data-quality checks run after each layer: they filtered 10M raw transactions to 3.3M completed sales and flagged 1.58M orders whose header totals did not match their line items.',
     ],
     tools: [
       { name: 'Microsoft SQL Server', use: 'Database engine for the whole warehouse: bronze, silver, and gold schemas in one database.' },
@@ -340,13 +340,13 @@ export const details: Record<string, ProjectDetail> = {
   'rfm-customer-segmentation': {
     overview: [
       'Not every customer is worth the same marketing effort. This project segments customers with the classic RFM model (Recency, Frequency, Monetary value) and turns each segment into a concrete action, such as rewarding VIPs or re-engaging customers at risk of churning.',
-      'Score thresholds live in a configuration table by year instead of being hard-coded in DAX, so analysts can retune them without touching a measure. The report also tracks revenue against the monthly plan.',
+      'In the Power BI model, DAX calculated columns on dim_customer score recency, frequency, and monetary value from 1 to 4. The resulting R-F-M code (for example 444) links to a segment table, and the report also tracks revenue against the monthly plan.',
     ],
     tools: [
       { name: 'Power BI', use: 'Segment report with recency, frequency, and monetary breakdowns and revenue against plan.' },
-      { name: 'DAX', use: 'Config-driven scoring that assigns each customer a 1–4 score on R, F, and M using thresholds from a table.' },
-      { name: 'Power Query', use: 'Loading the sales data, the RFM configuration, segment labels, and the monthly revenue plan.' },
-      { name: 'Excel configuration', use: 'R-F-M score to segment, description, and recommended action, plus thresholds by year.' },
+      { name: 'DAX calculated columns', use: 'Columns on dim_customer that score each customer 1–4 on recency, frequency, and monetary value and build the R-F-M code.' },
+      { name: 'Power Query', use: 'Loading the sales data, the segment table, segment labels, and the monthly revenue plan.' },
+      { name: 'Segment table (Excel)', use: 'Maps each R-F-M code to a segment, a description, and a recommended action.' },
     ],
     walkthrough: [
       {
@@ -354,21 +354,21 @@ export const details: Record<string, ProjectDetail> = {
         title: 'Segment playbook',
         summary: 'Every R-F-M combination maps to a named segment with a description and a recommended marketing action.',
         points: [
-          '64 possible score codes (4 × 4 × 4) collapse into a small set of segments a marketing team can act on.',
+          '64 possible score codes (4 × 4 × 4) collapse into 9 segments a marketing team can act on.',
           'Each segment says who the customers are and what to do next, so the analysis ends in a decision, not a chart.',
         ],
       },
       {
-        image: 'dataflow.png',
-        title: 'Data flow',
-        summary: 'Sales data and configuration tables feed the scoring logic, which feeds the report.',
-        points: ['Keeping thresholds in a table means the same model works for a new year by editing rows, not code.'],
+        image: 'powerbi-page-2-customer-analysis.png',
+        title: 'Customer analysis page',
+        summary: 'RFM scores, segments, and loyalty groups on one Power BI page.',
+        points: ['Shows how many customers fall in each segment and how segments relate to loyalty groups.'],
       },
       {
         image: 'data-model.png',
         title: 'Data model',
-        summary: 'Sales, customers, the RFM configuration, segment labels, and the revenue plan in one Power BI model.',
-        points: ['Segment order comes from its own table so visuals always sort from most to least valuable.'],
+        summary: 'DAX-scored customers mapped to the segment table, alongside sales and the revenue plan.',
+        points: ['The R-F-M code calculated on dim_customer is the key that links each customer to its segment.'],
       },
     ],
   },

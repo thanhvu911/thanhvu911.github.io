@@ -9,8 +9,12 @@ import { projectImage } from '../lib/images';
 interface Props {
   slug: string;
   detail: ProjectDetail;
+  /** Render the intro (overview, tools, model), the walkthrough, or both. */
+  part?: 'intro' | 'walkthrough' | 'all';
 }
-const { slug, detail } = Astro.props;
+const { slug, detail, part = 'all' } = Astro.props;
+const showIntro = part !== 'walkthrough';
+const showWalk = part !== 'intro';
 
 const steps = await Promise.all(
   detail.walkthrough.map(async (w) => {
@@ -22,6 +26,8 @@ const steps = await Promise.all(
 const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' } as const;
 ---
 
+{showIntro && (
+<>
 <section class="card p-6 md:p-8" aria-labelledby="overview" data-reveal>
   <h2 id="overview" class="text-2xl font-bold text-navy">Project overview</h2>
   <div class="mt-4 space-y-4 leading-relaxed text-ink/85">
@@ -71,6 +77,10 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
   )
 }
 
+</>
+)}
+
+{showWalk && (
 <section class="card p-6 md:p-8" aria-labelledby="walkthrough" data-zoom-root data-reveal>
   <h2 id="walkthrough" class="text-2xl font-bold text-navy">Walkthrough</h2>
   <p class="mt-2 text-sm text-muted">What each dashboard and diagram shows, and why it matters. Click an image to enlarge it.</p>
@@ -112,6 +122,7 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
     <img alt="" class="max-h-[90dvh] max-w-[94vw] rounded-lg bg-white object-contain" data-zoom-img />
   </dialog>
 </section>
+)}
 
 <style>
   .zoom-dialog {

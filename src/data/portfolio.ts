@@ -74,6 +74,8 @@ export interface Project {
   results: string[];
   skills: string[];
   images: ProjectImage[];
+  /** Optional public Power BI "Publish to web" embed URL, shown on the Interactive dashboard tab. */
+  powerbiEmbed?: string;
 }
 
 export const projects: Project[] = [
@@ -130,8 +132,8 @@ export const projects: Project[] = [
       { file: 'powerbi-filtered-onondaga-county.png', category: 'Power BI', caption: 'Filtered to Onondaga County' },
       { file: 'dataflow.png', category: 'Data flow', caption: 'Fabric pipeline: raw files to a Power BI report' },
       { file: 'design-dashboard-wireframe.png', category: 'Data flow', caption: 'Dashboard wireframe' },
-      { file: 'data-model.png', category: 'Data model', caption: 'Semantic model' },
-      { file: 'code-dataflow-gen2-lakehouse.png', category: 'Code', caption: 'Dataflow Gen2: combining Lakehouse files' },
+      { file: 'data-model.png', category: 'Data model', caption: 'Data model: Dataflow Gen2 query lineage' },
+      { file: 'fabric-dataflow-gen2-diagram-view.png', category: 'Code', caption: 'Dataflow Gen2 in Fabric: query diagram view' },
       { file: 'code-pearson-correlation.png', category: 'Code', caption: 'Hand-built Pearson correlation in DAX' },
       { file: 'insight-correlation-by-county.png', category: 'Insights', caption: 'Correlation by county' },
       { file: 'insight-directional-match-rate.png', category: 'Insights', caption: 'Directional match rate' },
@@ -148,7 +150,7 @@ export const projects: Project[] = [
     kind: 'Data engineering',
     why: "Retail transaction data usually arrives as messy, disconnected CSV extracts that nobody fully trusts, so analysts end up cleaning the same data again for every question. A layered warehouse lands the raw data once, cleans it once, and gives the business one tested, documented model for sales, customer, and product questions.",
     role: "Solo project: architecture, stored-procedure ETL, dimensional modeling, data-quality tests, and documentation.",
-    challenges: ["Loading 131M+ rows reliably: a truncate + BULK INSERT procedure with load timing and TRY/CATCH, so a failed load is logged instead of silently leaving partial data.", "Inconsistent source values (whitespace, gender, loyalty tier, nationality codes) are standardized in Silver and then verified by automated tests.", "Keeping Gold trustworthy: tests for surrogate-key uniqueness and fact-to-dimension referential integrity.", "Query tuning cut processing time by 25%."],
+    challenges: ["Loading 131M+ rows reliably: a truncate + BULK INSERT procedure with load timing and TRY/CATCH, so a failed load is logged instead of silently leaving partial data.", "Inconsistent source values (whitespace, gender, loyalty tier, nationality codes) are standardized in Silver and then verified by automated tests.", "Keeping Gold trustworthy: tests for surrogate-key uniqueness and fact-to-dimension referential integrity.", "21 automated data-quality checks filtered 10M raw transactions to 3.3M completed sales and flagged 1.58M orders whose header totals did not match their line items.", "Query tuning cut processing time by 25%."],
     tags: ['SQL Server', 'T-SQL', 'Medallion', 'ETL', 'Star schema'],
     summary:
       'A Bronze → Silver → Gold warehouse over 131M+ rows with stored-procedure ETL, automated data-quality tests, and a documented star schema.',
@@ -156,9 +158,9 @@ export const projects: Project[] = [
     featured: true,
     cover: 'architecture-medallion.png',
     metrics: [
-      { value: '131M+', label: 'Rows' },
-      { value: '1M+', label: 'Customers' },
-      { value: '25K', label: 'Products' },
+      { value: '131M+', label: 'Transaction lines loaded' },
+      { value: '21', label: 'Automated quality checks' },
+      { value: '3.3M', label: 'Completed sales kept' },
       { value: '25%', label: 'Faster processing' },
     ],
     problem:
@@ -177,7 +179,8 @@ export const projects: Project[] = [
     ],
     results: [
       'A layered warehouse where each step can be re-run and audited independently.',
-      'A Gold star schema that answers sales, customer, and product questions with simple joins.',
+      '21 automated checks filtered 10M raw transactions down to 3.3M completed sales.',
+      '1.58M orders flagged because their header totals did not match their line items, caught before reaching any report.',
       'Query tuning cut processing time by 25%.',
     ],
     skills: ["Data warehouse design", "Medallion architecture", "Dimensional modeling (star schema)", "T-SQL stored procedures", "Data-quality testing", "Technical documentation"],
@@ -229,12 +232,17 @@ export const projects: Project[] = [
       dims: ['Store', 'Product', 'Category', 'Customer', 'Promotion', 'Date'],
     },
     results: [
+      'District plan completion ranges from about 89% to 98%: no district fully hit its target over 2020–2022.',
       'Plan completion % = Actual ÷ Plan at any grain: store, region, product group, month.',
       'Year-over-year and rolling 12-month views show whether a miss is a blip or a trend.',
       'Drill-through takes a manager from a regional miss straight to the store responsible.',
     ],
     skills: ["Galaxy-schema modeling", "DAX time intelligence", "Power Query", "SQL Server", "Executive dashboard design"],
     images: [
+      { file: 'powerbi-page-1-district-revenue-plan.png', category: 'Power BI', caption: "District revenue plan: planned revenue by district, store, and month" },
+      { file: 'powerbi-page-2-district-category-table.png', category: 'Power BI', caption: "District category table: revenue by district, store, and product category" },
+      { file: 'powerbi-page-3-store-manager-overview.png', category: 'Power BI', caption: "Store and manager overview: actual vs. plan" },
+      { file: 'powerbi-page-4-manager-achievement.png', category: 'Power BI', caption: "Manager achievement: progress toward plan and growth by store" },
       { file: 'sales-analysis-dashboard.png', category: 'Power BI', caption: 'Sales analysis: KPIs, districts, trends, and managers' },
       { file: 'sales-report-dashboard.png', category: 'Power BI', caption: 'Drill-through: Dec 2022 vs. Dec 2021 by manager' },
       { file: 'sales-decomposition.png', category: 'Power BI', caption: 'Decomposition tree: store, brand, loyalty, income, promotion' },
@@ -242,6 +250,7 @@ export const projects: Project[] = [
       { file: 'dataflow.png', category: 'Data flow', caption: 'Data flow' },
       { file: 'sales-data-model.png', category: 'Data model', caption: 'Galaxy schema in Power BI' },
       { file: 'data-model.png', category: 'Data model', caption: 'Data model' },
+      { file: 'powerbi-data-model.png', category: 'Data model', caption: 'Power BI Model view (from Power BI Desktop)' },
       { file: 'insight-actual-vs-plan.png', category: 'Insights', caption: 'Actual vs. plan' },
       { file: 'insight-plan-completion-by-district.png', category: 'Insights', caption: 'Plan completion by district' },
     ],
@@ -289,6 +298,8 @@ export const projects: Project[] = [
     ],
     skills: ["Power BI", "DAX", "Power Query", "Multi-fact modeling", "BLS and BEA public data", "Economic benchmarking"],
     images: [
+      { file: 'powerbi-page-1-overview-labor-market.png', category: 'Power BI', caption: "Overview & labor market: Lancaster vs. Pennsylvania" },
+      { file: 'powerbi-page-2-economic-growth.png', category: 'Power BI', caption: "Economic growth: GDP by industry, GDP trend, and wages" },
       { file: 'edc-labor-lancaster.png', category: 'Power BI', caption: 'Labor market: Lancaster unemployment, labor force, and employment, 2015–2025' },
       { file: 'edc-labor-pennsylvania.png', category: 'Power BI', caption: 'Labor market: Pennsylvania statewide' },
       { file: 'edc-growth-rate.png', category: 'Power BI', caption: 'Growth rate comparison: Lancaster vs. Pennsylvania' },
@@ -298,6 +309,7 @@ export const projects: Project[] = [
       { file: 'dataflow.png', category: 'Data flow', caption: 'Data flow' },
       { file: 'edc-data-model.png', category: 'Data model', caption: 'Power BI model: facts and shared dimensions' },
       { file: 'data-model.png', category: 'Data model', caption: 'Data model' },
+      { file: 'powerbi-data-model.png', category: 'Data model', caption: 'Power BI Model view (from Power BI Desktop)' },
       { file: 'insight-unemployment.png', category: 'Insights', caption: 'Unemployment: Lancaster vs. Pennsylvania' },
       { file: 'insight-wages.png', category: 'Insights', caption: 'Average annual wage trend' },
       { file: 'insight-employment-by-sector.png', category: 'Insights', caption: 'Employment by sector' },
@@ -312,35 +324,38 @@ export const projects: Project[] = [
     kind: 'Analytics · BI',
     why: "Marketing budgets are limited. Treating every customer the same wastes money on low-value customers and misses the ones about to churn. RFM segmentation tells a team exactly who to reward, who to win back, and who to leave alone.",
     role: "Solo project: scoring logic, segment mapping, data model, and report.",
-    challenges: ["Hard-coded score thresholds go stale, so they live in a configuration table by year and analysts can retune them without editing DAX.", "64 possible R-F-M combinations are mapped to named segments, each with a description and a recommended marketing action.", "Segments sit alongside revenue against the monthly plan, so marketing and sales see one picture."],
-    tags: ['Power BI', 'DAX', 'Power Query'],
+    challenges: ["Scoring lives in the model as DAX calculated columns on dim_customer, so every customer's R, F, and M score updates with the data.", "64 possible R-F-M codes map to 9 named segments, each with a description and a recommended marketing action.", "Segments sit alongside revenue against the monthly plan, so marketing and sales see one picture."],
+    tags: ['Power BI', 'DAX', 'Power Query', 'Segmentation'],
     summary:
-      'Scores customers on recency, frequency, and monetary value with config-driven DAX, and maps each segment to a marketing action.',
+      'Scores every customer on recency, frequency, and monetary value with DAX calculated columns and maps each R-F-M code to a segment with a recommended marketing action.',
     repo: 'https://github.com/thanhvu911/rfm-customer-segmentation-powerbi',
-    cover: 'insight-segment-playbook.png',
+    cover: 'powerbi-page-2-customer-analysis.png',
     metrics: [
       { value: '64', label: 'R-F-M codes' },
+      { value: '9', label: 'Segments' },
       { value: '1–4', label: 'Score per axis' },
-      { value: 'Config', label: 'Driven thresholds' },
     ],
     problem:
       'Not every customer is worth the same marketing effort. Which customers are VIPs to reward, and which are at risk of churning and need re-engaging?',
     approach: [
-      'Score: each customer gets a 1–4 score on Recency, Frequency, and Monetary value. Thresholds live in a configuration table by year, so they can be tuned without rewriting DAX.',
-      'Segment: the R-F-M combination (for example 4-4-4) maps to a named segment.',
+      'Score: DAX calculated columns on dim_customer score recency, frequency, and monetary value from 1 to 4.',
+      'Segment: the three scores form an R-F-M code (for example 444) that links to a segment table.',
       'Act: each segment carries a description and a recommended marketing action.',
-      'Track: actual revenue is compared against the monthly revenue plan.',
+      'Track: actual revenue is compared against the monthly revenue plan in the same report.',
     ],
-    architecture: ['Sales data', 'RFM config table', 'DAX scoring', 'Segment mapping', 'Power BI report'],
+    architecture: ['Sales data', 'dim_customer', 'DAX R-F-M scores', 'Segment table', 'Power BI report'],
     results: [
-      'Every customer lands in a named segment with a clear next action.',
-      'Analysts can retune thresholds in a table instead of editing measures.',
+      'Every customer lands in one of 9 named segments with a clear next action.',
+      'Marketing can see at a glance who to reward, who to win back, and who to leave alone.',
     ],
-    skills: ["Customer analytics", "Config-driven DAX", "Power Query", "Power BI", "Turning analysis into actions"],
+    skills: ["Customer analytics", "DAX calculated columns", "Power Query", "Power BI", "Turning analysis into actions"],
     images: [
+      { file: 'powerbi-page-1-sales-analysis.png', category: 'Power BI', caption: "Sales analysis: sales by district, product, and manager" },
+      { file: 'powerbi-page-2-customer-analysis.png', category: 'Power BI', caption: "Customer analysis: RFM scores, segments, and loyalty groups" },
       { file: 'insight-segment-playbook.png', category: 'Insights', caption: 'Segment playbook' },
       { file: 'dataflow.png', category: 'Data flow', caption: 'Data flow' },
-      { file: 'data-model.png', category: 'Data model', caption: 'Data model' },
+      { file: 'data-model.png', category: 'Data model', caption: 'Data model: DAX-scored customers mapped to the segment table' },
+      { file: 'powerbi-data-model.png', category: 'Data model', caption: 'Power BI Model view (from Power BI Desktop)' },
     ],
   },
   {
@@ -436,9 +451,9 @@ export const experience = [
     dates: 'Aug 2026 – Present',
     current: true,
     bullets: [
-      'Built an automated Power BI reporting pipeline that sources labor-market and economic data from federal public APIs (BLS, BEA) into a star-schema model, with scheduled refresh replacing manual data pulls.',
-      'Developed a Google Apps Script web dashboard backed by Google Sheets, with automated imports, nightly refresh, and an integrated Gemini AI assistant that summarizes trends and flags anomalies for non-technical staff.',
-      'Designed data-intake structures and dashboards for partner organizations, wrote dataset documentation and data dictionaries, and iterated on requirements with the Director of the Center for Regional Analysis.',
+      'Automated ingestion of 25+ federal economic series from BLS and BEA public APIs into a star-schema Power BI semantic model with 20 years of history and daily scheduled refresh, saving the team 15+ hours per month.',
+      'Developed a Google Apps Script web app on a Google Sheets data store with cross-sheet imports, nightly refresh jobs, sheet locking, and a Gemini AI assistant, letting 6+ non-technical staff maintain data without code.',
+      'Delivered 4+ dashboards and data products for partner organizations and internal teams, designing data-intake structures, dataset documentation, and data dictionaries that standardize how data is submitted.',
     ],
   },
   {
@@ -448,8 +463,9 @@ export const experience = [
     location: 'Sheridan, WY',
     dates: 'Jan 2026 – May 2026',
     bullets: [
-      'Collected, cleaned, and integrated datasets on precious-metal and mining companies, markets, and transactions; enriched contact records with Seamless.AI.',
-      'Built statistical and machine-learning models to identify likely strategic and financial buyers for active mandates, and automated recurring reports and dashboards for the deal team.',
+      'Integrated data on 100+ precious-metal and mining companies, markets, and transactions into one dataset and enriched 500+ contact records with Seamless.AI, improving data quality for deal sourcing.',
+      'Trained statistical and machine-learning models on mandate data, shortlisting 100+ likely buyers for outreach.',
+      'Launched automated weekly deal-team reports and dashboards, replacing manual spreadsheets and saving 5+ hours per week.',
     ],
   },
   {
@@ -470,8 +486,7 @@ export const experience = [
     location: 'Hanoi, Vietnam',
     dates: 'Jan 2021 – Apr 2021',
     bullets: [
-      'Engineered ETL pipelines in Python (Pandas, NumPy) and SQL Server to automate legacy client data workflows, reducing processing time by 30% and eliminating manual entry errors.',
-      'Validated Power BI reports with the analysis team and documented pipeline logic as reusable references.',
+      'Engineered ETL pipelines in Python (Pandas, NumPy) and SQL Server to automate legacy client data workflows, reducing processing time by 30%, eliminating manual entry errors, and feeding validated Power BI reports.',
     ],
   },
 ];

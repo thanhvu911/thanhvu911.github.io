@@ -1,0 +1,103 @@
+---
+// Interactive RFM segment playbook with a "try a score" picker.
+import rfm from '../../data/demos/rfm-segments.json';
+
+const scores = [1, 2, 3, 4];
+---
+
+<div class="demo" data-rfm-demo>
+  <div class="rounded-xl border border-line bg-soft/60 p-5">
+    <p class="font-semibold text-navy">Try a score</p>
+    <div class="mt-4 grid gap-4 sm:grid-cols-3">
+      {
+        [
+          { key: 'r', label: 'Recency', hint: '4 = bought very recently' },
+          { key: 'f', label: 'Frequency', hint: '4 = buys very often' },
+          { key: 'm', label: 'Monetary', hint: '4 = spends the most' },
+        ].map((axis) => (
+          <div>
+            <p class="demo-label" id={`rfm-${axis.key}`}>{axis.label}</p>
+            <div class="mt-2 flex gap-2" role="radiogroup" aria-labelledby={`rfm-${axis.key}`}>
+              {scores.map((s) => (
+                <button type="button" class="demo-chip w-11 justify-center" role="radio" aria-checked={s === 4 ? 'true' : 'false'} data-axis={axis.key} data-score={s}>
+                  {s}
+                </button>
+              ))}
+            </div>
+            <p class="mt-1 text-xs text-muted">{axis.hint}</p>
+          </div>
+        ))
+      }
+    </div>
+    <p class="mt-4 text-sm text-ink" aria-live="polite">
+      Code <span class="font-mono font-bold text-navy" data-code>444</span> belongs to
+      <span class="font-bold text-teal-ink" data-match>VIP</span>.
+    </p>
+    <p class="mt-2 text-xs text-muted">{rfm.scoring}</p>
+  </div>
+
+  <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      rfm.segments.map((s) => (
+        <li class="rfm-card rounded-xl border border-line bg-white p-5 transition-all" data-segment={s.segment} data-codes={s.codes.join(',')}>
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <h4 class="font-bold text-navy">{s.segment}</h4>
+              {s.segmentVi !== s.segment && <p class="text-xs text-muted">{s.segmentVi}</p>}
+            </div>
+            <span class="rfm-badge hidden rounded-full bg-teal px-2 py-0.5 text-xs font-bold text-navy">Match</span>
+          </div>
+          <p class="mt-3 text-sm text-ink/85">{s.description}</p>
+          <p class="mt-3 text-sm">
+            <span class="font-semibold text-ink">Action: </span>
+            <span class="text-ink/85">{s.action}</span>
+          </p>
+          <p class="mt-3 flex flex-wrap gap-1">
+            {s.codes.map((c) => (
+              <span class="rounded bg-soft px-1.5 py-0.5 font-mono text-[11px] text-muted">{c}</span>
+            ))}
+          </p>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .rfm-card.is-match {
+    border-color: var(--color-teal);
+    box-shadow: 0 0 0 3px rgb(17 212 212 / 0.25), 0 10px 25px rgb(15 39 87 / 0.08);
+    transform: translateY(-2px);
+  }
+  .rfm-card.is-match .rfm-badge {
+    display: inline-block;
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-rfm-demo]');
+  if (root) {
+    const score = { r: 4, f: 4, m: 4 };
+    const cards = [...root.querySelectorAll<HTMLElement>('[data-segment]')];
+    const update = () => {
+      const code = `${score.r}${score.f}${score.m}`;
+      root.querySelector('[data-code]')!.textContent = code;
+      let match = 'no listed segment';
+      cards.forEach((c) => {
+        const hit = c.dataset.codes!.split(',').includes(code);
+        c.classList.toggle('is-match', hit);
+        if (hit) match = c.dataset.segment!;
+      });
+      root.querySelector('[data-match]')!.textContent = match;
+    };
+    root.querySelectorAll<HTMLButtonElement>('[data-axis]').forEach((b) =>
+      b.addEventListener('click', () => {
+        const axis = b.dataset.axis as 'r' | 'f' | 'm';
+        score[axis] = Number(b.dataset.score);
+        root.querySelectorAll(`[data-axis="${axis}"]`).forEach((x) => x.setAttribute('aria-checked', String(x === b)));
+        update();
+      }),
+    );
+    update();
+  }
+</script>

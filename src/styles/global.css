@@ -305,6 +305,89 @@
     box-shadow: 0 10px 30px rgb(15 39 87 / 0.25);
   }
 
+  /* Interactive dashboards */
+  .demo-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .demo-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0 0.875rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--color-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 150ms, border-color 150ms, color 150ms;
+  }
+  .demo-chip:hover {
+    border-color: var(--color-teal);
+    color: var(--color-ink);
+  }
+  .demo-chip[aria-pressed='true'],
+  .demo-chip[aria-checked='true'] {
+    border-color: var(--color-navy);
+    background: var(--color-navy);
+    color: #fff;
+  }
+  .demo-swatch {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 999px;
+    box-shadow: 0 0 0 2px #fff;
+  }
+  .demo-kpi {
+    border: 1px solid var(--color-line);
+    border-radius: 0.75rem;
+    background: linear-gradient(160deg, #fff, var(--color-teal-wash));
+    padding: 1rem 1.25rem;
+  }
+  .demo-kpi-value {
+    color: var(--color-navy);
+    font-size: 1.75rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+  }
+  .demo-kpi-label {
+    margin-top: 0.125rem;
+    color: var(--color-muted);
+    font-size: 0.8125rem;
+  }
+  .demo-takeaway {
+    margin-top: 0.75rem;
+    border-left: 3px solid var(--color-teal);
+    padding-left: 0.75rem;
+    color: var(--color-ink);
+    font-size: 0.9375rem;
+  }
+  .demo-chart-card {
+    min-width: 0; /* let grid items shrink below the canvas width */
+    border: 1px solid var(--color-line);
+    border-radius: 0.75rem;
+    background: #fff;
+    padding: 1rem;
+  }
+  .demo-chart-title {
+    color: var(--color-navy);
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+  .demo-chart {
+    position: relative;
+    height: 18rem;
+    margin-top: 0.75rem;
+  }
+  .demo-chart-tall {
+    height: 22rem;
+  }
+
   /* Light sheen that follows the cursor on tilting cards (set by motion.ts). */
   .sheen {
     position: relative;

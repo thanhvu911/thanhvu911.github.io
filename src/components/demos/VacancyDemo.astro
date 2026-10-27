@@ -1,0 +1,157 @@
+---
+// Interactive version of the USPS vs. Census Power BI report.
+---
+
+<div class="demo" data-vacancy-demo>
+  <fieldset>
+    <legend class="demo-label">Counties</legend>
+    <div class="mt-2 flex flex-wrap gap-2" data-county-chips></div>
+  </fieldset>
+
+  <div class="mt-6 grid gap-3 sm:grid-cols-3" aria-live="polite">
+    <div class="demo-kpi">
+      <p class="demo-kpi-value" data-kpi-r>0.77</p>
+      <p class="demo-kpi-label">Pearson r, Census vs. USPS</p>
+    </div>
+    <div class="demo-kpi">
+      <p class="demo-kpi-value" data-kpi-match>57.7%</p>
+      <p class="demo-kpi-label">Directional match</p>
+    </div>
+    <div class="demo-kpi">
+      <p class="demo-kpi-value" data-kpi-gap>5.3 pts</p>
+      <p class="demo-kpi-label">Mean gap (Census − USPS)</p>
+    </div>
+  </div>
+  <p class="demo-takeaway" data-takeaway></p>
+
+  <div class="mt-6 grid gap-6 lg:grid-cols-2">
+    <figure class="demo-chart-card">
+      <figcaption class="demo-chart-title">Vacancy rate by year, Census vs. USPS (narrow)</figcaption>
+      <div class="demo-chart"><canvas data-line aria-label="Line chart of Census and USPS vacancy rates by year" role="img"></canvas></div>
+    </figure>
+    <figure class="demo-chart-card">
+      <figcaption class="demo-chart-title">Census vs. USPS, one dot per county-year</figcaption>
+      <div class="demo-chart"><canvas data-scatter aria-label="Scatter chart of Census against USPS vacancy rates with a trend line" role="img"></canvas></div>
+    </figure>
+  </div>
+</div>
+
+<script>
+  import rows from '../../data/demos/vacancy-comparison.json';
+  import { Chart, palette, axisTitle } from '../../lib/charts';
+  import { pearson, directionMatchRate, meanGapPoints, linearFit, type VacancyRow } from '../../lib/stats';
+
+  const data = rows as VacancyRow[];
+  const root = document.querySelector<HTMLElement>('[data-vacancy-demo]');
+  if (root) {
+    const counties = [...new Set(data.map((r) => r.county))];
+    const label = (c: string) => `${c}, ${data.find((r) => r.county === c)!.state}`;
+    const color = (c: string) => palette.series[counties.indexOf(c) % palette.series.length];
+    const selected = new Set(counties);
+    const years = [...new Set(data.map((r) => r.year))].sort();
+
+    const chips = root.querySelector<HTMLElement>('[data-county-chips]')!;
+    counties.forEach((c) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'demo-chip';
+      b.setAttribute('aria-pressed', 'true');
+      b.innerHTML = `<span class="demo-swatch" style="background:${color(c)}"></span>${label(c)}`;
+      b.addEventListener('click', () => {
+        if (selected.has(c) && selected.size === 1) return; // keep at least one county
+        selected.has(c) ? selected.delete(c) : selected.add(c);
+        b.setAttribute('aria-pressed', String(selected.has(c)));
+        update();
+      });
+      chips.appendChild(b);
+    });
+
+    const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
+
+    const line = new Chart(root.querySelector<HTMLCanvasElement>('[data-line]')!, {
+      type: 'line',
+      data: { labels: years, datasets: [] },
+      options: {
+        interaction: { mode: 'index', intersect: false },
+        scales: {
+          x: { title: axisTitle('Year') },
+          y: { title: axisTitle('Vacancy rate'), ticks: { callback: (v) => pct(Number(v)) } },
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${pct(Number(c.parsed.y))}` } },
+        },
+      },
+    });
+
+    const scatter = new Chart(root.querySelector<HTMLCanvasElement>('[data-scatter]')!, {
+      type: 'scatter',
+      data: { datasets: [] },
+      options: {
+        scales: {
+          x: { title: axisTitle('Census vacancy rate'), ticks: { callback: (v) => pct(Number(v)) } },
+          y: { title: axisTitle('USPS narrow rate'), ticks: { callback: (v) => pct(Number(v)) } },
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (c) => {
+                const p = c.raw as { x: number; y: number; label?: string };
+                return p.label ? `${p.label}: Census ${pct(p.x)}, USPS ${pct(p.y)}` : 'Trend line';
+              },
+            },
+          },
+        },
+      },
+    });
+
+    function update() {
+      const subset = data.filter((r) => selected.has(r.county));
+      const r = pearson(subset.map((d) => d.census), subset.map((d) => d.uspsNarrow));
+      const match = directionMatchRate(subset);
+      const gap = meanGapPoints(subset);
+      root!.querySelector('[data-kpi-r]')!.textContent = Number.isNaN(r) ? '–' : r.toFixed(2);
+      root!.querySelector('[data-kpi-match]')!.textContent = Number.isNaN(match) ? '–' : `${(match * 100).toFixed(1)}%`;
+      root!.querySelector('[data-kpi-gap]')!.textContent = Number.isNaN(gap) ? '–' : `${gap.toFixed(1)} pts`;
+      const strength = r >= 0.6 ? 'tracks Census closely' : r >= 0.3 ? 'tracks Census only loosely' : 'barely tracks Census';
+      root!.querySelector('[data-takeaway]')!.textContent =
+        `For ${selected.size === counties.length ? 'all six counties' : [...selected].join(', ')}, USPS ${strength} (r = ${Number.isNaN(r) ? 'n/a' : r.toFixed(2)}) and calls the direction of change right ${Number.isNaN(match) ? 'n/a' : (match * 100).toFixed(0) + '%'} of the time.`;
+
+      line.data.datasets = [...selected].flatMap((c) => {
+        const byYear = (key: 'census' | 'uspsNarrow') =>
+          years.map((y) => data.find((d) => d.county === c && d.year === y)?.[key] ?? null);
+        return [
+          { label: `${c} Census`, data: byYear('census'), borderColor: color(c), backgroundColor: color(c), pointRadius: 2, tension: 0.25, spanGaps: true },
+          { label: `${c} USPS`, data: byYear('uspsNarrow'), borderColor: color(c), backgroundColor: color(c), borderDash: [5, 4], pointRadius: 0, tension: 0.25, spanGaps: true },
+        ];
+      });
+      line.update();
+
+      const fit = linearFit(subset.map((d) => d.census), subset.map((d) => d.uspsNarrow));
+      const xs = subset.map((d) => d.census);
+      const [x0, x1] = [Math.min(...xs), Math.max(...xs)];
+      scatter.data.datasets = [
+        ...[...selected].map((c) => ({
+          label: c,
+          data: subset.filter((d) => d.county === c).map((d) => ({ x: d.census, y: d.uspsNarrow, label: `${c} ${d.year}` })),
+          backgroundColor: color(c),
+          pointRadius: 4,
+        })),
+        {
+          label: 'Trend',
+          type: 'line' as const,
+          data: [
+            { x: x0, y: fit.slope * x0 + fit.intercept },
+            { x: x1, y: fit.slope * x1 + fit.intercept },
+          ],
+          borderColor: palette.muted,
+          borderDash: [6, 4],
+          pointRadius: 0,
+        },
+      ];
+      scatter.update();
+    }
+    update();
+  }
+</script>
