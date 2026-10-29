@@ -29,19 +29,18 @@ Chart.register(
 );
 
 export const palette = {
-  navy: '#0f2757',
-  blue: '#175e82',
-  teal: '#11d4d4',
-  tealInk: '#0a7a82',
-  muted: '#5b6472',
-  line: '#e5e7eb',
-  // Distinguishable series colors for up to six counties or districts.
-  series: ['#0f2757', '#11b5b5', '#e07a2f', '#7c5cc4', '#2f8f4e', '#c2416c'],
+  // Power BI's default theme colors, so the dashboards read like real reports.
+  primary: '#118DFF',
+  secondary: '#E66C37',
+  muted: '#605E5C',
+  line: '#E1DFDD',
+  faded: '#B3D9FF',
+  series: ['#118DFF', '#12239E', '#E66C37', '#6B007B', '#E044A7', '#744EC2'],
 };
 
 const reduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-Chart.defaults.font.family = 'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+Chart.defaults.font.family = '"Segoe UI", "Public Sans Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 Chart.defaults.font.size = 12;
 Chart.defaults.color = palette.muted;
 Chart.defaults.borderColor = palette.line;
@@ -49,9 +48,13 @@ Chart.defaults.animation = reduce ? false : { duration: 500 };
 Chart.defaults.maintainAspectRatio = false;
 Chart.defaults.plugins.legend.labels.usePointStyle = true;
 Chart.defaults.plugins.legend.labels.boxWidth = 8;
-Chart.defaults.plugins.tooltip.backgroundColor = palette.navy;
+Chart.defaults.plugins.tooltip.backgroundColor = '#ffffff';
+Chart.defaults.plugins.tooltip.titleColor = '#252423';
+Chart.defaults.plugins.tooltip.bodyColor = '#252423';
+Chart.defaults.plugins.tooltip.borderColor = '#C8C6C4';
+Chart.defaults.plugins.tooltip.borderWidth = 1;
 Chart.defaults.plugins.tooltip.padding = 10;
-Chart.defaults.plugins.tooltip.cornerRadius = 8;
+Chart.defaults.plugins.tooltip.cornerRadius = 2;
 
 export const axisTitle = (text: string) => ({ display: true, text, color: palette.muted, font: { weight: 600 as const } });
 

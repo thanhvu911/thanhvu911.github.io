@@ -10,32 +10,30 @@ interface Props {
 const { project } = Astro.props;
 ---
 
-<article class="card sheen flex h-full flex-col overflow-hidden transition-shadow hover:shadow-xl" data-tilt>
-  <a href={`/projects/${project.slug}`} class="block aspect-[16/9] overflow-hidden border-b border-line bg-soft" tabindex="-1" aria-hidden="true" draggable="false">
+<article class="card card-hover group flex h-full flex-col overflow-hidden">
+  <a href={`/projects/${project.slug}`} class="block aspect-[16/9] overflow-hidden border-b border-line bg-white" tabindex="-1" aria-hidden="true">
     <Image
       src={projectImage(project.slug, project.cover)}
       alt=""
       widths={[400, 640]}
       sizes="(min-width: 1024px) 360px, (min-width: 768px) 50vw, 90vw"
-      class="size-full object-cover object-left-top" draggable="false"
+      class="size-full object-cover object-left-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
     />
   </a>
   <div class="flex flex-1 flex-col p-6">
-    <h3 class="text-xl font-bold leading-snug text-navy">
+    <p class="text-sm text-muted">{project.kind.replaceAll(' · ', ' / ')}, {project.year}</p>
+    <h3 class="mt-1.5 text-xl font-semibold leading-snug tracking-tight">
       <a href={`/projects/${project.slug}`} class="hover:text-teal-ink">{project.title}</a>
     </h3>
-    <p class="mt-3 flex-1 text-sm leading-relaxed text-muted">{project.summary}</p>
-    <ul class="mt-4 flex flex-wrap gap-2" aria-label="Technologies">
+    <p class="mt-3 flex-1 text-[0.9375rem] leading-relaxed text-muted">{project.summary}</p>
+    <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="Technologies">
       {project.tags.map((t) => <li class="pill">{t}</li>)}
     </ul>
-    <div class="mt-6 grid grid-cols-2 gap-3">
-      <a href={project.repo} target="_blank" rel="noopener" class="btn btn-outline px-3" draggable="false">
+    <div class="mt-6 flex flex-wrap gap-2">
+      <a href={`/projects/${project.slug}`} class="btn btn-primary">Case study</a>
+      <a href={project.repo} target="_blank" rel="noopener" class="btn btn-outline" data-goatcounter-click={`repo-${project.slug}`}>
         <Icon name="github" size={15} />
         Code
-      </a>
-      <a href={`/projects/${project.slug}`} class="btn btn-teal px-3" draggable="false">
-        <Icon name="external-link" size={15} />
-        View Details
       </a>
     </div>
   </div>

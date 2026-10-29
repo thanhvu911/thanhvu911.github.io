@@ -1,0 +1,302 @@
+---
+// "Ask about Thanh": a small chat panel. With profile.assistantEndpoint set it
+// asks the Gemini worker in worker/; otherwise (or if the worker fails) it
+// matches the question to prewritten answers and says so.
+import Icon from './Icon.astro';
+import { profile } from '../data/portfolio';
+import { quickAnswers, suggestions } from '../lib/knowledge';
+
+const endpoint = profile.assistantEndpoint;
+const subtitle = endpoint
+  ? 'AI answers from this portfolio, powered by Gemini'
+  : 'Quick answers from this portfolio. The AI version is being connected.';
+---
+
+<div data-assistant data-endpoint={endpoint} data-answers={JSON.stringify(quickAnswers)}>
+  <button type="button" class="assistant-launch" aria-expanded="false" aria-controls="assistant-panel" data-assistant-toggle>
+    <Icon name="sparkles" size={18} />
+    <span>Ask about Thanh</span>
+  </button>
+
+  <section id="assistant-panel" class="assistant-panel card" role="dialog" aria-modal="false" aria-labelledby="assistant-title" hidden data-assistant-panel>
+    <header class="flex items-start justify-between gap-3 border-b border-line p-4">
+      <div class="flex items-start gap-3">
+        <span class="icon-tile size-9"><Icon name="sparkles" size={17} /></span>
+        <div>
+          <h2 id="assistant-title" class="text-[0.9375rem] font-semibold">Ask about Thanh</h2>
+          <p class="text-xs text-muted">{subtitle}</p>
+        </div>
+      </div>
+      <button type="button" class="grid size-9 place-items-center rounded-md text-muted hover:bg-soft hover:text-strong" aria-label="Close assistant" data-assistant-close>
+        <Icon name="x" size={18} />
+      </button>
+    </header>
+
+    <div class="assistant-log" aria-live="polite" data-assistant-log>
+      <p class="msg msg-bot">Hi! Ask me about Thanh's experience, projects, skills, or graduate plans.</p>
+      <ul class="flex flex-wrap gap-1.5" data-assistant-suggestions>
+        {suggestions.map((s) => <li><button type="button" class="demo-chip min-h-8 px-3 text-[0.8125rem]" data-suggestion>{s}</button></li>)}
+      </ul>
+    </div>
+
+    <form class="flex gap-2 border-t border-line p-3" data-assistant-form>
+      <label for="assistant-input" class="sr-only">Your question</label>
+      <input id="assistant-input" name="q" type="text" autocomplete="off" maxlength="300" placeholder="Ask a question" class="field min-h-10 py-2" required />
+      <button type="submit" class="btn btn-primary size-10 min-h-10 shrink-0 p-0" aria-label="Send question">
+        <Icon name="send" size={16} />
+      </button>
+    </form>
+  </section>
+</div>
+
+<style>
+  .assistant-launch {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 40;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.875rem;
+    padding: 0 1.125rem;
+    border: 1px solid color-mix(in srgb, var(--color-cyan) 55%, transparent);
+    border-radius: 999px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(12px);
+    color: var(--color-strong);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    box-shadow: 0 0 0 4px rgb(8 145 178 / 0.08), 0 12px 36px -10px var(--glow);
+    cursor: pointer;
+    transition: border-color 200ms, box-shadow 200ms;
+  }
+  .assistant-launch:hover {
+    border-color: var(--color-cyan);
+    box-shadow: 0 0 0 4px rgb(8 145 178 / 0.14), 0 14px 40px -8px var(--glow);
+  }
+  .assistant-launch :global(svg) {
+    color: var(--color-teal-ink);
+  }
+  .assistant-launch[aria-expanded='true'] {
+    display: none;
+  }
+
+  .assistant-panel {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 45;
+    display: flex;
+    flex-direction: column;
+    width: min(25rem, calc(100vw - 2rem));
+    height: min(34rem, calc(100dvh - 6rem));
+    background: var(--panel-bg);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 30px 80px -20px rgb(2 8 23 / 0.45), 0 0 0 1px var(--card-border);
+  }
+  .assistant-panel[hidden] {
+    display: none;
+  }
+  .assistant-log {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    overscroll-behavior: contain;
+  }
+  .assistant-log :global(.msg) {
+    max-width: 92%;
+    padding: 0.625rem 0.875rem;
+    border-radius: 0.875rem;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    white-space: pre-line;
+  }
+  .assistant-log :global(.msg-bot) {
+    align-self: flex-start;
+    border: 1px solid var(--card-border);
+    background: var(--color-surface-2);
+    color: var(--color-ink);
+  }
+  .assistant-log :global(.msg-user) {
+    align-self: flex-end;
+    background: var(--color-teal-wash);
+    color: var(--color-strong);
+  }
+  .assistant-log :global(.msg-note) {
+    display: block;
+    margin-top: 0.375rem;
+    color: var(--color-muted);
+    font-size: 0.75rem;
+  }
+  .assistant-log :global(.msg a) {
+    color: var(--color-teal-ink);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .assistant-log :global(.typing) {
+    display: inline-flex;
+    gap: 0.25rem;
+  }
+  .assistant-log :global(.typing span) {
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 999px;
+    background: var(--color-cyan);
+    animation: blink 1.2s infinite both;
+  }
+  .assistant-log :global(.typing span:nth-child(2)) {
+    animation-delay: 0.2s;
+  }
+  .assistant-log :global(.typing span:nth-child(3)) {
+    animation-delay: 0.4s;
+  }
+  @keyframes blink {
+    0%, 80%, 100% {
+      opacity: 0.25;
+    }
+    40% {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  interface QuickAnswer {
+    keys: string[];
+    answer: string;
+    link?: { href: string; label: string };
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-assistant]')!;
+  const toggle = root.querySelector<HTMLButtonElement>('[data-assistant-toggle]')!;
+  const panel = root.querySelector<HTMLElement>('[data-assistant-panel]')!;
+  const log = root.querySelector<HTMLElement>('[data-assistant-log]')!;
+  const form = root.querySelector<HTMLFormElement>('[data-assistant-form]')!;
+  const input = form.querySelector<HTMLInputElement>('input')!;
+  const endpoint = root.dataset.endpoint ?? '';
+  const answers: QuickAnswer[] = JSON.parse(root.dataset.answers ?? '[]');
+  const history: { role: 'user' | 'model'; text: string }[] = [];
+  // Only these links become clickable in AI answers.
+  const SAFE_LINK = /^(https:\/\/(thanhvu911\.github\.io|github\.com\/thanhvu911|www\.linkedin\.com\/in\/thanh25)\S*|mailto:\S+)$/;
+
+  const setOpen = (open: boolean) => {
+    panel.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    if (open) input.focus();
+    else toggle.focus();
+  };
+  toggle.addEventListener('click', () => setOpen(true));
+  root.querySelector('[data-assistant-close]')!.addEventListener('click', () => setOpen(false));
+  panel.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setOpen(false);
+  });
+
+  const scrollDown = () => log.scrollTo({ top: log.scrollHeight, behavior: 'smooth' });
+
+  // Render text safely: plain text, with whitelisted URLs turned into links.
+  const addMessage = (who: 'user' | 'bot', text: string, extra?: { link?: QuickAnswer['link']; note?: string }) => {
+    const p = document.createElement('p');
+    p.className = `msg msg-${who}`;
+    text.split(/((?:https?:\/\/|mailto:)[^\s)]+)/g).forEach((part) => {
+      if (SAFE_LINK.test(part)) {
+        const a = document.createElement('a');
+        a.href = part;
+        a.textContent = part.replace(/^https:\/\/|^mailto:/, '');
+        if (part.startsWith('http')) a.target = '_blank';
+        p.append(a);
+      } else p.append(part);
+    });
+    if (extra?.link) {
+      p.append('\n');
+      const a = document.createElement('a');
+      a.href = extra.link.href;
+      a.textContent = extra.link.label;
+      p.append(a);
+    }
+    if (extra?.note) {
+      const n = document.createElement('span');
+      n.className = 'msg-note';
+      n.textContent = extra.note;
+      p.append(n);
+    }
+    log.append(p);
+    scrollDown();
+    return p;
+  };
+
+  const tokens = (s: string) => s.toLowerCase().replace(/[’']/g, '').split(/[^a-z0-9&.+-]+/).filter(Boolean);
+
+  const quickAnswer = (q: string) => {
+    const text = ` ${q.toLowerCase()} `;
+    const words = new Set(tokens(q));
+    const scored = answers
+      .map((a) => ({
+        a,
+        score: a.keys.reduce((s, k) => s + (/[\s&-]/.test(k) ? (text.includes(k) ? 3 : 0) : words.has(k) ? 2 : 0), 0),
+      }))
+      .filter((x) => x.score > 0)
+      .sort((x, y) => y.score - x.score);
+    if (!scored.length) return null;
+    return scored.filter((x) => x.score >= scored[0].score * 0.8).slice(0, 3).map((x) => x.a);
+  };
+
+  const answerLocally = (q: string, note?: string) => {
+    const found = quickAnswer(q);
+    if (!found) {
+      addMessage('bot', "I don't have a prewritten answer for that. Try one of the suggestions, or email Thanh directly.", {
+        link: { href: '/#contact', label: 'Contact Thanh' },
+        note,
+      });
+      return;
+    }
+    found.forEach((a, i) => addMessage('bot', a.answer, { link: a.link, note: i === found.length - 1 ? note : undefined }));
+  };
+
+  const ask = async (q: string) => {
+    root.querySelector('[data-assistant-suggestions]')?.remove();
+    addMessage('user', q);
+    if (!endpoint) {
+      answerLocally(q);
+      return;
+    }
+    const typing = addMessage('bot', '');
+    typing.innerHTML = '<span class="typing" aria-label="Thinking"><span></span><span></span><span></span></span>';
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: q, history: history.slice(-6) }),
+        signal: AbortSignal.timeout(20000),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.answer) throw new Error(json.error ?? 'No answer');
+      typing.remove();
+      addMessage('bot', json.answer);
+      history.push({ role: 'user', text: q }, { role: 'model', text: json.answer });
+    } catch {
+      typing.remove();
+      answerLocally(q, 'The AI assistant is unavailable right now, so this is a prewritten answer.');
+    }
+  };
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = input.value.trim();
+    if (!q) return;
+    input.value = '';
+    ask(q);
+  });
+  root.querySelectorAll<HTMLButtonElement>('[data-suggestion]').forEach((b) => b.addEventListener('click', () => ask(b.textContent!.trim())));
+
+  // The command palette can hand a question over.
+  window.addEventListener('assistant:open', (e) => {
+    setOpen(true);
+    const q = (e as CustomEvent<{ question?: string }>).detail?.question;
+    if (q) ask(q);
+  });
+</script>

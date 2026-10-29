@@ -1,0 +1,10 @@
+name = "thanh-portfolio-assistant"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+ALLOWED_ORIGINS = "https://thanhvu911.github.io,http://localhost:4321"
+KNOWLEDGE_URL = "https://thanhvu911.github.io/assistant-knowledge.json"
+GEMINI_MODEL = "gemini-2.5-flash"
+
+# The Gemini key is a secret, set with:  npx wrangler secret put GEMINI_API_KEY

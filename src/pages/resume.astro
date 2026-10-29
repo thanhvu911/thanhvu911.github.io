@@ -4,34 +4,25 @@ import Icon from '../components/Icon.astro';
 import { profile } from '../data/portfolio';
 ---
 
-<Base title="Resume" description="Download Thanh Vu's resume: Data Engineer or Data Analyst version.">
-  <section class="bg-gradient-to-b from-white to-soft/60 pb-20 pt-28">
+<Base title="Resume" description="Download Thanh Vu's resume: Data Analyst, Data Engineer, or Graduate School (M.S. Computer Science, AI) version.">
+  <section class="section">
     <div class="container-page max-w-3xl">
-      <a href="/" class="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-teal-ink">
-        <Icon name="arrow-left" size={16} />
-        Back to Home
-      </a>
-      <h1 class="section-title mt-6">Resume</h1>
-      <p class="mt-6 text-center text-muted">Two one-page versions. Pick the one that fits the role.</p>
+      <h1 class="section-title">Resume</h1>
+      <p class="section-lede">Three one-page versions. Pick the one that fits the role or program.</p>
 
-      <ul class="mt-10 space-y-4">
+      <ul class="mt-10 border-t border-line">
         {
           profile.resumes.map((r) => (
-            <li class="card flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
-              <div class="flex items-center gap-4">
-                <span class="icon-tile">
-                  <Icon name="briefcase" size={22} />
-                </span>
-                <div>
-                  <h2 class="text-lg font-bold text-navy">{r.label} Resume</h2>
-                  <p class="text-sm text-muted">{r.note}</p>
-                </div>
+            <li class="flex flex-col gap-4 border-b border-line py-6 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 class="text-lg font-semibold">{r.label} resume</h2>
+                <p class="text-[0.9375rem] text-muted">{r.note}</p>
               </div>
-              <div class="flex gap-2">
-                <a href={r.href} target="_blank" class="btn btn-outline">Open</a>
-                <a href={r.href} download class="btn btn-teal">
+              <div class="flex shrink-0 gap-2">
+                <a href={r.href} target="_blank" class="btn btn-outline" data-goatcounter-click={`resume-${r.id}-open`}>Open</a>
+                <a href={r.href} download class="btn btn-primary" data-goatcounter-click={`resume-${r.id}`}>
                   <Icon name="download" size={16} />
-                  Download
+                  Download PDF
                 </a>
               </div>
             </li>

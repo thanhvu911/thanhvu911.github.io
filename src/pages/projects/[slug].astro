@@ -5,12 +5,13 @@ import Icon from '../../components/Icon.astro';
 import Gallery from '../../components/Gallery.astro';
 import ProjectDetails from '../../components/ProjectDetails.astro';
 import { details } from '../../data/details';
-import { projects, type Project } from '../../data/portfolio';
+import { projects, repoFile, type Project } from '../../data/portfolio';
 import { projectImage } from '../../lib/images';
 import VacancyDemo from '../../components/demos/VacancyDemo.astro';
 import LancasterDemo from '../../components/demos/LancasterDemo.astro';
 import SalesDemo from '../../components/demos/SalesDemo.astro';
 import RfmDemo from '../../components/demos/RfmDemo.astro';
+import PowerBIWindow from '../../components/PowerBIWindow.astro';
 
 // Client-side dashboards rebuilt from each project's data.
 const demos: Record<string, typeof VacancyDemo> = {
@@ -32,7 +33,6 @@ interface Props {
   next: Project;
 }
 const { project, next } = Astro.props;
-const highlightIcons = ['trending-up', 'bar-chart', 'layers', 'target'] as const;
 const cover = projectImage(project.slug, project.cover);
 const detail = details[project.slug];
 const Demo = demos[project.slug];
@@ -46,33 +46,32 @@ const tabs = [
 ---
 
 <Base title={project.title} description={project.summary}>
-  <!-- Header band in the hero colors -->
-  <header class="project-hero relative isolate overflow-hidden pb-28 pt-28 text-white">
-    <div class="project-grid" aria-hidden="true"></div>
+  <header class="pb-10 pt-10 md:pt-14">
     <div class="container-page max-w-6xl">
-      <a href="/projects" class="inline-flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white">
+      <a href="/projects" class="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-strong">
         <Icon name="arrow-left" size={16} />
-        Back to Projects
+        All projects
       </a>
-      <p class="mt-8 text-sm font-medium text-teal">{project.kind} · {project.year}</p>
-      <h1 class="mt-3 max-w-4xl text-4xl font-bold leading-tight tracking-tight md:text-6xl">{project.title}</h1>
-      <p class="mt-5 max-w-3xl text-lg text-white/85">{project.summary}</p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        <a href={project.repo} target="_blank" rel="noopener" class="btn btn-teal" data-magnetic>
+      <p class="mt-8 text-sm text-muted">{project.kind.replaceAll(' · ', ' / ')}, {project.year}</p>
+      <h1 class="mt-2 max-w-4xl text-4xl font-bold leading-tight tracking-[-0.025em] md:text-5xl">{project.title}</h1>
+      <p class="serif mt-4 max-w-3xl text-2xl leading-snug text-ink">{project.headline}</p>
+      <p class="mt-4 max-w-3xl text-lg leading-relaxed text-muted">{project.summary}</p>
+      <div class="mt-8 flex flex-wrap gap-2">
+        <a href={project.repo} target="_blank" rel="noopener" class="btn btn-primary" data-goatcounter-click={`repo-${project.slug}`}>
           <Icon name="github" size={16} />
-          View Code on GitHub
+          Code on GitHub
         </a>
         {hasDashboard ? (
-          <a href="#dashboard" class="btn btn-glass" data-tab-link="dashboard">Try the interactive dashboard</a>
+          <a href="#dashboard" class="btn btn-outline" data-tab-link="dashboard">Try the interactive dashboard</a>
         ) : (
-          <a href="#walkthrough" class="btn btn-glass" data-tab-link="walkthrough">See the walkthrough</a>
+          <a href="#walkthrough" class="btn btn-outline" data-tab-link="walkthrough">See the walkthrough</a>
         )}
       </div>
     </div>
   </header>
 
-  <div class="container-page relative z-10 -mt-20 max-w-6xl">
-    <div class="card overflow-hidden shadow-2xl shadow-navy/15" data-reveal>
+  <div class="container-page max-w-6xl">
+    <div class="card overflow-hidden">
       <Image
         src={cover}
         alt={project.images.find((i) => i.file === project.cover)?.caption ?? project.title}
@@ -83,20 +82,19 @@ const tabs = [
       />
     </div>
 
-    <ul class:list={['card mt-6 grid divide-line', project.metrics.length === 3 ? 'grid-cols-3 divide-x' : 'grid-cols-2 sm:grid-cols-4 sm:divide-x']} data-stagger>
+    <dl class:list={['mt-6 grid border-y border-line', project.metrics.length === 3 ? 'grid-cols-3' : 'grid-cols-2 sm:grid-cols-4']}>
       {
         project.metrics.map((m, i) => (
-          <li class="p-5 text-center">
-            <Icon name={highlightIcons[i % highlightIcons.length]} size={20} class="mx-auto text-teal-ink" />
-            <p class="mt-2 text-2xl font-bold text-navy">{m.value}</p>
-            <p class="text-xs text-muted">{m.label}</p>
-          </li>
+          <div class:list={['flex flex-col py-5', i > 0 && 'border-l border-line pl-5', project.metrics.length === 4 && i === 2 && 'max-sm:border-l-0 max-sm:pl-0', project.metrics.length === 4 && i >= 2 && 'max-sm:border-t max-sm:border-line']}>
+            <dt class="order-2 text-sm text-muted">{m.label}</dt>
+            <dd class="order-1 text-2xl font-semibold tabular-nums tracking-tight text-strong">{m.value}</dd>
+          </div>
         ))
       }
-    </ul>
+    </dl>
 
     <div class="tabbar mt-8 hidden" data-tabbar>
-      <div class="flex gap-1 overflow-x-auto rounded-xl border border-line bg-white/90 p-1 shadow-sm backdrop-blur" role="tablist" aria-label="Project sections">
+      <div class="flex gap-1 overflow-x-auto rounded-xl border border-line bg-surface/80 p-1 backdrop-blur" role="tablist" aria-label="Project sections">
         {
           tabs.map((t, i) => (
             <button type="button" role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} class="tab-btn" data-tab={t.id}>
@@ -109,28 +107,28 @@ const tabs = [
     </div>
   </div>
 
-  <div class="container-page grid max-w-6xl gap-10 pb-16 pt-8 lg:grid-cols-[1fr_20rem]">
+  <div class="project-layout container-page grid max-w-6xl gap-10 pb-16 pt-8 lg:grid-cols-[1fr_20rem]" data-project-layout>
     <div class="min-w-0 space-y-6">
     <div class="space-y-6" role="tabpanel" id="panel-overview" aria-labelledby="tab-overview" data-panel="overview">
-      {project.context && <p class="rounded-xl border border-teal/30 bg-teal-wash px-5 py-4 text-ink" data-reveal>{project.context}</p>}
+      {project.context && <p class="rounded-xl border border-teal/30 bg-teal-wash px-5 py-4 text-ink">{project.context}</p>}
 
       {detail && <ProjectDetails slug={project.slug} detail={detail} part="intro" />}
 
-      <section class="card p-6 md:p-8" aria-labelledby="why" data-reveal>
-        <h2 id="why" class="text-2xl font-bold text-navy">The business problem</h2>
+      <section class="card p-6 md:p-8" aria-labelledby="why">
+        <h2 id="why" class="text-2xl font-bold text-strong">The business problem</h2>
         <p class="mt-4 text-lg leading-relaxed text-ink/90">{project.problem}</p>
         <h3 class="mt-6 font-semibold text-ink">Why it matters</h3>
         <p class="mt-2 leading-relaxed text-ink/80">{project.why}</p>
       </section>
 
-      <section class="card p-6 md:p-8" aria-labelledby="built" data-reveal>
-        <h2 id="built" class="text-2xl font-bold text-navy">My role and what I built</h2>
+      <section class="card p-6 md:p-8" aria-labelledby="built">
+        <h2 id="built" class="text-2xl font-bold text-strong">My role and what I built</h2>
         <p class="mt-3 text-muted">{project.role}</p>
         <ol class="mt-6 space-y-5">
           {
             project.approach.map((step, i) => (
               <li class="flex gap-4">
-                <span class="grid size-8 shrink-0 place-items-center rounded-full bg-navy text-sm font-semibold text-white">{i + 1}</span>
+                <span class="grid size-8 shrink-0 place-items-center rounded-full border border-cyan/40 bg-cyan/10 text-sm font-semibold text-teal-ink">{i + 1}</span>
                 <p class="pt-1 leading-relaxed text-ink/85">{step}</p>
               </li>
             ))
@@ -150,8 +148,8 @@ const tabs = [
         </div>
       </section>
 
-      <section class="card p-6 md:p-8" aria-labelledby="challenges" data-reveal>
-        <h2 id="challenges" class="text-2xl font-bold text-navy">Challenges I solved</h2>
+      <section class="card p-6 md:p-8" aria-labelledby="challenges">
+        <h2 id="challenges" class="text-2xl font-bold text-strong">Challenges I solved</h2>
         <ul class="mt-5 space-y-4">
           {
             project.challenges.map((c) => (
@@ -166,8 +164,8 @@ const tabs = [
         </ul>
       </section>
 
-      <section class="card p-6 md:p-8" aria-labelledby="impact" data-reveal>
-        <h2 id="impact" class="text-2xl font-bold text-navy">Impact and results</h2>
+      <section class="card p-6 md:p-8" aria-labelledby="impact">
+        <h2 id="impact" class="text-2xl font-bold text-strong">Impact and results</h2>
         <ul class="mt-5 space-y-3">
           {
             project.results.map((r) => (
@@ -187,18 +185,20 @@ const tabs = [
         <div class="space-y-6" role="tabpanel" id="panel-dashboard" aria-labelledby="tab-dashboard" data-panel="dashboard">
           {project.powerbiEmbed && (
             <section class="card overflow-hidden" aria-labelledby="pbi-title">
-              <h2 id="pbi-title" class="px-6 pt-6 text-2xl font-bold text-navy md:px-8">Live Power BI report</h2>
+              <h2 id="pbi-title" class="px-6 pt-6 text-2xl font-bold text-strong md:px-8">Live Power BI report</h2>
               <div class="mt-4 aspect-[16/10] w-full bg-soft">
                 <iframe title={`${project.title} Power BI report`} src={project.powerbiEmbed} class="size-full" loading="lazy" allowfullscreen />
               </div>
             </section>
           )}
           {Demo && (
-            <section class="card p-6 md:p-8" aria-labelledby="dash-title">
-              <h2 id="dash-title" class="text-2xl font-bold text-navy">Explore the data</h2>
-              <p class="mt-2 text-sm text-muted">An interactive version of the report, rebuilt from the project's data so it works in any browser without a Power BI login. Use the filters; every number recalculates.</p>
-              <div class="mt-6">
-                <Demo />
+            <section aria-labelledby="dash-title">
+              <h2 id="dash-title" class="text-2xl font-bold text-strong">Explore the report</h2>
+              <p class="mt-2 max-w-3xl text-muted">A working copy of the Power BI report, rebuilt from the project's data so it runs in any browser without a Power BI login. Change the filters and every visual recalculates. The other pages show the original report.</p>
+              <div class="mt-5">
+                <PowerBIWindow project={project}>
+                  <Demo />
+                </PowerBIWindow>
               </div>
             </section>
           )}
@@ -215,8 +215,8 @@ const tabs = [
     }
 
     <div class="space-y-6" role="tabpanel" id="panel-gallery" aria-labelledby="tab-gallery" data-panel="gallery">
-      <section id="gallery" class="card scroll-mt-24 p-6 md:p-8" aria-labelledby="gallery-title" data-reveal>
-        <h2 id="gallery-title" class="text-2xl font-bold text-navy">All images</h2>
+      <section id="gallery" class="card scroll-mt-24 p-6 md:p-8" aria-labelledby="gallery-title">
+        <h2 id="gallery-title" class="text-2xl font-bold text-strong">All images</h2>
         <p class="mt-2 text-sm text-muted">Click any image to view it full size.</p>
         <div class="mt-6">
           <Gallery project={project} />
@@ -227,8 +227,8 @@ const tabs = [
 
     <!-- Quick facts for a recruiter skimming the page -->
     <aside class="lg:sticky lg:top-24 lg:self-start">
-      <div class="card p-6" data-reveal>
-        <h2 class="font-bold text-navy">At a glance</h2>
+      <div class="card p-6">
+        <h2 class="font-bold text-strong">At a glance</h2>
         <dl class="mt-4 space-y-4 text-sm">
           <div>
             <dt class="text-muted">Year</dt>
@@ -249,10 +249,16 @@ const tabs = [
             </dd>
           </div>
         </dl>
-        <a href={project.repo} target="_blank" rel="noopener" class="btn btn-teal mt-6 w-full">
+        <a href={project.repo} target="_blank" rel="noopener" class="btn btn-primary mt-6 w-full" data-goatcounter-click={`repo-${project.slug}`}>
           <Icon name="github" size={16} />
           Repository
         </a>
+        {project.pbix?.map((f) => (
+          <a href={repoFile(project.repo, f.file)} class="btn btn-outline mt-3 w-full" data-goatcounter-click={`pbix-${project.slug}`}>
+            <Icon name="download" size={16} />
+            {f.label.replace(/ \(.*/, '')} (.pbix)
+          </a>
+        ))}
         <a href="/#contact" class="btn btn-outline mt-3 w-full">Contact me about this</a>
       </div>
     </aside>
@@ -262,9 +268,9 @@ const tabs = [
     <div class="container-page flex max-w-6xl items-center justify-between gap-6 py-12">
       <div class="min-w-0">
         <p class="text-sm text-muted">Next project</p>
-        <p class="mt-1 text-2xl font-bold text-navy transition-colors group-hover:text-teal-ink md:text-3xl">{next.title}</p>
+        <p class="mt-1 text-2xl font-bold text-strong transition-colors group-hover:text-teal-ink md:text-3xl">{next.title}</p>
       </div>
-      <span class="grid size-14 shrink-0 place-items-center rounded-full bg-navy text-white transition-transform group-hover:translate-x-1">
+      <span class="grid size-14 shrink-0 place-items-center rounded-full bg-cyan text-bg shadow-[0_0_24px_rgb(34_211_238/0.5)] transition-transform group-hover:translate-x-1">
         <Icon name="arrow-right" size={22} />
       </span>
     </div>
@@ -272,6 +278,12 @@ const tabs = [
 </Base>
 
 <style>
+  .project-layout[data-active-tab='dashboard'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .project-layout[data-active-tab='dashboard'] > aside {
+    display: none;
+  }
   .tab-btn {
     display: inline-flex;
     flex-shrink: 0;
@@ -288,25 +300,13 @@ const tabs = [
     transition: background-color 150ms, color 150ms;
   }
   .tab-btn:hover {
-    color: var(--color-navy);
-    background: var(--color-soft);
+    color: var(--color-strong);
+    background: var(--hover-bg);
   }
   .tab-btn[aria-selected='true'] {
-    color: #fff;
-    background: var(--color-navy);
-  }
-  .project-hero {
-    background: linear-gradient(135deg, #0f2757 0%, #175e82 100%);
-  }
-  .project-grid {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background-image:
-      linear-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(255 255 255 / 0.06) 1px, transparent 1px);
-    background-size: 56px 56px;
-    mask-image: radial-gradient(ellipse at 30% 40%, #000 20%, transparent 75%);
+    color: var(--color-strong);
+    background: var(--color-teal-wash);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-cyan) 50%, transparent);
   }
 </style>
 
@@ -329,6 +329,8 @@ const tabs = [
         if (on && focus) t.focus();
       });
       panels.forEach((p) => (p.hidden = p.dataset.panel !== id));
+      // The dashboard gets the full width; the At a glance sidebar returns on other tabs.
+      document.querySelector<HTMLElement>('[data-project-layout]')?.setAttribute('data-active-tab', id);
       // Charts inside a hidden panel need a resize once shown.
       window.dispatchEvent(new Event('resize'));
     };

@@ -6,12 +6,19 @@ export const profile = {
   name: 'Thanh Vu',
   role: 'Data Engineer & Analyst',
   eyebrow: 'Data Engineer & Analyst',
-  tagline: 'Transforming data into intelligence that drives impact.',
-  phone: '(717) 869-9502',
-  phoneHref: 'tel:+17178699502',
+  tagline: 'I build the pipelines, models, and Power BI reports that turn public and business data into decisions.',
+  // Phone digits are stored reversed and assembled in the browser, so simple
+  // scrapers reading the HTML don't pick up the number.
+  phoneReversed: '2059968717',
   // Web3Forms access key (free, from web3forms.com). Leave empty to hide the form;
   // the one-click email, Gmail, and LinkedIn buttons always show.
   web3formsKey: '',
+  // GoatCounter site code (free, cookie-free visit counts at <code>.goatcounter.com).
+  // Leave empty until the account exists; no tracking script loads while it is empty.
+  goatcounter: '',
+  // URL of the Cloudflare Worker in worker/ that answers "Ask about Thanh" with
+  // Gemini. Leave empty to use the prewritten quick answers instead.
+  assistantEndpoint: '',
   roles: ['Data Engineer', 'Data Analyst', 'Power BI Developer'],
   status: 'Data Analyst Fellow @ EDC Lancaster County',
   availability: 'Open to Data Engineer, Analytics Engineer, and Data Analyst roles',
@@ -22,23 +29,11 @@ export const profile = {
   githubUser: 'thanhvu911',
   linkedin: 'https://www.linkedin.com/in/thanh25/',
   resumes: [
-    { label: 'Data Engineer', href: '/thanh-vu-resume-data-engineer.pdf', note: 'Pipelines, warehouses, Microsoft Fabric' },
-    { label: 'Data Analyst', href: '/thanh-vu-resume-data-analyst.pdf', note: 'Dashboards, analysis, insights' },
+    { id: 'analyst', label: 'Data Analyst', href: '/thanh-vu-resume-data-analyst.pdf', note: 'Dashboards, analysis, and reporting' },
+    { id: 'engineer', label: 'Data Engineer', href: '/thanh-vu-resume-data-engineer.pdf', note: 'Pipelines, warehouses, and Microsoft Fabric' },
+    { id: 'grad-school', label: 'Graduate school', href: '/thanh-vu-resume-graduate-school.pdf', note: 'M.S. Computer Science (AI) applications, Fall 2027' },
   ],
 };
-
-// About section, one paragraph per entry.
-export const highlights = [
-  { value: 131, suffix: 'M+', label: 'Rows modeled in SQL Server' },
-  { value: 7, suffix: '', label: 'End-to-end data projects' },
-  { value: 3, suffix: '', label: 'Data roles, US and Vietnam' },
-  { value: 3.82, decimals: 2, suffix: '', label: 'Major GPA, Computer Science' },
-];
-
-export const bio = [
-  "I'm a Computer Science graduate of Franklin & Marshall College (GPA 3.72, major GPA 3.82) and a Microsoft Certified Fabric Data Engineer Associate (DP-700). My work sits where data engineering, analytics, and statistical modeling meet.",
-  "I'm currently a Data Analyst Fellow at the EDC Lancaster County Center for Regional Analysis, building Power BI reporting on federal economic data and a web dashboard with a built-in AI assistant. I enjoy turning raw data into decisions: building ETL pipelines, designing data warehouses and dashboards, and developing models that solve real-world problems.",
-];
 
 export type ImageCategory = 'Power BI' | 'Data flow' | 'Data model' | 'Code' | 'Insights';
 
@@ -76,7 +71,12 @@ export interface Project {
   images: ProjectImage[];
   /** Optional public Power BI "Publish to web" embed URL, shown on the Interactive dashboard tab. */
   powerbiEmbed?: string;
+  /** Power BI Desktop files in the project repo, for reviewers who want the real report. */
+  pbix?: { label: string; file: string }[];
 }
+
+/** Direct download link for a file at the root of a project's GitHub repo. */
+export const repoFile = (repo: string, file: string) => `${repo}/raw/HEAD/${encodeURIComponent(file)}`;
 
 export const projects: Project[] = [
   {
@@ -211,6 +211,10 @@ export const projects: Project[] = [
       'A Power BI dashboard for the KPIM Mart retail chain comparing actual sales against monthly plans by store, product group, region, and time.',
     repo: 'https://github.com/thanhvu911/sales-planning-analysis',
     featured: true,
+    pbix: [
+      { label: 'Capstone report (.pbix, 3.7 MB)', file: 'Capstone Project.pbix' },
+      { label: 'KPIM Mart sales report (.pbix, 1.9 MB)', file: 'KPIM Mart Sales Report Datathon 3.pbix' },
+    ],
     cover: 'sales-analysis-dashboard.png',
     metrics: [
       { value: '58K+', label: 'Transactions' },
@@ -269,6 +273,7 @@ export const projects: Project[] = [
     summary:
       'A multi-fact Power BI model benchmarking Lancaster County against Pennsylvania and the U.S. on jobs, GDP, and wages.',
     repo: 'https://github.com/thanhvu911/lancaster-economic-indicators-dashboard',
+    pbix: [{ label: 'Power BI report (.pbix, 1.2 MB)', file: 'EDC presentation.pbix' }],
     cover: 'edc-labor-lancaster.png',
     metrics: [
       { value: '10+', label: 'Years of data' },
@@ -329,6 +334,7 @@ export const projects: Project[] = [
     summary:
       'Scores every customer on recency, frequency, and monetary value with DAX calculated columns and maps each R-F-M code to a segment with a recommended marketing action.',
     repo: 'https://github.com/thanhvu911/rfm-customer-segmentation-powerbi',
+    pbix: [{ label: 'Power BI report (.pbix, 3.7 MB)', file: 'Capstone Project.pbix' }],
     cover: 'powerbi-page-2-customer-analysis.png',
     metrics: [
       { value: '64', label: 'R-F-M codes' },
@@ -514,24 +520,6 @@ export const skills = [
   },
 ];
 
-export const courseworkGroups = [
-  {
-    group: 'Data & Statistics',
-    icon: 'bar-chart',
-    items: ['Data Science', 'Statistical Modeling', 'Probability & Statistics', 'Applied Regression Analysis'],
-  },
-  {
-    group: 'AI & Machine Learning',
-    icon: 'target',
-    items: ['Artificial Intelligence', 'Machine Learning', 'Information Theory'],
-  },
-  {
-    group: 'Computer Science Foundations',
-    icon: 'code',
-    items: ['Algorithms', 'Theory of Computation'],
-  },
-];
-
 export const credentials = [
   { title: 'Microsoft Certified: Fabric Data Engineer Associate', detail: 'DP-700 · Microsoft · Oct 2026', note: 'Credential ID 5CE20E8CF4AC4CE3' },
   { title: 'SQL (Advanced) Certificate', detail: 'HackerRank · Sep 2025' },
@@ -557,12 +545,62 @@ export const education = {
   ],
 };
 
+// Academics page, from the Graduate School (MS CS-AI) resume, v7.
+export const research = {
+  interests:
+    'Machine learning, probabilistic reasoning, and applied statistics for noisy real-world data, plus reliable data systems that make AI reproducible.',
+  applying: 'In-person M.S. programs in Computer Science, Machine Learning, or Artificial Intelligence, starting Fall 2027.',
+  coursework: [
+    { group: 'Computer Science', items: ['Artificial Intelligence', 'Machine Learning', 'Algorithms & Data Structures', 'Theory of Computation'] },
+    { group: 'Mathematics & Statistics', items: ['Probability and Statistics', 'Statistical Modeling', 'Applied Regression Analysis', 'Information Theory'] },
+  ],
+  projects: [
+    {
+      title: 'Can Mail Data Predict Housing Vacancy?',
+      slug: 'can-mail-data-predict-housing-vacancy',
+      meta: 'Microsoft Fabric, Power BI. Sep 2026',
+      bullets: [
+        'Investigated whether quarterly USPS vacancy counts can stand in for the annual Census ACS vacancy rate, building a reproducible pipeline over 6 counties and 15 years (84 county-year observations).',
+        'Evaluated the hypothesis three ways (correlation, directional accuracy, bias): a pooled r = 0.77 that ranged from −0.01 to 0.72 by county and only 57.7% directional agreement, so USPS data is a county-dependent early signal.',
+        'Isolated a 2012 USPS classification change as a data artifact and fixed two silent ingestion bugs, preventing a false trend.',
+      ],
+    },
+    {
+      title: 'Grocery Transaction Data Warehouse',
+      slug: 'grocery-transaction-data-warehouse',
+      meta: 'SQL Server, T-SQL. Jul–Aug 2025',
+      bullets: [
+        'Built a Medallion-architecture warehouse over 131M+ transaction lines with stored-procedure ETL, a star-schema Gold layer, and 21 automated data-quality checks; query tuning cut processing time by 25%.',
+      ],
+    },
+    {
+      title: 'Medical Cost Regression',
+      slug: 'medical-cost-regression',
+      meta: 'R, ggplot2, R Markdown. Nov 2021',
+      bullets: [
+        'Compared five nested linear models, including a sex × age interaction, on 1,338 insurance records with residual diagnostics, showing age is a significant predictor while sex adds little once age is controlled.',
+      ],
+    },
+    {
+      title: 'AI, Systems & Theory Coursework',
+      meta: 'Python, C++, RISC-V. 2024–2025',
+      bullets: [
+        'Implemented uninformed and informed search, constraint satisfaction, logical inference, and Bayesian networks in Python, and solved a Connect-4 board puzzle with state-space search.',
+        'Engineered features and explored real-world datasets (Steam games; 13.6K Melbourne housing listings) in pandas for Machine Learning; designed a CPU in Logisim, wrote recursive RISC-V assembly, coded DFA/NFAs, and benchmarked a red-black tree.',
+      ],
+    },
+  ],
+  leadership: {
+    title: 'Technology Committee, Diplomatic Congress',
+    meta: 'Franklin & Marshall College. Aug 2021 – Aug 2022',
+    detail: 'Cut classroom technology costs by 18% by shaping campus technology policy with 10+ committee members.',
+  },
+};
+
 export const nav = [
-  { label: 'Home', href: '/#home' },
-  { label: 'About', href: '/#about' },
-  { label: 'Education', href: '/#education' },
-  { label: 'Experience', href: '/#experience' },
-  { label: 'Skills', href: '/#skills' },
   { label: 'Projects', href: '/#projects' },
+  { label: 'Experience', href: '/#experience' },
+  { label: 'Academics', href: '/academics' },
+  { label: 'Resume', href: '/resume' },
   { label: 'Contact', href: '/#contact' },
 ];

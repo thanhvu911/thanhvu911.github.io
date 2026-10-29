@@ -25,3 +25,10 @@ pnpm-debug.log*
 
 # local tooling
 .claude/
+
+# Cloudflare worker local files
+worker/.wrangler/
+worker/.dev.vars
+
+# design mockups shared in chat
+design-options/

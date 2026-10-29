@@ -2,51 +2,61 @@
 import Icon from './Icon.astro';
 import { nav, profile } from '../data/portfolio';
 
-// Over a blue hero (home and project pages) the bar starts transparent and turns
-// white once the visitor scrolls. Other pages start white.
+// Mark the menu item for the page you're on (Academics, Resume).
 const path = Astro.url.pathname.replace(/\/$/, '');
-const overHero = path === '' || /^\/projects\/[^/]+$/.test(path);
 ---
 
-<nav
-  class:list={['site-nav fixed inset-x-0 top-0 z-50 transition-colors duration-300', !overHero && 'is-solid']}
-  data-over-hero={overHero ? '' : undefined}
-  aria-label="Main"
->
-  <div class="container-page flex h-16 items-center justify-between">
-    <a href="/#home" class="nav-brand text-xl font-bold">{profile.name}</a>
+<nav class="site-nav fixed inset-x-0 top-0 z-50" aria-label="Main">
+  <div class="container-page flex h-16 items-center justify-between gap-4">
+    <a href="/" class="flex items-center gap-2.5 text-lg font-bold tracking-tight text-strong">
+      <span class="brand-dot" aria-hidden="true"></span>
+      {profile.name}
+    </a>
 
-    <ul class="hidden items-center gap-1 lg:flex">
-      {
-        nav.map((item) => (
-          <li>
-            <a href={item.href} class="nav-item rounded-md px-4 py-2 text-sm font-medium transition-colors">
-              {item.label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+    <div class="flex items-center gap-1">
+      <ul class="hidden items-center gap-1 md:flex">
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} class="nav-item" aria-current={item.href === path ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
 
-    <button
-      type="button"
-      class="nav-item grid size-11 place-items-center rounded-md lg:hidden"
-      aria-label="Open menu"
-      aria-expanded="false"
-      aria-controls="mobile-menu"
-      data-menu-toggle
-    >
-      <Icon name="menu" size={22} class="menu-open" />
-      <Icon name="x" size={22} class="menu-close hidden" />
-    </button>
+      <button type="button" class="theme-btn" aria-label="Switch to dark mode" aria-pressed="false" data-theme-toggle>
+        <Icon name="moon" size={17} class="icon-moon" />
+        <Icon name="sun" size={17} class="icon-sun" />
+      </button>
+
+      <button type="button" class="search-btn" aria-label="Search the site" data-palette-open>
+        <Icon name="search" size={16} />
+        <span class="hidden lg:inline">Search</span>
+        <kbd class="hidden sm:inline" data-shortcut>Ctrl K</kbd>
+      </button>
+
+      <button
+        type="button"
+        class="grid size-11 place-items-center rounded-md text-strong hover:bg-soft md:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <Icon name="menu" size={22} class="menu-open" />
+        <Icon name="x" size={22} class="menu-close hidden" />
+      </button>
+    </div>
   </div>
 
-  <div id="mobile-menu" class="hidden border-t border-line bg-white shadow-lg lg:hidden" data-menu>
+  <div id="mobile-menu" class="hidden border-t border-line md:hidden" data-menu>
     <ul class="container-page py-2">
       {
         nav.map((item) => (
           <li>
-            <a href={item.href} class="block rounded-md px-3 py-3 font-medium text-ink hover:bg-soft hover:text-teal-ink">
+            <a href={item.href} class="block rounded-md px-3 py-3 font-medium text-ink hover:bg-soft hover:text-strong">
               {item.label}
             </a>
           </li>
@@ -57,46 +67,94 @@ const overHero = path === '' || /^\/projects\/[^/]+$/.test(path);
 </nav>
 
 <style>
-  .site-nav .nav-brand,
-  .site-nav .nav-item {
-    color: #fff;
+  .site-nav {
+    border-bottom: 1px solid var(--card-border);
+    background: var(--nav-bg);
+    backdrop-filter: blur(14px) saturate(140%);
   }
-  .site-nav .nav-item:hover {
-    background: rgb(255 255 255 / 0.12);
+  .brand-dot {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 999px;
+    background: var(--color-cyan);
+    box-shadow: 0 0 12px rgb(34 211 238 / 0.9);
   }
-  .site-nav.is-solid,
-  .site-nav.menu-open {
-    background: rgb(255 255 255 / 0.95);
-    backdrop-filter: blur(8px);
-    box-shadow: 0 1px 3px rgb(15 39 87 / 0.08);
+  .nav-item {
+    display: block;
+    padding: 0.5rem 0.875rem;
+    border-radius: 0.5rem;
+    color: var(--color-muted);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition: color 150ms, background-color 150ms;
   }
-  .site-nav.is-solid .nav-brand,
-  .site-nav.menu-open .nav-brand {
-    color: var(--color-navy);
+  .nav-item:hover {
+    color: var(--color-strong);
+    background: var(--hover-bg);
   }
-  .site-nav.is-solid .nav-item,
-  .site-nav.menu-open .nav-item {
-    color: var(--color-ink);
+  .nav-item[aria-current='page'] {
+    color: var(--color-strong);
+    background: var(--color-teal-wash);
   }
-  .site-nav.is-solid .nav-item:hover {
-    color: var(--color-teal-ink);
-    background: var(--color-soft);
+  .search-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    margin-left: 0.25rem;
+    padding: 0 0.625rem 0 0.75rem;
+    border: 1px solid var(--chip-border);
+    border-radius: 0.625rem;
+    background: var(--chip-bg);
+    color: var(--color-muted);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: border-color 150ms, color 150ms;
+  }
+  .search-btn:hover {
+    border-color: var(--color-cyan);
+    color: var(--color-strong);
+  }
+  .theme-btn {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-left: 0.25rem;
+    border: 1px solid var(--chip-border);
+    border-radius: 0.625rem;
+    background: var(--chip-bg);
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: border-color 150ms, color 150ms;
+  }
+  .theme-btn:hover {
+    border-color: var(--color-cyan);
+    color: var(--color-strong);
+  }
+  .theme-btn :global(.icon-sun),
+  :global([data-theme='dark']) .theme-btn :global(.icon-moon) {
+    display: none;
+  }
+  :global([data-theme='dark']) .theme-btn :global(.icon-sun) {
+    display: block;
+  }
+  .search-btn kbd {
+    padding: 0.0625rem 0.375rem;
+    border: 1px solid var(--chip-border);
+    border-radius: 0.3125rem;
+    font-family: inherit;
+    font-size: 0.6875rem;
+    font-weight: 600;
   }
 </style>
 
 <script>
   const navEl = document.querySelector<HTMLElement>('.site-nav')!;
-  if (navEl.hasAttribute('data-over-hero')) {
-    const update = () => navEl.classList.toggle('is-solid', window.scrollY > 40);
-    update();
-    window.addEventListener('scroll', update, { passive: true });
-  }
-
   const toggle = navEl.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
   const menu = navEl.querySelector<HTMLElement>('[data-menu]')!;
   const setOpen = (open: boolean) => {
     menu.classList.toggle('hidden', !open);
-    navEl.classList.toggle('menu-open', open);
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     toggle.querySelector('.menu-open')?.classList.toggle('hidden', open);
@@ -109,4 +167,30 @@ const overHero = path === '' || /^\/projects\/[^/]+$/.test(path);
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') setOpen(false);
   });
+
+  // Light/dark toggle, remembered for the next visit.
+  const themeBtn = navEl.querySelector<HTMLButtonElement>('[data-theme-toggle]')!;
+  const syncThemeBtn = () => {
+    const dark = document.documentElement.dataset.theme === 'dark';
+    themeBtn.setAttribute('aria-pressed', String(dark));
+    themeBtn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+  };
+  syncThemeBtn();
+  themeBtn.addEventListener('click', () => {
+    const dark = document.documentElement.dataset.theme !== 'dark';
+    if (dark) document.documentElement.dataset.theme = 'dark';
+    else delete document.documentElement.dataset.theme;
+    document.querySelector('[data-theme-color]')?.setAttribute('content', dark ? '#050b18' : '#ffffff');
+    try {
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    } catch {}
+    syncThemeBtn();
+  });
+
+  // Search button opens the command palette; show ⌘K on Apple devices.
+  navEl.querySelector('[data-palette-open]')!.addEventListener('click', () => window.dispatchEvent(new Event('palette:open')));
+  if (/Mac|iPhone|iPad/.test(navigator.platform)) {
+    const kbd = navEl.querySelector('[data-shortcut]');
+    if (kbd) kbd.textContent = '⌘K';
+  }
 </script>

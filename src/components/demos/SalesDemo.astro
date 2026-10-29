@@ -3,7 +3,7 @@
 ---
 
 <div class="demo" data-sales-demo>
-  <div class="grid gap-4 sm:grid-cols-2">
+  <div class="grid gap-4 sm:grid-cols-2" data-pbi-filters>
     <label class="block">
       <span class="demo-label">District</span>
       <select class="field mt-2" data-district></select>
@@ -125,8 +125,8 @@
       const sum = (m: string, k: 'actual' | 'plan') => subset.filter((r) => r.month === m).reduce((s, r) => s + r[k], 0);
       monthly.data.labels = months;
       monthly.data.datasets = [
-        { label: 'Actual', data: months.map((m) => sum(m, 'actual')), backgroundColor: palette.navy, borderRadius: 3, order: 2 },
-        { label: 'Plan', type: 'line' as const, data: months.map((m) => sum(m, 'plan')), borderColor: palette.teal, backgroundColor: palette.teal, pointRadius: 0, borderWidth: 2, order: 1 },
+        { label: 'Actual', data: months.map((m) => sum(m, 'actual')), backgroundColor: palette.primary, borderRadius: 3, order: 2 },
+        { label: 'Plan', type: 'line' as const, data: months.map((m) => sum(m, 'plan')), borderColor: palette.secondary, backgroundColor: palette.secondary, pointRadius: 0, borderWidth: 2, order: 1 },
       ];
       monthly.update();
 
@@ -144,7 +144,7 @@
         {
           label: 'Plan completion',
           data: ranking.map((r) => r.pct),
-          backgroundColor: ranking.map((r) => (district === 'all' || r.d === district ? palette.teal : '#cfe9ea')),
+          backgroundColor: ranking.map((r) => (district === 'all' || r.d === district ? palette.primary : palette.faded)),
           borderRadius: 3,
         },
       ];

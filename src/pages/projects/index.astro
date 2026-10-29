@@ -1,19 +1,17 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Icon from '../../components/Icon.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { projects } from '../../data/portfolio';
 ---
 
 <Base title="Projects" description="Data engineering and analytics projects by Thanh Vu: Microsoft Fabric, SQL Server warehouses, Power BI, and statistics.">
-  <section class="bg-gradient-to-b from-white to-soft/60 pb-20 pt-28">
+  <section class="section">
     <div class="container-page">
-      <a href="/#projects" class="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-teal-ink">
-        <Icon name="arrow-left" size={16} />
-        Back to Home
-      </a>
-      <h1 class="section-title mt-6">All Projects</h1>
-      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <h1 class="section-title">All projects</h1>
+      <p class="section-lede">
+        Seven end-to-end projects on public and business data. Each has a written case study and the full code on GitHub.
+      </p>
+      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {projects.map((p) => <ProjectCard project={p} />)}
       </div>
     </div>

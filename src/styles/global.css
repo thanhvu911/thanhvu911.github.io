@@ -1,46 +1,114 @@
 @import "tailwindcss";
+@import "@fontsource-variable/public-sans";
+@import "@fontsource-variable/source-serif-4";
 
-/* Palette and type taken from the original Lovable site. */
+/* Light first: white paper, navy ink, one cyan accent. A dark "data
+   observatory" mode (html[data-theme="dark"]) is one toggle away and
+   remembered per visitor. Public Sans is the typeface of U.S. federal data
+   sites, a nod to the BLS, BEA, and Census data behind these projects;
+   Source Serif is kept for project findings and research writing. */
 @theme {
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-2: #f5f8fc;
   --color-navy: #0f2757;
-  --color-navy-2: #175e82;
-  --color-teal: #11d4d4;
-  --color-teal-ink: #0a7a82; /* teal dark enough for text on white */
-  --color-teal-wash: #e3f9f9;
-  --color-ink: #1d2025;
-  --color-muted: #5b6472;
-  --color-line: #e5e7eb;
-  --color-soft: #f3f4f6;
+  --color-strong: #0f2757; /* headings and key numbers */
+  --color-ink: #334155; /* body text */
+  --color-muted: #5b6577;
+  --color-line: #e3e8f0;
+  --color-soft: #f4f7fb;
+  --color-cyan: #0891b2;
+  --color-teal: #06b6d4;
+  --color-teal-ink: #0e7490; /* cyan dark enough for text on white */
+  --color-teal-wash: rgb(8 145 178 / 0.08);
+  --color-blue: #2563eb;
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Public Sans Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Source Serif 4 Variable", Georgia, "Times New Roman", serif;
 }
 
-/* Cross-page fades using the browser's native View Transitions. */
+/* Theme-dependent values that Tailwind utilities don't cover. */
+:root {
+  --card-bg: #ffffff;
+  --card-border: #e3e8f0;
+  --card-shadow: 0 1px 2px rgb(15 39 87 / 0.04), 0 10px 30px -18px rgb(15 39 87 / 0.18);
+  --card-hover-border: rgb(8 145 178 / 0.45);
+  --card-hover-shadow: 0 1px 2px rgb(15 39 87 / 0.05), 0 24px 50px -24px rgb(8 145 178 / 0.35);
+  --panel-bg: rgb(255 255 255 / 0.97);
+  --nav-bg: rgb(255 255 255 / 0.8);
+  --hover-bg: rgb(15 39 87 / 0.05);
+  --chip-bg: #ffffff;
+  --chip-border: #d5dce8;
+  --btn-primary-bg: #0f2757;
+  --btn-primary-fg: #ffffff;
+  --btn-primary-shadow: 0 8px 20px -10px rgb(15 39 87 / 0.6);
+  --btn-primary-hover: #17397a;
+  --gradient-text: linear-gradient(100deg, #0f2757 0%, #0f2757 42%, #0e7490 72%, #0891b2 100%);
+  --ambient:
+    radial-gradient(60rem 32rem at 85% -10%, rgb(8 145 178 / 0.08), transparent 70%),
+    radial-gradient(44rem 28rem at 0% 0%, rgb(37 99 235 / 0.05), transparent 70%);
+  --grid-line: rgb(15 39 87 / 0.045);
+  --spot: rgb(8 145 178 / 0.05);
+  --glow: rgb(8 145 178 / 0.18);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #050b18;
+  --color-surface: #0a1428;
+  --color-surface-2: #0f1d38;
+  --color-strong: #f1f6ff;
+  --color-ink: #c9d5e8;
+  --color-muted: #8797b3;
+  --color-line: #1b2a48;
+  --color-soft: #0c1730;
+  --color-cyan: #22d3ee;
+  --color-teal: #22d3ee;
+  --color-teal-ink: #67e8f9;
+  --color-teal-wash: rgb(34 211 238 / 0.1);
+  --color-blue: #60a5fa;
+
+  --card-bg: linear-gradient(180deg, rgb(255 255 255 / 0.045), rgb(255 255 255 / 0.015));
+  --card-border: rgb(148 170 220 / 0.14);
+  --card-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+  --card-hover-border: rgb(34 211 238 / 0.45);
+  --card-hover-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 24px 60px -24px rgb(34 211 238 / 0.35);
+  --panel-bg: rgb(8 16 34 / 0.96);
+  --nav-bg: rgb(5 11 24 / 0.72);
+  --hover-bg: rgb(255 255 255 / 0.05);
+  --chip-bg: rgb(255 255 255 / 0.03);
+  --chip-border: rgb(148 170 220 / 0.22);
+  --btn-primary-bg: linear-gradient(135deg, #67e8f9 0%, #22d3ee 45%, #3b82f6 100%);
+  --btn-primary-fg: #04101f;
+  --btn-primary-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45), 0 10px 30px -10px rgb(34 211 238 / 0.6);
+  --btn-primary-hover: linear-gradient(135deg, #a5f3fc 0%, #22d3ee 45%, #3b82f6 100%);
+  --gradient-text: linear-gradient(100deg, #f1f6ff 0%, #c7f6ff 38%, #22d3ee 68%, #60a5fa 100%);
+  --ambient:
+    radial-gradient(60rem 36rem at 85% -10%, rgb(59 130 246 / 0.16), transparent 70%),
+    radial-gradient(48rem 32rem at 5% 5%, rgb(34 211 238 / 0.1), transparent 70%);
+  --grid-line: rgb(148 170 220 / 0.045);
+  --spot: rgb(34 211 238 / 0.07);
+  --glow: rgb(34 211 238 / 0.35);
+}
+
+/* Cross-page fade using the browser's native View Transitions. */
 @view-transition {
   navigation: auto;
 }
 ::view-transition-old(root) {
-  animation: 220ms ease-in both vt-out;
+  animation: 160ms ease-in both vt-out;
 }
 ::view-transition-new(root) {
-  animation: 380ms cubic-bezier(0.22, 1, 0.36, 1) both vt-in;
+  animation: 260ms ease-out both vt-in;
 }
 @keyframes vt-out {
   to {
     opacity: 0;
-    transform: translateY(-8px);
   }
 }
 @keyframes vt-in {
   from {
     opacity: 0;
-    transform: translateY(12px);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none;
   }
 }
 
@@ -48,40 +116,48 @@
   html {
     color: var(--color-ink);
     font-family: var(--font-sans);
-    background: #fff;
+    line-height: 1.6;
+    background: var(--color-bg);
+    color-scheme: light;
     -webkit-font-smoothing: antialiased;
     scroll-behavior: smooth;
-    scroll-padding-top: 4.5rem;
+    scroll-padding-top: 5rem;
+    transition: background-color 300ms ease;
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
   }
 
-  /* Lenis drives smooth scrolling itself; native smooth scroll would fight it. */
-  html.lenis,
-  html.lenis body {
-    height: auto;
-  }
-  .lenis.lenis-smooth {
-    scroll-behavior: auto !important;
-  }
-  .lenis.lenis-stopped {
-    overflow: hidden;
+  /* Ambient light: soft glows and a faint measurement grid behind everything. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      var(--ambient),
+      linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 64px 64px,
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 64px 64px;
+    mask-image: linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%);
   }
 
   ::selection {
-    background: var(--color-teal);
-    color: var(--color-navy);
+    background: rgb(8 145 178 / 0.25);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-teal);
+    outline: 2px solid var(--color-cyan);
     outline-offset: 3px;
     border-radius: 4px;
   }
 
-  h1, h2, h3 {
+  h1, h2, h3, h4 {
+    color: var(--color-strong);
     text-wrap: balance;
   }
 
-  p {
+  p, li {
     text-wrap: pretty;
   }
 
@@ -100,52 +176,80 @@
 @layer components {
   .container-page {
     width: 100%;
-    max-width: 72rem;
+    max-width: 74rem;
     margin-inline: auto;
     padding-inline: 1rem;
   }
   @media (min-width: 768px) {
     .container-page {
-      padding-inline: 1.5rem;
+      padding-inline: 2rem;
+    }
+  }
+
+  .section {
+    padding-block: 5rem;
+  }
+  @media (min-width: 768px) {
+    .section {
+      padding-block: 7rem;
     }
   }
 
   .section-title {
-    text-align: center;
-    color: var(--color-navy);
+    color: var(--color-strong);
     font-size: 2.25rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    line-height: 1.15;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
   }
   @media (min-width: 768px) {
     .section-title {
       font-size: 3rem;
     }
   }
-  .section-title::after {
-    content: "";
-    display: block;
-    width: 5rem;
-    height: 4px;
-    margin: 1rem auto 0;
-    border-radius: 999px;
-    background: var(--color-teal);
+  .section-lede {
+    margin-top: 1rem;
+    max-width: 40rem;
+    color: var(--color-muted);
+    font-size: 1.0625rem;
   }
 
+  .text-gradient {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Serif voice for findings and research statements. */
+  .serif {
+    font-family: var(--font-serif);
+    font-optical-sizing: auto;
+  }
+
+  /* The one surface style used across the site. */
   .card {
-    background: #fff;
-    border: 1px solid var(--color-line);
-    border-radius: 0.75rem;
-    box-shadow: 0 1px 3px rgb(15 39 87 / 0.06);
+    position: relative;
+    border: 1px solid var(--card-border);
+    border-radius: 1rem;
+    background: var(--card-bg);
+    box-shadow: var(--card-shadow);
+  }
+  .card-hover {
+    transition: border-color 250ms, box-shadow 250ms;
+  }
+  .card-hover:hover {
+    border-color: var(--card-hover-border);
+    box-shadow: var(--card-hover-shadow);
   }
 
   .icon-tile {
     display: grid;
     place-items: center;
     flex-shrink: 0;
-    width: 3rem;
-    height: 3rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid rgb(8 145 178 / 0.25);
     border-radius: 0.625rem;
     background: var(--color-teal-wash);
     color: var(--color-teal-ink);
@@ -154,11 +258,12 @@
   .pill {
     display: inline-flex;
     align-items: center;
-    padding: 0.25rem 0.75rem;
+    padding: 0.1875rem 0.625rem;
+    border: 1px solid var(--chip-border);
     border-radius: 999px;
-    background: var(--color-teal-wash);
-    color: var(--color-teal-ink);
-    font-size: 0.75rem;
+    background: var(--chip-bg);
+    color: var(--color-ink);
+    font-size: 0.8125rem;
     font-weight: 500;
   }
 
@@ -169,12 +274,25 @@
   .dot-list > li::before {
     content: "";
     position: absolute;
-    left: 0;
-    top: 0.6em;
-    width: 0.375rem;
-    height: 0.375rem;
+    left: 0.125rem;
+    top: 0.68em;
+    width: 0.3125rem;
+    height: 0.3125rem;
     border-radius: 999px;
     background: var(--color-teal);
+    box-shadow: 0 0 8px var(--glow);
+  }
+
+  .text-link {
+    color: var(--color-teal-ink);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    text-underline-offset: 0.22em;
+    transition: text-decoration-color 150ms;
+  }
+  .text-link:hover {
+    text-decoration-color: currentColor;
   }
 
   .btn {
@@ -183,244 +301,150 @@
     justify-content: center;
     gap: 0.5rem;
     min-height: 2.75rem;
-    padding: 0 1.5rem;
-    border-radius: 0.5rem;
-    font-size: 0.875rem;
+    padding: 0 1.25rem;
+    border-radius: 0.625rem;
+    font-size: 0.9375rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 150ms, border-color 150ms, color 150ms, transform 150ms;
+    transition: background 200ms, border-color 200ms, color 200ms, box-shadow 200ms;
   }
-  .btn:active {
-    transform: scale(0.98);
+  .btn-primary {
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-fg);
+    box-shadow: var(--btn-primary-shadow);
   }
-  .btn-teal {
-    background: var(--color-teal);
-    color: var(--color-navy);
-  }
-  .btn-teal:hover {
-    background: #3ee0e0;
-  }
-  .btn-glass {
-    background: rgb(255 255 255 / 0.1);
-    color: #fff;
-    border: 1px solid rgb(255 255 255 / 0.3);
-  }
-  .btn-glass:hover {
-    background: rgb(255 255 255 / 0.2);
+  .btn-primary:hover {
+    background: var(--btn-primary-hover);
   }
   .btn-outline {
-    background: #fff;
-    color: var(--color-ink);
-    border: 1px solid var(--color-line);
+    border: 1px solid var(--chip-border);
+    background: var(--chip-bg);
+    color: var(--color-strong);
   }
   .btn-outline:hover {
-    border-color: var(--color-teal);
-    color: var(--color-teal-ink);
+    border-color: var(--color-cyan);
+    background: var(--color-teal-wash);
   }
 
-  /* Deep navy sections that break up the white page. */
-  .dark-section {
-    background: linear-gradient(160deg, #0b1f47 0%, #0f2757 45%, #123f63 100%);
-  }
-  .dark-glow {
-    position: absolute;
-    z-index: -1;
-    width: 40rem;
-    height: 40rem;
-    left: -14rem;
-    top: -12rem;
-    border-radius: 999px;
-    background: radial-gradient(circle, rgb(17 212 212 / 0.22), transparent 65%);
-    pointer-events: none;
-  }
-  .dark-glow-right {
-    left: auto;
-    right: -14rem;
-    top: auto;
-    bottom: -16rem;
-  }
-  .section-title-light {
-    color: #fff;
-  }
-  .glass-card {
-    border: 1px solid rgb(255 255 255 / 0.12);
-    border-radius: 0.875rem;
-    background: rgb(255 255 255 / 0.06);
-    backdrop-filter: blur(10px);
-    transition: border-color 200ms, background-color 200ms;
-  }
-  .glass-card:hover {
-    border-color: rgb(17 212 212 / 0.45);
-    background: rgb(255 255 255 / 0.09);
-  }
-
-  /* Timeline: a faint track with a glowing fill that grows on scroll. */
-  .timeline-track,
-  .timeline-fill {
-    position: absolute;
-    left: 0.6875rem;
-    top: 0.5rem;
-    bottom: 0.5rem;
-    width: 2px;
-    border-radius: 2px;
-  }
-  @media (min-width: 768px) {
-    .timeline-track,
-    .timeline-fill {
-      left: 1.1875rem;
-    }
-  }
-  .timeline-track {
-    background: rgb(255 255 255 / 0.12);
-  }
-  .timeline-fill {
-    background: linear-gradient(to bottom, #11d4d4, #3b82f6);
-    box-shadow: 0 0 12px rgb(17 212 212 / 0.7);
-    transform-origin: top;
-  }
-  .timeline-dot {
-    position: absolute;
-    left: -2.0625rem;
-    top: 1.75rem;
-    width: 0.875rem;
-    height: 0.875rem;
-    border-radius: 999px;
-    background: #0f2757;
-    border: 2px solid #11d4d4;
-  }
-  @media (min-width: 768px) {
-    .timeline-dot {
-      left: -2.5625rem;
-    }
-  }
-  .timeline-dot.is-current {
-    background: #11d4d4;
-    box-shadow: 0 0 0 6px rgb(17 212 212 / 0.2), 0 0 18px rgb(17 212 212 / 0.8);
-  }
-
-  .bento-cert {
-    background:
-      radial-gradient(circle at 100% 0%, rgb(17 212 212 / 0.35), transparent 55%),
-      linear-gradient(150deg, #0f2757, #175e82);
-    box-shadow: 0 10px 30px rgb(15 39 87 / 0.25);
-  }
-
-  /* Interactive dashboards */
-  .demo-label {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: var(--color-ink);
-  }
-  .demo-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    min-height: 2.5rem;
-    padding: 0 0.875rem;
-    border: 1px solid var(--color-line);
-    border-radius: 999px;
-    background: #fff;
-    color: var(--color-muted);
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 150ms, border-color 150ms, color 150ms;
-  }
-  .demo-chip:hover {
-    border-color: var(--color-teal);
-    color: var(--color-ink);
-  }
-  .demo-chip[aria-pressed='true'],
-  .demo-chip[aria-checked='true'] {
-    border-color: var(--color-navy);
-    background: var(--color-navy);
-    color: #fff;
-  }
-  .demo-swatch {
-    width: 0.625rem;
-    height: 0.625rem;
-    border-radius: 999px;
-    box-shadow: 0 0 0 2px #fff;
-  }
-  .demo-kpi {
-    border: 1px solid var(--color-line);
-    border-radius: 0.75rem;
-    background: linear-gradient(160deg, #fff, var(--color-teal-wash));
-    padding: 1rem 1.25rem;
-  }
-  .demo-kpi-value {
-    color: var(--color-navy);
-    font-size: 1.75rem;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    line-height: 1.2;
-  }
-  .demo-kpi-label {
-    margin-top: 0.125rem;
-    color: var(--color-muted);
-    font-size: 0.8125rem;
-  }
-  .demo-takeaway {
-    margin-top: 0.75rem;
-    border-left: 3px solid var(--color-teal);
-    padding-left: 0.75rem;
-    color: var(--color-ink);
-    font-size: 0.9375rem;
-  }
-  .demo-chart-card {
-    min-width: 0; /* let grid items shrink below the canvas width */
-    border: 1px solid var(--color-line);
-    border-radius: 0.75rem;
-    background: #fff;
-    padding: 1rem;
-  }
-  .demo-chart-title {
-    color: var(--color-navy);
-    font-size: 0.9375rem;
-    font-weight: 700;
-  }
-  .demo-chart {
-    position: relative;
-    height: 18rem;
-    margin-top: 0.75rem;
-  }
-  .demo-chart-tall {
-    height: 22rem;
-  }
-
-  /* Light sheen that follows the cursor on tilting cards (set by motion.ts). */
-  .sheen {
-    position: relative;
-    transform-style: preserve-3d;
-    will-change: transform;
-  }
-  .sheen::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
+  /* Scroll reveal, only once JavaScript has marked the page (see Base.astro). */
+  .js [data-reveal] {
     opacity: 0;
-    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(17 212 212 / 0.14), transparent 45%);
-    transition: opacity 250ms;
+    transform: translateY(18px);
+    transition:
+      opacity 800ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
   }
-  .sheen:hover::after {
+  .js [data-reveal].is-visible {
     opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .js [data-reveal] {
+      opacity: 1;
+      transform: none;
+    }
   }
 
   .field {
     width: 100%;
     min-height: 2.75rem;
     padding: 0.625rem 0.875rem;
-    border: 1px solid var(--color-line);
-    border-radius: 0.5rem;
-    background: #fff;
+    border: 1px solid var(--chip-border);
+    border-radius: 0.625rem;
+    background: var(--chip-bg);
+    color: var(--color-strong);
     font-size: 1rem;
     transition: border-color 150ms, box-shadow 150ms;
   }
+  .field::placeholder {
+    color: var(--color-muted);
+  }
   .field:focus {
     outline: none;
-    border-color: var(--color-teal);
-    box-shadow: 0 0 0 3px rgb(17 212 212 / 0.25);
+    border-color: var(--color-cyan);
+    box-shadow: 0 0 0 3px rgb(8 145 178 / 0.2);
+  }
+
+  /* Interactive dashboards: styled like a Power BI report in every theme
+     (see PowerBIWindow.astro), so these use Power BI's own light colors. */
+  .demo-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #252423;
+  }
+  .demo-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.25rem;
+    padding: 0 0.75rem;
+    border: 1px solid #c8c6c4;
+    border-radius: 2px;
+    background: #ffffff;
+    color: #252423;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: background-color 120ms, border-color 120ms;
+  }
+  .demo-chip:hover {
+    background: #f3f2f1;
+  }
+  .demo-chip[aria-pressed='true'],
+  .demo-chip[aria-checked='true'] {
+    border-color: #118dff;
+    background: #e6f2ff;
+    color: #0b5394;
+    font-weight: 600;
+  }
+  .demo-swatch {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 999px;
+  }
+  .demo-kpi {
+    border: 1px solid #e1dfdd;
+    border-radius: 2px;
+    background: #ffffff;
+    padding: 0.75rem 1rem;
+  }
+  .demo-kpi-value {
+    color: #252423;
+    font-size: 1.75rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+  }
+  .demo-kpi-label {
+    margin-top: 0.125rem;
+    color: #605e5c;
+    font-size: 0.8125rem;
+  }
+  .demo-takeaway {
+    margin-top: 0.75rem;
+    border-left: 3px solid #118dff;
+    padding-left: 0.75rem;
+    color: #252423;
+    font-size: 0.875rem;
+  }
+  .demo-chart-card {
+    min-width: 0; /* let grid items shrink below the canvas width */
+    border: 1px solid #e1dfdd;
+    border-radius: 2px;
+    background: #ffffff;
+    padding: 0.75rem;
+  }
+  .demo-chart-title {
+    color: #252423;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .demo-chart {
+    position: relative;
+    height: 17rem;
+    margin-top: 0.5rem;
+  }
+  .demo-chart-tall {
+    height: 21rem;
   }
 }

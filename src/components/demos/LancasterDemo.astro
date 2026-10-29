@@ -3,7 +3,8 @@
 ---
 
 <div class="demo" data-lancaster-demo>
-  <div role="group" aria-label="Geography" class="flex flex-wrap gap-2">
+  <div role="group" aria-label="Geography" class="flex flex-wrap gap-2" data-pbi-filters>
+    <p class="demo-label w-full">Geography</p>
     <button type="button" class="demo-chip" aria-pressed="false" data-geo="lancaster">Lancaster</button>
     <button type="button" class="demo-chip" aria-pressed="false" data-geo="pennsylvania">Pennsylvania</button>
     <button type="button" class="demo-chip" aria-pressed="true" data-geo="both">Both</button>
@@ -36,8 +37,8 @@
 
     const years = u.map((r) => r.year);
     const ds = {
-      lancaster: { label: 'Lancaster', data: u.map((r) => r.lancaster), borderColor: palette.teal, backgroundColor: palette.teal, tension: 0.3, pointRadius: 3 },
-      pennsylvania: { label: 'Pennsylvania', data: u.map((r) => r.pennsylvania), borderColor: palette.navy, backgroundColor: palette.navy, tension: 0.3, pointRadius: 3 },
+      lancaster: { label: 'Lancaster', data: u.map((r) => r.lancaster), borderColor: palette.secondary, backgroundColor: palette.secondary, tension: 0.3, pointRadius: 3 },
+      pennsylvania: { label: 'Pennsylvania', data: u.map((r) => r.pennsylvania), borderColor: palette.primary, backgroundColor: palette.primary, tension: 0.3, pointRadius: 3 },
     };
 
     const chart = new Chart(root.querySelector<HTMLCanvasElement>('[data-unemployment]')!, {
@@ -70,7 +71,7 @@
       type: 'bar',
       data: {
         labels: w.map((r) => r.year),
-        datasets: [{ label: 'Average annual pay', data: w.map((r) => r.avgAnnualPay), backgroundColor: w.map((_, i) => (i === w.length - 1 ? palette.teal : palette.navy)), borderRadius: 4 }],
+        datasets: [{ label: 'Average annual pay', data: w.map((r) => r.avgAnnualPay), backgroundColor: w.map((_, i) => (i === w.length - 1 ? palette.secondary : palette.primary)), borderRadius: 4 }],
       },
       options: {
         scales: {

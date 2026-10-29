@@ -1,0 +1,273 @@
+---
+// Frames an interactive dashboard like a report in the Power BI Service:
+// yellow header, report canvas with a Filters pane, and page tabs. Page 1 is
+// the live demo (slot); the other pages are the original report screenshots.
+// The demo's controls block (marked data-pbi-filters) becomes the Filters pane
+// through CSS alone, so the demo scripts are untouched.
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { repoFile, type Project } from '../data/portfolio';
+import { projectImage } from '../lib/images';
+
+interface Props {
+  project: Project;
+}
+const { project } = Astro.props;
+
+const shots = project.images.filter((i) => i.category === 'Power BI' && i.file.startsWith('powerbi-page-')).slice(0, 4);
+const model = project.images.find((i) => i.file === 'powerbi-data-model.png');
+const pages = [
+  { label: 'Interactive report' },
+  ...shots.map((s, i) => ({ label: `Original page ${i + 1}`, image: s })),
+  ...(model ? [{ label: 'Model view', image: model }] : []),
+];
+const pbix = project.pbix?.[0];
+---
+
+<figure class="pbi-window" data-pbi aria-label={`${project.title}, interactive Power BI-style report`}>
+  <header class="pbi-bar">
+    <svg viewBox="0 0 24 24" class="size-5 shrink-0" aria-hidden="true">
+      <rect x="3" y="10" width="4.5" height="11" rx="1" fill="#252423" />
+      <rect x="9.75" y="6" width="4.5" height="15" rx="1" fill="#252423" opacity="0.8" />
+      <rect x="16.5" y="2.5" width="4.5" height="18.5" rx="1" fill="#252423" opacity="0.6" />
+    </svg>
+    <span class="font-semibold">Power BI</span>
+    <span class="pbi-sep" aria-hidden="true"></span>
+    <span class="min-w-0 truncate">{project.title}</span>
+    <span class="ml-auto flex shrink-0 items-center gap-1">
+      <span class="pbi-live"><span class="pbi-live-dot" aria-hidden="true"></span>Live</span>
+      {
+        pbix && (
+          <a href={repoFile(project.repo, pbix.file)} class="pbi-icon-btn" aria-label="Download the .pbix file" title="Download the .pbix file" data-goatcounter-click={`pbix-${project.slug}`}>
+            <Icon name="download" size={16} />
+          </a>
+        )
+      }
+    </span>
+  </header>
+
+  <div class="pbi-workspace">
+    {
+      pages.map((p, i) => (
+        <div class="pbi-page" role="tabpanel" id={`pbi-${project.slug}-${i}`} aria-label={p.label} hidden={i > 0} data-pbi-page={i}>
+          {'image' in p && p.image ? (
+            <div class="pbi-shot">
+              <Image src={projectImage(project.slug, p.image.file)} alt={p.image.caption} widths={[800, 1200, 1600]} sizes="(min-width: 1152px) 1060px, 100vw" class="h-auto w-full" />
+              <p class="pbi-shot-caption">{p.image.caption}</p>
+            </div>
+          ) : (
+            <div class="pbi-canvas">
+              <slot />
+            </div>
+          )}
+        </div>
+      ))
+    }
+  </div>
+
+  <nav class="pbi-tabs" role="tablist" aria-label="Report pages">
+    {
+      pages.map((p, i) => (
+        <button type="button" role="tab" class="pbi-tab" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={`pbi-${project.slug}-${i}`} data-pbi-tab={i}>
+          {p.label}
+        </button>
+      ))
+    }
+  </nav>
+</figure>
+
+<style>
+  /* Power BI's own light chrome in every site theme. Re-pointing the site's
+     tokens here makes the demos' utility classes render in Power BI colors. */
+  .pbi-window {
+    color-scheme: light;
+    --color-strong: #252423;
+    --color-ink: #252423;
+    --color-muted: #605e5c;
+    --color-line: #e1dfdd;
+    --color-soft: #f3f2f1;
+    --color-surface: #ffffff;
+    --color-teal-ink: #0b5394;
+    --color-cyan: #118dff;
+    --color-teal: #118dff;
+    --chip-bg: #ffffff;
+    --chip-border: #c8c6c4;
+    overflow: hidden;
+    border: 1px solid #c8c6c4;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    color: #252423;
+    font-family: "Segoe UI", "Public Sans Variable", system-ui, sans-serif;
+    box-shadow: 0 24px 60px -30px rgb(15 39 87 / 0.45);
+  }
+  .pbi-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    min-height: 2.75rem;
+    padding: 0 0.5rem 0 0.875rem;
+    background: #f2c811;
+    color: #252423;
+    font-size: 0.875rem;
+  }
+  .pbi-sep {
+    width: 1px;
+    height: 1.125rem;
+    background: rgb(37 36 35 / 0.35);
+  }
+  .pbi-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    background: rgb(37 36 35 / 0.1);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .pbi-live-dot {
+    width: 0.4375rem;
+    height: 0.4375rem;
+    border-radius: 999px;
+    background: #107c10;
+  }
+  .pbi-icon-btn {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.25rem;
+    color: #252423;
+  }
+  .pbi-icon-btn:hover {
+    background: rgb(37 36 35 / 0.1);
+  }
+
+  .pbi-workspace {
+    background: #eaeaea;
+    padding: 0.75rem;
+  }
+  @media (min-width: 768px) {
+    .pbi-workspace {
+      padding: 1rem;
+    }
+  }
+  .pbi-canvas,
+  .pbi-shot {
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+  }
+  .pbi-shot-caption {
+    padding: 0.5rem 0.75rem;
+    border-top: 1px solid #e1dfdd;
+    color: #605e5c;
+    font-size: 0.8125rem;
+  }
+
+  /* The demo's controls become a Filters pane: a right-hand column on wide
+     screens, a strip above the visuals on narrow ones. */
+  .pbi-canvas {
+    container: pbi / inline-size;
+  }
+  .pbi-canvas :global(.demo) {
+    padding-block: 1rem;
+  }
+  .pbi-canvas :global(.demo > *) {
+    margin-inline: 1rem;
+  }
+  .pbi-canvas :global([data-pbi-filters]) {
+    margin: -1rem 0 1rem;
+    padding: 1rem !important;
+    border: 0 !important;
+    border-bottom: 1px solid #e1dfdd !important;
+    border-radius: 0 !important;
+    background: #faf9f8 !important;
+  }
+  .pbi-canvas :global([data-pbi-filters])::before {
+    content: "Filters";
+    display: block;
+    width: 100%;
+    margin-bottom: 0.625rem;
+    color: #252423;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  @container pbi (min-width: 760px) {
+    .pbi-canvas :global(.demo) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 15rem;
+      align-items: start;
+    }
+    .pbi-canvas :global(.demo > *) {
+      grid-column: 1;
+    }
+    .pbi-canvas :global([data-pbi-filters]) {
+      grid-column: 2;
+      grid-row: 1 / span 30;
+      align-self: stretch;
+      margin: -1rem 0 !important;
+      border-bottom: 0 !important;
+      border-left: 1px solid #e1dfdd !important;
+      display: flex !important;
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+
+  .pbi-tabs {
+    display: flex;
+    gap: 0.125rem;
+    overflow-x: auto;
+    padding: 0.25rem 0.5rem 0;
+    border-top: 1px solid #e1dfdd;
+    background: #f3f2f1;
+    scrollbar-width: thin;
+  }
+  .pbi-tab {
+    flex-shrink: 0;
+    min-height: 2.5rem;
+    padding: 0 0.875rem;
+    border-bottom: 3px solid transparent;
+    color: #605e5c;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .pbi-tab:hover {
+    color: #252423;
+    background: #ffffff;
+  }
+  .pbi-tab[aria-selected='true'] {
+    border-bottom-color: #f2c811;
+    background: #ffffff;
+    color: #252423;
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-pbi]').forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-pbi-tab]')];
+    const pages = [...root.querySelectorAll<HTMLElement>('[data-pbi-page]')];
+    const show = (i: number, focus = false) => {
+      tabs.forEach((t, j) => {
+        t.setAttribute('aria-selected', String(i === j));
+        t.tabIndex = i === j ? 0 : -1;
+        if (i === j && focus) t.focus();
+      });
+      pages.forEach((p, j) => (p.hidden = i !== j));
+      window.dispatchEvent(new Event('resize')); // charts on a re-shown page need a resize
+    };
+    tabs.forEach((t, i) => {
+      t.tabIndex = i === 0 ? 0 : -1;
+      t.addEventListener('click', () => show(i));
+      t.addEventListener('keydown', (e) => {
+        const dir = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (dir) {
+          e.preventDefault();
+          show((i + dir + tabs.length) % tabs.length, true);
+        }
+      });
+    });
+  });
+</script>

@@ -3,17 +3,17 @@ import Icon from './Icon.astro';
 import { profile } from '../data/portfolio';
 ---
 
-<footer class="bg-navy py-8 text-white">
+<footer class="border-t border-line py-8">
   <div class="container-page flex flex-col items-center justify-between gap-4 sm:flex-row">
-    <p class="text-sm text-white/80">© {new Date().getFullYear()} {profile.name}. All rights reserved.</p>
+    <p class="text-sm text-muted">© {new Date().getFullYear()} {profile.name}, {profile.location}</p>
     <div class="flex items-center gap-1">
-      <a href={profile.linkedin} class="grid size-10 place-items-center rounded-md text-white/80 hover:bg-white/10 hover:text-white" aria-label="LinkedIn" target="_blank" rel="noopener">
+      <a href={profile.linkedin} class="grid size-10 place-items-center rounded-md text-muted hover:bg-soft hover:text-strong" aria-label="LinkedIn" target="_blank" rel="noopener" data-goatcounter-click="footer-linkedin">
         <Icon name="linkedin" size={18} />
       </a>
-      <a href={profile.github} class="grid size-10 place-items-center rounded-md text-white/80 hover:bg-white/10 hover:text-white" aria-label="GitHub" target="_blank" rel="noopener">
+      <a href={profile.github} class="grid size-10 place-items-center rounded-md text-muted hover:bg-soft hover:text-strong" aria-label="GitHub" target="_blank" rel="noopener" data-goatcounter-click="footer-github">
         <Icon name="github" size={18} />
       </a>
-      <a href={`mailto:${profile.email}`} class="grid size-10 place-items-center rounded-md text-white/80 hover:bg-white/10 hover:text-white" aria-label="Email">
+      <a href={`mailto:${profile.email}`} class="grid size-10 place-items-center rounded-md text-muted hover:bg-soft hover:text-strong" aria-label="Email" data-goatcounter-click="footer-email">
         <Icon name="mail" size={18} />
       </a>
     </div>

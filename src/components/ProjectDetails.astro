@@ -28,20 +28,20 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
 
 {showIntro && (
 <>
-<section class="card p-6 md:p-8" aria-labelledby="overview" data-reveal>
-  <h2 id="overview" class="text-2xl font-bold text-navy">Project overview</h2>
+<section class="card p-6 md:p-8" aria-labelledby="overview">
+  <h2 id="overview" class="text-2xl font-bold text-strong">Project overview</h2>
   <div class="mt-4 space-y-4 leading-relaxed text-ink/85">
     {detail.overview.map((p) => <p>{p}</p>)}
   </div>
 </section>
 
-<section class="card p-6 md:p-8" aria-labelledby="tools" data-reveal>
-  <h2 id="tools" class="text-2xl font-bold text-navy">Tools and technologies used</h2>
-  <ul class="mt-6 grid gap-4 sm:grid-cols-2" data-stagger>
+<section class="card p-6 md:p-8" aria-labelledby="tools">
+  <h2 id="tools" class="text-2xl font-bold text-strong">Tools and technologies used</h2>
+  <ul class="mt-6 grid gap-4 sm:grid-cols-2">
     {
       detail.tools.map((t) => (
         <li class="rounded-xl border border-line bg-soft/60 p-5 transition-colors hover:border-teal">
-          <h3 class="flex items-center gap-2 font-bold text-navy">
+          <h3 class="flex items-center gap-2 font-bold text-strong">
             <span class="size-2 rounded-full bg-teal" aria-hidden="true" />
             {t.name}
           </h3>
@@ -54,22 +54,22 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
 
 {
   detail.model && (
-    <section class="card p-6 md:p-8" aria-labelledby="model" data-reveal>
-      <h2 id="model" class="text-2xl font-bold text-navy">Data model breakdown</h2>
+    <section class="card p-6 md:p-8" aria-labelledby="model">
+      <h2 id="model" class="text-2xl font-bold text-strong">Data model breakdown</h2>
       <p class="mt-3 leading-relaxed text-ink/80">{detail.model.note}</p>
-      <ul class="mt-6 grid gap-3 sm:grid-cols-2" data-stagger>
+      <ul class="mt-6 grid gap-3 sm:grid-cols-2">
         {detail.model.tables.map((t) => (
           <li
             class:list={[
               'rounded-xl border p-4',
-              t.kind === 'fact' && 'border-navy/20 bg-navy text-white',
+              t.kind === 'fact' && 'border-cyan/30 bg-cyan/10 text-strong',
               t.kind === 'dim' && 'border-teal/40 bg-teal-wash/60',
               t.kind === 'measures' && 'border-line bg-soft',
             ]}
           >
             <p class:list={['text-xs font-semibold uppercase tracking-wide', t.kind === 'fact' ? 'text-teal' : 'text-teal-ink']}>{kindLabel[t.kind]}</p>
-            <h3 class:list={['mt-1 font-mono text-sm font-bold', t.kind === 'fact' ? 'text-white' : 'text-navy']}>{t.name}</h3>
-            <p class:list={['mt-2 text-sm leading-relaxed', t.kind === 'fact' ? 'text-white/80' : 'text-ink/80']}>{t.desc}</p>
+            <h3 class:list={['mt-1 font-mono text-sm font-bold', t.kind === 'fact' ? 'text-teal-ink' : 'text-strong']}>{t.name}</h3>
+            <p class:list={['mt-2 text-sm leading-relaxed', 'text-ink/85']}>{t.desc}</p>
           </li>
         ))}
       </ul>
@@ -81,8 +81,8 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
 )}
 
 {showWalk && (
-<section class="card p-6 md:p-8" aria-labelledby="walkthrough" data-zoom-root data-reveal>
-  <h2 id="walkthrough" class="text-2xl font-bold text-navy">Walkthrough</h2>
+<section class="card p-6 md:p-8" aria-labelledby="walkthrough" data-zoom-root>
+  <h2 id="walkthrough" class="text-2xl font-bold text-strong">Walkthrough</h2>
   <p class="mt-2 text-sm text-muted">What each dashboard and diagram shows, and why it matters. Click an image to enlarge it.</p>
   <ol class="mt-8 space-y-12">
     {
@@ -98,9 +98,9 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
             />
           </button>
           <div class="mt-5 flex gap-4">
-            <span class="grid size-9 shrink-0 place-items-center rounded-full bg-navy text-sm font-bold text-white">{i + 1}</span>
+            <span class="grid size-9 shrink-0 place-items-center rounded-full bg-cyan text-sm font-bold text-bg shadow-[0_0_18px_rgb(34_211_238/0.5)]">{i + 1}</span>
             <div class="min-w-0">
-              <h3 class="text-xl font-bold text-navy">{s.title}</h3>
+              <h3 class="text-xl font-bold text-strong">{s.title}</h3>
               <p class="mt-2 leading-relaxed text-ink/85">{s.summary}</p>
               <ul class="mt-4 space-y-2.5">
                 {s.points.map((pt) => (

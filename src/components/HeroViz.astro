@@ -1,0 +1,394 @@
+---
+// Live hero visual with two scenes that alternate:
+//   research: the housing-vacancy scatter (Census vs. USPS, 84 county-years) drawing itself
+//   pipeline: rows flowing through the grocery warehouse's Medallion layers
+// Built from real project data at build time; animated with CSS only.
+import vacancy from '../data/demos/vacancy-comparison.json';
+import { linearFit, pearson, type VacancyRow } from '../lib/stats';
+
+const rows = vacancy as VacancyRow[];
+const W = 600;
+const H = 330;
+const plot = { left: 46, right: 584, top: 18, bottom: 286 };
+const xMax = 0.15;
+const yMax = 0.08;
+const sx = (v: number) => plot.left + (v / xMax) * (plot.right - plot.left);
+const sy = (v: number) => plot.bottom - (v / yMax) * (plot.bottom - plot.top);
+
+const counties = [...new Set(rows.map((r) => r.county))];
+const colors = ['#22d3ee', '#60a5fa', '#f59e0b', '#a78bfa', '#34d399', '#f472b6'];
+const points = rows
+  .map((r) => ({ cx: sx(r.census), cy: sy(r.uspsNarrow), color: colors[counties.indexOf(r.county)] }))
+  .sort((a, b) => a.cx - b.cx);
+
+const xs = rows.map((r) => r.census);
+const ys = rows.map((r) => r.uspsNarrow);
+const r = pearson(xs, ys);
+const fit = linearFit(xs, ys);
+const fitLine = { x1: sx(0.015), y1: sy(fit.intercept + fit.slope * 0.015), x2: sx(0.14), y2: sy(fit.intercept + fit.slope * 0.14) };
+const xTicks = [0, 0.05, 0.1, 0.15];
+const yTicks = [0, 0.02, 0.04, 0.06, 0.08];
+
+const stages = [
+  { x: 62, title: 'Source', note: '6 CSV files' },
+  { x: 181, title: 'Bronze', note: '131M+ rows landed' },
+  { x: 300, title: 'Silver', note: '21 quality checks' },
+  { x: 419, title: 'Gold', note: 'Star schema' },
+  { x: 538, title: 'Analytics', note: '3.3M clean sales' },
+];
+// Particles: some pass all the way, some are rejected at the Silver quality gate.
+const particles = Array.from({ length: 22 }, (_, i) => ({ delay: (i * 0.29) % 6, y: 160 + ((i * 7) % 5) * 4 - 8, drop: i % 3 === 1 }));
+---
+
+<div class="hero-viz card grid gap-6 overflow-hidden p-5 sm:p-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.65fr)] lg:gap-10" data-hero-viz>
+  <div class="flex flex-col">
+    <div class="flex gap-1 self-start rounded-lg border border-line p-1" role="group" aria-label="Choose a visual">
+      <button type="button" class="viz-tab" data-viz-tab="research" aria-pressed="true">Research</button>
+      <button type="button" class="viz-tab" data-viz-tab="pipeline" aria-pressed="false">Pipeline</button>
+    </div>
+    <h2 class="mt-5 text-xl font-semibold leading-snug tracking-tight md:text-2xl" aria-live="polite">
+      <span data-viz-title="research">Can mail data predict housing vacancy?</span>
+      <span data-viz-title="pipeline" hidden>From raw grocery files to clean sales</span>
+    </h2>
+    <p class="mt-3 leading-relaxed text-muted">
+      <span data-viz-caption="research">Live from my research: 84 county-years of USPS and Census vacancy rates across 6 counties, 2010–2024. Pooled, the two sources move together (r = 0.77), but county by county the fit ranges from −0.01 to 0.72.</span>
+      <span data-viz-caption="pipeline" hidden>My SQL Server warehouse lands 131M+ rows in Bronze, then 21 quality checks in Silver filter 10M raw transactions to 3.3M completed sales and flag 1.58M mismatched orders before anything reaches a report.</span>
+    </p>
+    <ul class="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted" data-viz-caption="research">
+      {counties.map((c, i) => (
+        <li class="inline-flex items-center gap-1.5"><span class="size-2 rounded-full" style={`background:${colors[i]}`} aria-hidden="true" />{c}</li>
+      ))}
+    </ul>
+    <div class="mt-auto pt-5">
+      <a href="/projects/can-mail-data-predict-housing-vacancy" class="text-link" data-viz-link>Explore the project</a>
+    </div>
+  </div>
+
+  <svg viewBox={`0 0 ${W} ${H}`} class="block h-auto w-full self-center" role="img" data-viz-svg>
+    <title data-viz-label>Scatter plot of Census vacancy rate against USPS vacancy rate for 84 county-years, with a trend line and a pooled correlation of {r.toFixed(2)}.</title>
+    <defs>
+      <filter id="viz-glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="blur" />
+        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+      <linearGradient id="viz-line" x1="0" x2="1">
+        <stop offset="0" stop-color="#67e8f9" />
+        <stop offset="1" stop-color="#60a5fa" />
+      </linearGradient>
+    </defs>
+
+    <!-- Scene 1: vacancy scatter -->
+    <g class="scene is-active" data-scene="research">
+      {yTicks.map((t) => (
+        <g>
+          <line x1={plot.left} x2={plot.right} y1={sy(t)} y2={sy(t)} class="grid-line" />
+          <text x={plot.left - 8} y={sy(t) + 4} text-anchor="end" class="tick">{Math.round(t * 100)}%</text>
+        </g>
+      ))}
+      {xTicks.map((t) => (
+        <text x={sx(t)} y={plot.bottom + 18} text-anchor="middle" class="tick">{Math.round(t * 100)}%</text>
+      ))}
+      <text x={plot.right} y={plot.bottom + 38} text-anchor="end" class="axis">Census vacancy rate</text>
+      <text x={plot.left} y={plot.top - 4} class="axis">USPS vacancy rate</text>
+
+      {points.map((p, i) => (
+        <circle cx={p.cx} cy={p.cy} r="4.5" fill={p.color} class="dot" style={`--d:${i * 28}ms`} filter="url(#viz-glow)" />
+      ))}
+      <line x1={fitLine.x1} y1={fitLine.y1} x2={fitLine.x2} y2={fitLine.y2} class="fit" pathLength="1" />
+      <g class="r-badge">
+        <rect x="414" y="222" width="166" height="44" rx="10" />
+        <text x="430" y="251" class="r-value">r = {r.toFixed(2)}</text>
+        <text x="510" y="251" class="r-note">pooled</text>
+      </g>
+    </g>
+
+    <!-- Scene 2: Medallion pipeline -->
+    <g class="scene" data-scene="pipeline">
+      <line x1={stages[0].x} x2={stages[4].x} y1="160" y2="160" class="rail" />
+      <line x1="300" x2="300" y1="190" y2="252" class="rail" />
+      {particles.map((p) => (
+        <circle cx={stages[0].x} cy={p.y} r="3.5" class:list={['particle', p.drop && 'is-drop']} style={`--d:${p.delay}s`} filter="url(#viz-glow)" />
+      ))}
+      {stages.map((s, i) => (
+        <g class="stage" style={`--d:${i * 120}ms`}>
+          <rect x={s.x - 39} y="134" width="78" height="52" rx="12" class:list={['node', i === 2 && 'node-gate']} />
+          <text x={s.x} y="165" text-anchor="middle" class="node-title">{s.title}</text>
+          <text x={s.x} y={i === 2 ? 122 : 206} text-anchor="middle" class="node-note">{s.note}</text>
+        </g>
+      ))}
+      <rect x="242" y="252" width="116" height="34" rx="9" class="bin" />
+      <text x="300" y="274" text-anchor="middle" class="bin-text">1.58M flagged</text>
+    </g>
+  </svg>
+
+</div>
+
+<style>
+  .viz-tab {
+    min-height: 2rem;
+    padding: 0 0.75rem;
+    border-radius: 0.375rem;
+    color: var(--color-muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 150ms, color 150ms;
+  }
+  .viz-tab:hover {
+    color: var(--color-strong);
+  }
+  .viz-tab[aria-pressed='true'] {
+    color: var(--color-strong);
+    background: var(--color-teal-wash);
+  }
+
+  .scene {
+    opacity: 0;
+    transition: opacity 600ms ease;
+    pointer-events: none;
+  }
+  .scene.is-active {
+    opacity: 1;
+  }
+
+  .grid-line {
+    stroke: var(--card-border);
+  }
+  .tick,
+  .axis {
+    fill: var(--color-muted);
+    font-size: 11px;
+  }
+  .axis {
+    fill: var(--color-ink);
+    font-weight: 600;
+  }
+
+  .dot {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .is-active .dot {
+    animation: pop 500ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation-delay: var(--d);
+  }
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(0);
+    }
+    to {
+      opacity: 0.9;
+      transform: scale(1);
+    }
+  }
+
+  .fit {
+    stroke: url(#viz-line);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  .is-active .fit {
+    animation: draw 1100ms ease-out 2500ms both;
+  }
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .r-badge {
+    opacity: 0;
+  }
+  .r-badge rect {
+    fill: var(--color-surface);
+    stroke: color-mix(in srgb, var(--color-cyan) 55%, transparent);
+  }
+  .r-value {
+    fill: var(--color-strong);
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .r-note {
+    fill: var(--color-teal-ink);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .is-active .r-badge {
+    animation: fade-in 600ms ease-out 3400ms both;
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .rail {
+    stroke: var(--chip-border);
+    stroke-width: 2;
+    stroke-dasharray: 4 6;
+  }
+  .node {
+    fill: var(--color-surface);
+    stroke: var(--chip-border);
+  }
+  .node-gate {
+    stroke: var(--color-cyan);
+  }
+  .node-title {
+    fill: var(--color-strong);
+    font-size: 13px;
+    font-weight: 650;
+  }
+  .node-note {
+    fill: var(--color-muted);
+    font-size: 11.5px;
+  }
+  .bin {
+    fill: rgb(245 158 11 / 0.08);
+    stroke: rgb(245 158 11 / 0.55);
+  }
+  .bin-text {
+    fill: #d97706;
+    font-size: 12px;
+    font-weight: 650;
+  }
+  .stage {
+    opacity: 0;
+  }
+  .is-active .stage {
+    animation: fade-in 500ms ease-out both;
+    animation-delay: var(--d);
+  }
+
+  .particle {
+    fill: var(--color-teal);
+    opacity: 0;
+  }
+  .particle.is-drop {
+    fill: #f59e0b;
+  }
+  .is-active .particle {
+    animation: flow 6s linear infinite;
+    animation-delay: var(--d);
+  }
+  .is-active .particle.is-drop {
+    animation-name: flow-drop;
+  }
+  /* Rail runs 476 units from Source to Analytics; the Silver gate sits at 238. */
+  @keyframes flow {
+    0% {
+      opacity: 0;
+      transform: translateX(0);
+    }
+    6% {
+      opacity: 1;
+    }
+    94% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(476px);
+    }
+  }
+  @keyframes flow-drop {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0);
+    }
+    6% {
+      opacity: 1;
+    }
+    48% {
+      opacity: 1;
+      transform: translate(238px, 0);
+    }
+    62% {
+      opacity: 1;
+      transform: translate(238px, 84px);
+    }
+    68%,
+    100% {
+      opacity: 0;
+      transform: translate(238px, 92px);
+    }
+  }
+
+  /* Reduced motion: show each scene in its finished state. */
+  @media (prefers-reduced-motion: reduce) {
+    .dot,
+    .r-badge,
+    .stage {
+      opacity: 1;
+      animation: none !important;
+    }
+    .fit {
+      stroke-dashoffset: 0;
+      animation: none !important;
+    }
+    .particle {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Alternate the two scenes every few seconds until the visitor picks one.
+  document.querySelectorAll<HTMLElement>('[data-hero-viz]').forEach((root) => {
+    const scenes = [...root.querySelectorAll<SVGGElement>('[data-scene]')];
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-viz-tab]')];
+    const label = root.querySelector('[data-viz-label]')!;
+    const link = root.querySelector<HTMLAnchorElement>('[data-viz-link]')!;
+    const labels: Record<string, string> = {
+      research: label.textContent ?? '',
+      pipeline: 'Diagram of rows flowing from source files through Bronze, Silver, and Gold layers to analytics, with failing rows flagged at the Silver quality checks.',
+    };
+    const links: Record<string, string> = {
+      research: '/projects/can-mail-data-predict-housing-vacancy',
+      pipeline: '/projects/grocery-transaction-data-warehouse',
+    };
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 'research';
+    let auto = !reduce;
+    let hovering = false;
+
+    const show = (id: string) => {
+      current = id;
+      scenes.forEach((s) => {
+        const on = s.dataset.scene === id;
+        if (on) {
+          s.classList.remove('is-active');
+          void s.getBoundingClientRect(); // restart the scene's animations
+        }
+        s.classList.toggle('is-active', on);
+      });
+      tabs.forEach((t) => t.setAttribute('aria-pressed', String(t.dataset.vizTab === id)));
+      root.querySelectorAll<HTMLElement>('[data-viz-title], [data-viz-caption]').forEach((el) => {
+        el.hidden = (el.dataset.vizTitle ?? el.dataset.vizCaption) !== id;
+      });
+      label.textContent = labels[id];
+      link.href = links[id];
+    };
+
+    tabs.forEach((t) =>
+      t.addEventListener('click', () => {
+        auto = false;
+        show(t.dataset.vizTab!);
+      }),
+    );
+    root.addEventListener('pointerenter', () => (hovering = true));
+    root.addEventListener('pointerleave', () => (hovering = false));
+
+    setInterval(() => {
+      if (!auto || hovering || document.hidden) return;
+      show(current === 'research' ? 'pipeline' : 'research');
+    }, 9000);
+  });
+</script>
