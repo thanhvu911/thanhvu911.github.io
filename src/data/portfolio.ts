@@ -451,7 +451,7 @@ export const projects: Project[] = [
     year: 'Oct 2026',
     kind: 'Machine learning · Statistics',
     why: "Before pricing a policy or targeting a health program, analysts need to know which factors actually drive costs, and how far a prediction can be trusted for each group of people.",
-    role: "Solo project in two parts: the 2021 R study of age and sex, and a 2026 Python extension with the full feature set, a nine-model comparison, and subgroup error analysis.",
+    role: "Two parts: my own 2021 R study of age and sex, and a 2026 Python extension built with the help of an AI assistant, with the full feature set, a nine-model comparison, and subgroup error analysis.",
     challenges: ["Explaining three cost bands that age and sex could not, and proving the fix with a nested F-test rather than a chart.", "Keeping model selection honest: 5-fold cross-validation on the training split only, with the test set scored once."],
     tags: ['Python', 'scikit-learn', 'R'],
     summary: 'Extended a 2021 R study of 1,338 insurance records: a smoking × obesity interaction lifts R² from 0.09 to 0.86, and nine models are compared with cross-validation.',
@@ -500,7 +500,7 @@ export const projects: Project[] = [
     year: '2026',
     kind: 'Machine learning',
     why: "A price model that looks accurate in testing can still fail when it is used somewhere new. Knowing how a model was tested tells you where its accuracy actually holds.",
-    role: "Solo project: extended a Machine Learning course exploration into a full modeling study, from feature preparation to three evaluation designs and an error analysis.",
+    role: "Built with the help of an AI assistant: extended a Machine Learning course exploration into a full modeling study, from feature preparation to three evaluation designs and an error analysis.",
     challenges: ["Handling heavy missing data honestly: BuildingArea is missing for 47.5% of sales and YearBuilt for 39.6%, so the model gets median values plus missing-value flags.", "Designing three different tests (random folds, past-to-future, and leave-one-region-out) so the results answer different real questions."],
     tags: ['Python', 'scikit-learn', 'pandas'],
     summary: 'Four models on 13,580 Melbourne home sales, tested three ways: a 13.1% error under random cross-validation rises to 18–38% on a region the model has never seen.',
@@ -730,7 +730,7 @@ export const research = {
     {
       title: 'Medical Cost Modeling and Prediction',
       slug: 'medical-cost-regression',
-      meta: 'Python, scikit-learn, R. Oct 2026',
+      meta: 'Python, scikit-learn, R. Oct 2026, extension built with the help of an AI assistant',
       bullets: [
         'Extended my 2021 R study of 1,338 insurance records: a smoking × obesity interaction explains the three cost bands, raising R² from 0.09 to 0.86 and showing the earlier sex effect was confounded by smoking (it flips from +$1,539 to −$494).',
         'Compared 9 models with 5-fold CV; the interpretable linear model matched ridge, lasso, and random forest and beat boosting (held-out R² 0.88), but subgroup analysis found 29% relative error for non-smokers versus 5% for obese smokers.',
@@ -739,7 +739,7 @@ export const research = {
     {
       title: 'Melbourne Housing Price Prediction',
       slug: 'melbourne-housing-price-prediction',
-      meta: 'Python, scikit-learn. 2026',
+      meta: 'Python, scikit-learn. 2026, built with the help of an AI assistant',
       bullets: [
         'Tested four models on 13,580 Melbourne home sales three ways: gradient boosting’s 13.1% error under random 5-fold CV held on future sales but rose to 18–38% on a region the model had never seen.',
       ],
@@ -758,7 +758,7 @@ export const research = {
       meta: 'Python, C++, RISC-V. 2024 – 2026',
       bullets: [
         'Implemented uninformed and informed search, constraint satisfaction, logical inference, and Bayesian networks in Python, and solved a Connect-4 board puzzle with state-space search.',
-        'Implemented k-means and gradient-descent linear and logistic regression from scratch in Machine Learning (Steam games; 13.6K Melbourne housing listings), and re-tested the housing data with gradient boosting on held-out regions (error 13% → 18–38%).',
+        'Implemented k-means and gradient-descent linear and logistic regression from scratch in Machine Learning (Steam games; 13.6K Melbourne housing listings), and later re-tested the housing data with gradient boosting on held-out regions with the help of an AI assistant (error 13% → 18–38%).',
         'Designed a CPU in Logisim, wrote recursive RISC-V assembly, coded DFAs and NFAs, and benchmarked a red-black tree in C++.',
       ],
     },
