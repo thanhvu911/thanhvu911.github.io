@@ -2,21 +2,14 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
-import PipelineShowcase from '../components/PipelineShowcase.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import ContactSection from '../components/ContactSection.astro';
 import portrait from '../assets/photo/thanh-portrait.jpg';
 import { credentials, education, experience, profile, projects, skills } from '../data/portfolio';
 
-// Five projects, one strength each: pipelines, warehousing, ML evaluation, BI, statistics.
-const featuredOrder = ['can-mail-data-predict-housing-vacancy', 'grocery-transaction-data-warehouse', 'vacancy-nowcast-ml', 'sales-planning-analysis', 'medical-cost-regression'];
-const featured = featuredOrder.map((slug) => projects.find((p) => p.slug === slug)!).filter((p) => p?.featured);
-const strengths = [
-  { label: 'Pipelines', title: 'Pipelines', note: 'Fabric, Dataflow Gen2, PySpark' },
-  { label: 'Storage', title: 'Warehousing', note: 'SQL Server, Medallion, star schema' },
-  { label: 'Reporting', title: 'Dashboards', note: 'Power BI, DAX, Power Query' },
-  { label: 'Modeling', title: 'Analysis', note: 'Python, scikit-learn, R' },
-];
+// Six projects, one strength each: pipelines, warehousing, ML evaluation, BI, statistics, reporting.
+const featuredOrder = ['can-mail-data-predict-housing-vacancy', 'grocery-transaction-data-warehouse', 'vacancy-nowcast-ml', 'sales-planning-analysis', 'medical-cost-regression', 'lancaster-economic-indicators-dashboard'];
+const featured = featuredOrder.map((slug) => projects.find((p) => p.slug === slug)!).filter(Boolean);
 const facts = [
   { label: 'Now', value: 'Data Analyst Fellow, EDC Lancaster County' },
   { label: 'Education', value: `${education.degree}, ${education.school}, ${education.honorsShort}` },
@@ -30,8 +23,9 @@ const facts = [
   <section id="home" class="border-b border-line">
     <div class="frame hero">
       <p class="h-blurb rise" style="--d:0">
-        <span class="sq mb-5 block"></span>
-        I build data pipelines, warehouses, and Power BI reports, and I test machine-learning models honestly. Currently at EDC Lancaster County.
+        <span class="sq mb-5 hidden lg:block"></span>
+        <span class="lg:hidden">Pipelines, warehouses, Power BI. Now at EDC Lancaster.</span>
+        <span class="hidden lg:inline">I build data pipelines, warehouses, and Power BI reports, and I test machine-learning models honestly. Currently at EDC Lancaster County.</span>
       </p>
       <h1 class="h-name display" aria-label="Thanh Vu">
         <span class="line"><span style="--d:1">Thanh</span></span>
@@ -53,7 +47,7 @@ const facts = [
         </div>
         <figcaption class="mono mt-2.5">IMG_01 // Lancaster, PA</figcaption>
       </figure>
-      <p class="h-role display rise" style="--d:3">Data engineer<br />&amp; analyst</p>
+      <p class="h-role display rise" style="--d:3">Data engineer<br /><span class="text-accent-ink">&amp; analyst</span></p>
       <p class="h-lab2 mono rise" style="--d:4"><span class="sq mb-4 block"></span>131M+ rows<br />// Medallion</p>
       <a href="#projects" class="h-go go">
         <span class="arr"><Icon name="arrow-right" size={24} /></span>
@@ -91,35 +85,10 @@ const facts = [
         </dl>
         <div class="about-txt" data-reveal>
           <p>
-            I'm a Data Analyst Fellow at the Economic Development Corporation of Lancaster County, where I automate federal economic data from <mark>BLS, BEA, Census, and USPS</mark> into Power BI reports that refresh every day.
-          </p>
-          <p>
-            I studied Computer Science at Franklin &amp; Marshall College and I'm a Microsoft Certified Fabric Data Engineer. I like work where the data has to be <mark>checked before anyone can trust it</mark>.
+            I turn federal data from <mark>BLS, BEA, Census, and USPS</mark> into Power BI reports that refresh every day, and I check the data before anyone has to trust it.
           </p>
         </div>
       </div>
-      <ul class="cells grid-cols-1 border-t border-line min-[480px]:grid-cols-2 lg:grid-cols-4">
-        {
-          strengths.map((s, n) => (
-            <li class="strength" data-reveal style={`--reveal-delay:${n * 80}ms`}>
-              <span class="mono">0{n + 1} // {s.label}</span>
-              <b class="display-md">{s.title}</b>
-              <span>{s.note}</span>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </section>
-
-  <!-- What I build: four pipeline stages, each linked to a project -->
-  <section id="build" class="border-b border-line">
-    <div class="frame">
-      <div class="shead">
-        <p class="idx"><span class="sq"></span><span class="mono">03 // What I build<br />Each stage links to a project</span></p>
-        <h2 class="ttl section-title" data-reveal>What I build</h2>
-      </div>
-      <PipelineShowcase />
     </div>
   </section>
 
@@ -127,13 +96,13 @@ const facts = [
   <section id="projects" class="border-b border-line">
     <div class="frame">
       <div class="shead">
-        <p class="idx"><span class="sq"></span><span class="mono">04 // Selected work<br />{projects.length} projects in total</span></p>
+        <p class="idx"><span class="sq"></span><span class="mono">03 // Selected work<br />{projects.length} projects in total</span></p>
         <h2 class="ttl section-title" data-reveal>Selected work</h2>
       </div>
-      <div class="cells md:grid-cols-2 lg:grid-cols-6">
+      <div class="cells md:grid-cols-2 lg:grid-cols-3">
         {
-          featured.map((p, n) => (
-            <div class:list={[n < 3 ? 'lg:col-span-2' : 'lg:col-span-3', n === featured.length - 1 && featured.length % 2 === 1 && 'md:col-span-2']}>
+          featured.map((p) => (
+            <div>
               <ProjectCard project={p} />
             </div>
           ))
@@ -150,7 +119,7 @@ const facts = [
   <section id="skills" class="border-b border-line">
     <div class="frame">
       <div class="shead">
-        <p class="idx"><span class="sq"></span><span class="mono">05 // Skills<br />Each group links to proof</span></p>
+        <p class="idx"><span class="sq"></span><span class="mono">04 // Skills<br />Each group links to proof</span></p>
         <h2 class="ttl section-title" data-reveal>Skills</h2>
       </div>
       <ul class="cells sm:grid-cols-2 lg:grid-cols-5">
@@ -159,9 +128,9 @@ const facts = [
             <li class="skill" data-reveal style={`--reveal-delay:${n * 70}ms`}>
               <span class="mono">0{n + 1}</span>
               <h3 class="display-md mt-4 text-lg">{g.group}</h3>
-              <ul class="mt-4 space-y-2 text-[0.9375rem] text-ink">
+              <ul class="mt-4 flex flex-wrap gap-1.5">
                 {g.items.map((i) => (
-                  <li>{i}</li>
+                  <li class="pill">{i}</li>
                 ))}
               </ul>
               <a href={g.proof.href} class="proof">
@@ -179,7 +148,7 @@ const facts = [
   <section id="experience" class="border-b border-line">
     <div class="frame">
       <div class="shead">
-        <p class="idx"><span class="sq"></span><span class="mono">06 // Experience</span></p>
+        <p class="idx"><span class="sq"></span><span class="mono">05 // Experience</span></p>
         <h2 class="ttl section-title" data-reveal>Experience</h2>
       </div>
       <ol>
@@ -325,7 +294,7 @@ const facts = [
     text-transform: uppercase;
   }
   .soc:hover {
-    color: var(--color-teal-ink);
+    color: var(--color-accent-ink);
   }
   .cue {
     animation: nudge 2.4s ease-in-out infinite;
@@ -340,6 +309,52 @@ const facts = [
     .h-blurb,
     .h-photo,
     .h-strip {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  /* Phones and tablets: name with a small photo beside it, then the role,
+     a one-line blurb, and the button, all on the first screen. */
+  @media (max-width: 1023px) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: 'name photo' 'role role' 'blurb blurb' 'go go' 'strip strip';
+    }
+    .h-name {
+      align-self: center;
+      padding: 1.75rem 0.75rem 1.5rem 1rem;
+      /* "THANH" is about 4.6em wide; leave room for the photo column. */
+      font-size: calc((73vw - 3rem) / 4.75);
+    }
+    .h-photo {
+      align-self: center;
+      width: calc(27vw + 1rem);
+      max-width: 13rem;
+      padding: 1.75rem 1rem 1.5rem 0;
+    }
+    .h-photo figcaption {
+      display: none;
+    }
+    .h-role {
+      padding-block: 1.25rem;
+    }
+    .h-blurb {
+      max-width: none;
+      padding: 0 1rem 1.5rem;
+      color: var(--color-muted);
+    }
+  }
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .h-name {
+      padding-left: 2.5rem;
+      font-size: calc((73vw - 6rem) / 4.75);
+    }
+    .h-photo {
+      width: calc(27vw + 2.5rem);
+      max-width: 14.5rem;
+      padding-right: 2.5rem;
+    }
+    .h-blurb {
       padding-inline: 2.5rem;
     }
   }
@@ -499,7 +514,7 @@ const facts = [
     margin-top: 1.25rem;
   }
   .about-txt mark {
-    background: linear-gradient(transparent 60%, rgb(18 196 204 / 0.32) 0);
+    background: linear-gradient(transparent 60%, rgb(255 90 31 / 0.3) 0);
     color: var(--color-strong);
     font-weight: 600;
   }
@@ -528,33 +543,6 @@ const facts = [
       padding-block: 2.75rem 3.5rem;
     }
   }
-  .strength {
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem 1rem 1.75rem;
-    transition: background-color 250ms;
-  }
-  .strength:hover {
-    background: var(--color-surface);
-  }
-  .strength b {
-    margin-top: 1.25rem;
-    color: var(--color-strong);
-    font-size: 1.125rem;
-  }
-  .strength > span:last-child {
-    margin-top: 0.375rem;
-    color: var(--color-muted);
-    font-size: 0.9375rem;
-  }
-  @media (min-width: 768px) {
-    .strength {
-      padding: 1.75rem 1.875rem 2rem;
-    }
-    .strength b {
-      font-size: 1.375rem;
-    }
-  }
   /* ---------- Skills ---------- */
   .skill {
     display: flex;
@@ -580,7 +568,7 @@ const facts = [
     font-weight: 600;
   }
   .proof:hover {
-    color: var(--color-teal-ink);
+    color: var(--color-accent-ink);
   }
 
   /* ---------- Experience ---------- */
@@ -596,7 +584,7 @@ const facts = [
   }
   .job.is-now {
     background: var(--color-surface);
-    box-shadow: inset 4px 0 0 var(--color-cyan);
+    box-shadow: inset 4px 0 0 var(--color-accent);
   }
   @media (min-width: 768px) {
     .job {

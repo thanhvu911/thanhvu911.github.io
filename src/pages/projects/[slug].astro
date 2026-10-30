@@ -5,6 +5,7 @@ import Icon from '../../components/Icon.astro';
 import Gallery from '../../components/Gallery.astro';
 import ProjectDetails from '../../components/ProjectDetails.astro';
 import ProjectCase from '../../components/ProjectCase.astro';
+import Explainer from '../../components/Explainer.astro';
 import { details } from '../../data/details';
 import { projects, type Project } from '../../data/portfolio';
 import { projectImage } from '../../lib/images';
@@ -13,6 +14,7 @@ import LancasterDemo from '../../components/demos/LancasterDemo.astro';
 import SalesDemo from '../../components/demos/SalesDemo.astro';
 import RfmDemo from '../../components/demos/RfmDemo.astro';
 import PowerBIWindow from '../../components/PowerBIWindow.astro';
+import PbiVideo from '../../components/PbiVideo.astro';
 
 // Client-side dashboards rebuilt from each project's data.
 const demos: Record<string, typeof VacancyDemo> = {
@@ -71,9 +73,9 @@ const tabs = [
       </div>
       <div class="ph-main">
         <p class="mono lg:hidden">Project {project.number} // {project.kind.split(' · ')[0]} · {project.year}</p>
-        <h1 class="display ph-title mt-3 lg:mt-0" style={`--lw:${longestWord};--max:${titleMax}rem`}>{project.title}</h1>
+        <h1 class="display ph-title mt-3 lg:mt-0" data-band style={`--lw:${longestWord};--max:${titleMax}rem`}>{project.title}</h1>
         <p class="mt-6 max-w-3xl text-xl leading-snug text-strong md:text-2xl">{project.headline}</p>
-        <p class="mt-4 max-w-3xl text-lg leading-relaxed text-muted">{project.summary}</p>
+        <p class="mt-4 hidden max-w-3xl text-lg leading-relaxed text-muted md:block">{project.summary}</p>
         <div class="mt-8 flex flex-wrap gap-2">
           {hasDashboard ? (
             <a href="#dashboard" class="btn btn-primary" data-tab-link="dashboard">Open the dashboard</a>
@@ -92,16 +94,24 @@ const tabs = [
       </div>
     </header>
 
-    <div class="border-b border-line bg-white">
-      <Image
-        src={cover}
-        alt={project.images.find((i) => i.file === project.cover)?.caption ?? project.title}
-        widths={[800, 1280, 1800]}
-        sizes="(min-width: 1440px) 1440px, 100vw"
-        loading="eager"
-        class="mx-auto h-auto max-h-[44rem] w-full object-contain"
-      />
-    </div>
+    {
+      project.animation ? (
+        <div class="hero-anim border-b border-line">
+          <Explainer slug={project.slug} alt={project.animation} eager />
+        </div>
+      ) : (
+        <div class="border-b border-line bg-white">
+          <Image
+            src={cover}
+            alt={project.images.find((i) => i.file === project.cover)?.caption ?? project.title}
+            widths={[800, 1280, 1800]}
+            sizes="(min-width: 1440px) 1440px, 100vw"
+            loading="eager"
+            class="mx-auto h-auto max-h-[44rem] w-full object-contain"
+          />
+        </div>
+      )
+    }
 
     <dl class:list={['cells border-b border-line', project.metrics.length === 3 ? 'grid-cols-3' : 'grid-cols-2 sm:grid-cols-4']}>
       {
@@ -114,20 +124,6 @@ const tabs = [
       }
     </dl>
 
-    {
-      project.animation && (
-        <figure class="glance border-b border-line">
-          <figcaption class="mono flex items-center gap-2">
-            <span class="sq" />
-            At a glance // animated from the project's results
-          </figcaption>
-          <picture>
-            <source media="(prefers-reduced-motion: reduce)" srcset={`/animations/${project.slug}-still.webp`} />
-            <img src={`/animations/${project.slug}.webp`} alt={project.animation} width="1200" height="675" loading="lazy" decoding="async" class="mt-4 block h-auto w-full border border-line" />
-          </picture>
-        </figure>
-      )
-    }
 
     <div class="tabbar sticky top-[4.5rem] z-30 hidden border-b border-line bg-[var(--nav-bg)] backdrop-blur" data-tabbar>
       <div class="flex overflow-x-auto" role="tablist" aria-label="Project sections">
@@ -159,26 +155,23 @@ const tabs = [
               </div>
             </section>
           )}
-          {project.powerbiVideo && (
-            <section aria-labelledby="rec-title">
-              <h2 id="rec-title" class="display-md text-2xl">The original report</h2>
-              <p class="mt-2 max-w-3xl text-muted">Recorded from the real report in Power BI Desktop: switching pages, filtering, and drilling into the data.</p>
-              <figure class="card mt-5 overflow-hidden">
-                <video class="block aspect-[1280/728] w-full bg-soft" src={`/videos/${project.powerbiVideo}.mp4`} poster={`/videos/${project.powerbiVideo}.jpg`} controls muted playsinline preload="none">
-                  <a href={`/videos/${project.powerbiVideo}.mp4`}>Download the recording</a>
-                </video>
-                <figcaption class="mono px-4 py-3 md:px-6">Power BI Desktop // screen recording</figcaption>
-              </figure>
-            </section>
-          )}
           {Demo && (
             <section aria-labelledby="dash-title">
               <h2 id="dash-title" class="display-md text-2xl">Explore the report</h2>
-              <p class="mt-2 max-w-3xl text-muted">The report as a reader sees it once published, rebuilt from the project's data so it opens in any browser without a Power BI login. Use the Filters pane and every visual recalculates; the other pages are the original report.</p>
+              <p class="mt-2 max-w-3xl text-muted">Rebuilt from the project's data so it opens in any browser, no login. Use the filters and every visual recalculates.</p>
               <div class="mt-5">
                 <PowerBIWindow project={project}>
                   <Demo />
                 </PowerBIWindow>
+              </div>
+            </section>
+          )}
+          {project.powerbiVideo && (
+            <section aria-labelledby="rec-title" class:list={{ 'pt-6': Demo }}>
+              <h2 id="rec-title" class="display-md text-2xl">See it in Power BI</h2>
+              <p class="mt-2 max-w-3xl text-muted">The real report in Power BI Desktop. The subtitles explain each click.</p>
+              <div class="mt-5">
+                <PbiVideo name={project.powerbiVideo} />
               </div>
             </section>
           )}
@@ -220,20 +213,17 @@ const tabs = [
   .panel {
     padding: 2rem 1rem 4rem;
   }
-  .glance {
-    margin: 0;
-    padding: 1.5rem 1rem 2rem;
+  /* Matches the animations' own paper colour, in both themes. */
+  .hero-anim {
+    background: #f3f1ec;
   }
-  .glance picture {
-    display: block;
-    max-width: 68rem;
+  .hero-anim :global(picture) {
+    max-width: 75rem;
+    margin-inline: auto;
   }
   @media (min-width: 768px) {
     .panel {
       padding: 2.5rem 2.5rem 5rem;
-    }
-    .glance {
-      padding: 2rem 2.5rem 2.5rem;
     }
   }
   .ph {

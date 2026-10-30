@@ -25,7 +25,7 @@ const items = await Promise.all(
       items.map((img, i) => (
         <li>
           <button type="button" class="group block w-full text-left" data-open={i} data-full={img.full} data-caption={img.caption}>
-            <span class="block aspect-[16/10] overflow-hidden rounded-lg border border-line bg-soft transition-colors group-hover:border-teal">
+            <span class="block aspect-[16/10] overflow-hidden rounded-lg border border-line bg-soft transition-colors group-hover:border-accent-bright">
               <Image
                 src={img.src}
                 alt={img.caption}

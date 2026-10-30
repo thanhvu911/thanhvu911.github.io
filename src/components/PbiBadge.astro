@@ -1,5 +1,6 @@
 ---
-// Yellow Power BI tag for project cards that have an interactive dashboard.
+// Ink Power BI tag for project cards that have an interactive dashboard;
+// only the bar icon keeps Power BI's yellow, so it doesn't fight the orange accent.
 interface Props {
   class?: string;
 }
@@ -17,8 +18,8 @@ const { class: className } = Astro.props;
     align-items: center;
     gap: 0.375rem;
     padding: 0.3125rem 0.625rem;
-    background: #f2c811;
-    color: #252423;
+    background: #111111;
+    color: #f8f7f4;
     font-family: var(--font-mono);
     font-size: 0.6875rem;
     font-weight: 700;
@@ -26,6 +27,6 @@ const { class: className } = Astro.props;
     text-transform: uppercase;
   }
   .pbi-badge svg {
-    fill: currentColor;
+    fill: #f2c811;
   }
 </style>

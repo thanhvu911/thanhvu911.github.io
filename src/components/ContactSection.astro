@@ -14,7 +14,7 @@ const quick = [
 
 <section id="contact" class="ct border-b border-line">
   <div class="ct-side">
-    <p class="flex items-start gap-3"><span class="sq mt-0.5"></span><span class="mono">07 // Contact</span></p>
+    <p class="flex items-start gap-3"><span class="sq mt-0.5"></span><span class="mono">06 // Contact</span></p>
     <div class="mt-auto hidden lg:block">
       <p class="mono">{profile.location}<br />Eastern time</p>
       <p class="mono mt-4">Usually replies<br />within a day</p>
@@ -22,14 +22,14 @@ const quick = [
   </div>
 
   <div class="ct-main">
-    <h2 class="display ct-title" data-reveal>Get in<br />touch</h2>
+    <h2 class="display ct-title" data-reveal data-scramble>Get in<br />touch</h2>
     <p class="mt-6 max-w-[34rem] text-lg text-muted" data-reveal>
       Questions about my work, a project, or a role? Use whichever is easiest.
     </p>
 
     <a href={`mailto:${profile.email}`} class="mail" data-goatcounter-click="contact-email" data-reveal>
       <span class="truncate">{profile.email}</span>
-      <Icon name="arrow-up-right" size={28} class="shrink-0 text-teal-ink" />
+      <Icon name="arrow-up-right" size={28} class="shrink-0 text-accent-ink" />
     </a>
 
     <div class="mt-10 flex flex-wrap gap-2" data-reveal>
@@ -138,7 +138,7 @@ const quick = [
     transition: border-color 200ms;
   }
   .mail:hover {
-    border-color: var(--color-cyan);
+    border-color: var(--color-accent);
   }
   .mail :global(svg) {
     transition: transform 250ms;
@@ -179,7 +179,7 @@ const quick = [
     const data = new FormData(form);
     const show = (msg: string, ok: boolean) => {
       status.textContent = msg;
-      status.className = `px-3 py-2 text-sm ${ok ? 'bg-teal-wash text-teal-ink' : 'bg-red-500/10 text-red-600'}`;
+      status.className = `px-3 py-2 text-sm ${ok ? 'bg-accent-wash text-accent-ink' : 'bg-red-500/10 text-red-600'}`;
     };
 
     const name = String(data.get('name') ?? '').trim();

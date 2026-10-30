@@ -1,0 +1,130 @@
+---
+// A Power BI screen recording with plain-English subtitles and a step list.
+// The step for the current moment is highlighted; tapping a step jumps there.
+import { videoGuides } from '../data/videoGuides';
+
+interface Props {
+  name: string;
+}
+const { name } = Astro.props;
+const guide = videoGuides[name];
+const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+// Group the steps under their chapter (one per report page).
+const chapters: { title: string; steps: { at: number; text: string; i: number }[] }[] = [];
+guide?.steps.forEach((step, i) => {
+  if (step.chapter || !chapters.length) chapters.push({ title: step.chapter ?? 'Walkthrough', steps: [] });
+  chapters[chapters.length - 1].steps.push({ at: step.at, text: step.text, i });
+});
+---
+
+<div class="pv" data-pbi-video>
+  <figure class="card overflow-hidden">
+    <video class="block aspect-[1280/728] w-full bg-soft" src={`/videos/${name}.mp4`} poster={`/videos/${name}.jpg`} controls muted playsinline preload="none">
+      {guide && <track kind="captions" srclang="en" label="English" src={`/videos/${name}.vtt`} default />}
+      <a href={`/videos/${name}.mp4`}>Download the recording</a>
+    </video>
+    <figcaption class="mono px-4 py-3 md:px-6">Power BI Desktop // subtitles on // tap a step to jump</figcaption>
+  </figure>
+  {
+    guide && (
+      <div class="steps">
+        {chapters.map((c, n) => (
+          <div class="chap">
+            <p class="mono">
+              {String(n + 1).padStart(2, '0')} // {c.title}
+            </p>
+            <ol class="mt-2">
+              {c.steps.map((s) => (
+                <li>
+                  <button type="button" class="step" data-at={s.at} data-i={s.i}>
+                    <span class="t">{clock(s.at)}</span>
+                    <span>{s.text}</span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))}
+      </div>
+    )
+  }
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-pbi-video]').forEach((root) => {
+    const video = root.querySelector('video')!;
+    const steps = [...root.querySelectorAll<HTMLButtonElement>('.step')];
+    const starts = steps.map((b) => Number(b.dataset.at));
+    let current = -1;
+    const mark = () => {
+      let i = starts.length - 1;
+      while (i > 0 && starts[i] > video.currentTime + 0.05) i--;
+      if (i === current) return;
+      current = i;
+      steps.forEach((b, j) => b.toggleAttribute('aria-current', j === i));
+    };
+    video.addEventListener('timeupdate', mark);
+    video.addEventListener('seeked', mark);
+    steps.forEach((b) =>
+      b.addEventListener('click', () => {
+        const at = Number(b.dataset.at);
+        // Not loaded yet (preload="none"): playing starts the download, and
+        // the jump happens once the video knows its length.
+        if (video.readyState > 0) video.currentTime = at;
+        else video.addEventListener('loadedmetadata', () => (video.currentTime = at), { once: true });
+        video.play().catch(() => {});
+        video.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      }),
+    );
+  });
+</script>
+
+<style>
+  .steps {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  @media (min-width: 900px) {
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 2.5rem;
+    }
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: 0.5rem;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--color-line);
+    color: var(--color-ink);
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 200ms;
+  }
+  .step:hover {
+    background: var(--color-surface);
+  }
+  .step[aria-current] {
+    background: var(--color-surface);
+    box-shadow: inset 3px 0 0 var(--color-accent);
+    color: var(--color-strong);
+  }
+  .t {
+    padding-top: 0.125rem;
+    color: var(--color-accent-ink);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  video::cue {
+    background: rgb(17 17 17 / 0.85);
+    color: #fff;
+    font-family: var(--font-sans);
+    line-height: 1.35;
+  }
+</style>

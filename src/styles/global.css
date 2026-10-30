@@ -4,23 +4,23 @@
 @import "@fontsource-variable/jetbrains-mono";
 
 /* "Data lab": a measured grid, wide uppercase headings, monospace labels,
-   and one cyan accent. Light is cool grey paper; dark is the navy of the
-   original site. Corners are square everywhere except the Power BI report,
+   and one signal-orange accent. Light is warm off-white paper; dark is a
+   warm near-black. Corners are square everywhere except the Power BI report,
    which keeps Power BI's own look. */
 @theme {
-  --color-bg: #e4e6e6;
-  --color-surface: #eceeee;
-  --color-surface-2: #f3f4f4;
+  --color-bg: #ebe8e2;
+  --color-surface: #f3f1ec;
+  --color-surface-2: #f8f7f4;
   --color-navy: #0b1f47;
-  --color-strong: #14181e; /* headings and key numbers */
-  --color-ink: #2b3138; /* body text */
-  --color-muted: #59616a;
-  --color-line: #c3c8ca;
-  --color-soft: #dcdfe0;
-  --color-cyan: #12c4cc; /* fills: squares, bars, rules */
-  --color-teal: #2ee6e6;
-  --color-teal-ink: #05666f; /* cyan dark enough for text on grey */
-  --color-teal-wash: rgb(18 196 204 / 0.12);
+  --color-strong: #111111; /* headings and key numbers */
+  --color-ink: #2a2826; /* body text */
+  --color-muted: #625c55;
+  --color-line: #cfcac1;
+  --color-soft: #e2ded6;
+  --color-accent: #ff5a1f; /* fills: squares, bars, rules */
+  --color-accent-bright: #ff6a33;
+  --color-accent-ink: #b53a0c; /* accent dark enough for text on paper */
+  --color-accent-wash: rgb(255 90 31 / 0.12);
   --color-blue: #2563eb;
 
   --font-sans: "Space Grotesk Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -44,45 +44,49 @@
   --card-shadow: none;
   --card-hover-border: var(--color-strong);
   --card-hover-shadow: none;
-  --panel-bg: rgb(236 238 238 / 0.98);
-  --nav-bg: rgb(228 230 230 / 0.86);
-  --hover-bg: rgb(20 24 30 / 0.05);
+  --panel-bg: rgb(243 241 236 / 0.98);
+  --nav-bg: rgb(235 232 226 / 0.86);
+  --hover-bg: rgb(17 17 17 / 0.05);
   --chip-bg: transparent;
   --chip-border: var(--color-line);
   --btn-primary-bg: var(--color-strong);
-  --btn-primary-fg: #f3f4f4;
+  --btn-primary-fg: #f8f7f4;
   --btn-primary-shadow: none;
-  --btn-primary-hover: #262c35;
-  --gradient-text: linear-gradient(var(--color-teal-ink), var(--color-teal-ink));
+  --btn-primary-hover: #2a2826;
+  --gradient-text: linear-gradient(var(--color-accent-ink), var(--color-accent-ink));
   --ambient: none;
-  --grid-line: rgb(20 24 30 / 0.05);
+  --grid-line: rgb(17 17 17 / 0.05);
   --spot: transparent;
-  --glow: rgb(18 196 204 / 0.25);
+  --glow: rgb(255 90 31 / 0.25);
+  --stripe-dark: #d9430f;
+  --wipe-bg: #111111;
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-bg: #071226;
-  --color-surface: #0b1a33;
-  --color-surface-2: #0f2140;
-  --color-strong: #eef3fa;
-  --color-ink: #bcc7d8;
-  --color-muted: #8b98b0;
-  --color-line: #1e2f50;
-  --color-soft: #0d1d39;
-  --color-cyan: #2ee6e6;
-  --color-teal: #2ee6e6;
-  --color-teal-ink: #5ff0f0;
-  --color-teal-wash: rgb(46 230 230 / 0.1);
+  --color-bg: #0f0f0f;
+  --color-surface: #181818;
+  --color-surface-2: #202020;
+  --color-strong: #f4f1ec;
+  --color-ink: #cdc8c1;
+  --color-muted: #9a948c;
+  --color-line: #2b2b2b;
+  --color-soft: #141414;
+  --color-accent: #ff6a33;
+  --color-accent-bright: #ff6a33;
+  --color-accent-ink: #ff8a5c;
+  --color-accent-wash: rgb(255 106 51 / 0.12);
   --color-blue: #60a5fa;
 
-  --panel-bg: rgb(11 26 51 / 0.98);
-  --nav-bg: rgb(7 18 38 / 0.86);
+  --panel-bg: rgb(24 24 24 / 0.98);
+  --nav-bg: rgb(15 15 15 / 0.86);
   --hover-bg: rgb(255 255 255 / 0.05);
-  --btn-primary-bg: #eef3fa;
-  --btn-primary-fg: #071226;
+  --btn-primary-bg: #f4f1ec;
+  --btn-primary-fg: #0f0f0f;
   --btn-primary-hover: #ffffff;
-  --grid-line: rgb(148 170 220 / 0.06);
+  --grid-line: rgb(255 255 255 / 0.05);
+  --stripe-dark: #d9430f;
+  --wipe-bg: #1c1c1c;
 }
 
 /* Cross-page fade using the browser's native View Transitions. */
@@ -123,11 +127,11 @@
   }
 
   ::selection {
-    background: rgb(18 196 204 / 0.3);
+    background: rgb(255 90 31 / 0.28);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-cyan);
+    outline: 2px solid var(--color-accent);
     outline-offset: 3px;
   }
 
@@ -218,7 +222,7 @@
     flex-shrink: 0;
     width: 0.75rem;
     height: 0.75rem;
-    background: var(--color-cyan);
+    background: var(--color-accent);
   }
 
   .section-title {
@@ -286,10 +290,10 @@
   }
 
   .text-gradient {
-    color: var(--color-teal-ink);
+    color: var(--color-accent-ink);
   }
 
-  /* Section label: mono with a cyan square. */
+  /* Section label: mono with a accent square. */
   .kicker {
     display: inline-flex;
     align-items: center;
@@ -305,7 +309,7 @@
     content: "";
     width: 0.625rem;
     height: 0.625rem;
-    background: var(--color-cyan);
+    background: var(--color-accent);
   }
 
   /* The one surface style used across the site. */
@@ -338,8 +342,8 @@
     width: 2.5rem;
     height: 2.5rem;
     border: 1px solid var(--color-line);
-    background: var(--color-teal-wash);
-    color: var(--color-teal-ink);
+    background: var(--color-accent-wash);
+    color: var(--color-accent-ink);
   }
 
   .pill {
@@ -366,11 +370,11 @@
     top: 0.6em;
     width: 0.4375rem;
     height: 0.4375rem;
-    background: var(--color-cyan);
+    background: var(--color-accent);
   }
 
   .text-link {
-    color: var(--color-teal-ink);
+    color: var(--color-accent-ink);
     font-weight: 600;
     text-decoration: underline;
     text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
@@ -397,7 +401,7 @@
     transition: background 200ms, border-color 200ms, color 200ms;
   }
   .btn-primary {
-    border-left: 4px solid var(--color-cyan);
+    border-left: 4px solid var(--color-accent);
     background: var(--btn-primary-bg);
     color: var(--btn-primary-fg);
   }
@@ -412,7 +416,7 @@
     background: var(--hover-bg);
   }
 
-  /* Arrow bar: a cyan block with an arrow, then a label. */
+  /* Arrow bar: a accent block with an arrow, then a label. */
   .go {
     display: flex;
     align-items: stretch;
@@ -428,8 +432,8 @@
     place-items: center;
     flex-shrink: 0;
     width: 5rem;
-    background: var(--color-cyan);
-    color: #06222a;
+    background: var(--color-accent);
+    color: #111111;
     transition: width 300ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .go > .arr svg {
@@ -469,6 +473,109 @@
     }
   }
 
+  /* Section titles: a hatched accent band sweeps across while the letters
+     scramble into place (see Base.astro). [data-band] titles get the band
+     only, so they stay readable. Without motion they just appear. */
+  .section-title,
+  [data-scramble],
+  [data-band] {
+    position: relative;
+    overflow: hidden;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .js .section-title[data-reveal],
+    .js [data-scramble][data-reveal] {
+      opacity: 1;
+      transform: none;
+    }
+    .js .section-title:not(.is-visible),
+    .js [data-scramble]:not(.is-visible) {
+      color: transparent;
+    }
+    .js .section-title.is-visible::after,
+    .js [data-scramble].is-visible::after,
+    .js [data-band].is-visible::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(-45deg, var(--color-accent) 0 0.5rem, var(--stripe-dark) 0.5rem 1rem);
+      mask: linear-gradient(90deg, transparent 0 62%, #000 62% 100%);
+      transform: translateX(-100%);
+      animation: band-sweep 1100ms cubic-bezier(0.65, 0, 0.35, 1) both;
+    }
+  }
+  @keyframes band-sweep {
+    to {
+      transform: translateX(62%);
+    }
+  }
+
+  /* Page wipe: a dark panel with hatched accent edges crosses the screen
+     between pages, showing where you are going. */
+  .pwipe {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    align-content: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--wipe-bg);
+    color: #f3f4f4;
+    pointer-events: none;
+    visibility: hidden;
+    transform: translateX(calc(-100% - 6rem));
+  }
+  .pwipe::before,
+  .pwipe::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    width: 6rem;
+    background: repeating-linear-gradient(-45deg, var(--color-accent) 0 0.625rem, var(--stripe-dark) 0.625rem 1.25rem);
+  }
+  .pwipe::before {
+    right: 100%;
+  }
+  .pwipe::after {
+    left: 100%;
+  }
+  .pwipe-to {
+    color: var(--color-accent-bright);
+  }
+  .pwipe-ttl {
+    max-width: 18ch;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 7vw, 5.5rem);
+    font-stretch: 125%;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 0.92;
+    text-transform: uppercase;
+  }
+  @media (min-width: 768px) {
+    .pwipe {
+      padding-inline: 2.5rem 8rem;
+    }
+  }
+  .wipe-cover .pwipe,
+  .wipe-hold .pwipe,
+  .wipe-out .pwipe {
+    visibility: visible;
+  }
+  .wipe-cover .pwipe {
+    transform: none;
+    transition: transform 320ms cubic-bezier(0.7, 0, 0.84, 0);
+  }
+  .wipe-hold .pwipe {
+    transform: none;
+  }
+  .wipe-out .pwipe {
+    transform: translateX(calc(100% + 6rem));
+    transition: transform 550ms cubic-bezier(0.16, 1, 0.3, 1) 80ms;
+  }
+
   .field {
     width: 100%;
     min-height: 3rem;
@@ -484,8 +591,8 @@
   }
   .field:focus {
     outline: none;
-    border-color: var(--color-cyan);
-    box-shadow: 0 0 0 3px rgb(18 196 204 / 0.25);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgb(255 90 31 / 0.25);
   }
 
   /* Interactive dashboards: styled like a Power BI report in every theme

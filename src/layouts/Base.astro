@@ -44,7 +44,7 @@ const personSchema = {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#e4e6e6" data-theme-color />
+    <meta name="theme-color" content="#ebe8e2" data-theme-color />
     <script is:inline>
       // Apply the theme before first paint: the visitor's saved choice,
       // otherwise their device setting.
@@ -58,8 +58,16 @@ const personSchema = {
         if (!t && window.matchMedia('(prefers-color-scheme: dark)').matches) t = 'dark';
         if (t === 'dark') {
           root.dataset.theme = 'dark';
-          document.querySelector('[data-theme-color]').setAttribute('content', '#071226');
+          document.querySelector('[data-theme-color]').setAttribute('content', '#0f0f0f');
         }
+        // Arriving through the page wipe: start covered, then the wipe
+        // script at the end of the body slides the cover away.
+        try {
+          if (sessionStorage.getItem('wipe')) {
+            root.classList.add('wipe-hold');
+            setTimeout(function () { root.classList.remove('wipe-hold'); }, 2500);
+          }
+        } catch (e) {}
       })();
     </script>
     <meta name="generator" content={Astro.generator} />
@@ -92,6 +100,67 @@ const personSchema = {
     <Footer />
     <CommandPalette />
     <Assistant />
+    <div class="pwipe" aria-hidden="true">
+      <p class="pwipe-to mono" data-wipe-path></p>
+      <p class="pwipe-ttl" data-wipe-title></p>
+    </div>
+    <script is:inline>
+      // Page wipe. Leaving: the cover slides in from the left, then the browser
+      // navigates. Arriving: the cover (already in place) slides off to the right.
+      (function () {
+        var root = document.documentElement;
+        var path = document.querySelector('[data-wipe-path]');
+        var title = document.querySelector('[data-wipe-title]');
+        var names = { '': 'Home', projects: 'Projects', resume: 'Resume', academics: 'Academics' };
+        function label(p) {
+          var parts = p.replace(/\/+$/, '').split('/').filter(Boolean);
+          var last = parts[parts.length - 1] || '';
+          path.textContent = '// ' + (p.replace(/\/+$/, '') || '/');
+          title.textContent = names[last] || last.replace(/-/g, ' ');
+        }
+        function reveal() {
+          root.classList.remove('wipe-cover');
+          root.classList.add('wipe-out');
+          setTimeout(function () { root.classList.remove('wipe-out'); }, 700);
+        }
+
+        var arrived = null;
+        try {
+          arrived = sessionStorage.getItem('wipe');
+          sessionStorage.removeItem('wipe');
+        } catch (e) {}
+        if (arrived) {
+          label(arrived);
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              root.classList.remove('wipe-hold');
+              reveal();
+            });
+          });
+        }
+        // Back/forward restores the page as it was left: take the cover off.
+        addEventListener('pageshow', function (e) {
+          if (e.persisted && root.classList.contains('wipe-cover')) reveal();
+        });
+
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        document.addEventListener('click', function (e) {
+          if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          var a = e.target.closest && e.target.closest('a[href]');
+          if (!a || a.target === '_blank' || a.hasAttribute('download')) return;
+          var url = new URL(a.href, location.href);
+          if (url.origin !== location.origin || /\.[a-z0-9]+$/i.test(url.pathname)) return;
+          if (url.pathname === location.pathname && url.search === location.search) return;
+          e.preventDefault();
+          label(url.pathname);
+          root.classList.add('wipe-cover');
+          setTimeout(function () {
+            try { sessionStorage.setItem('wipe', url.pathname); } catch (err) {}
+            location.href = url.href;
+          }, 330);
+        });
+      })();
+    </script>
     <script>
       // Fill in phone links ([data-phone]) from reversed digits, so the number
       // never appears in the HTML that scrapers read.
@@ -103,21 +172,57 @@ const personSchema = {
         el.hidden = false;
       });
 
-      // Reveal [data-reveal] blocks once as they scroll into view.
+      const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Scramble a heading's letters, then settle them left to right.
+      const glyphs = 'ABCDEFGHKNOPRSTUVXYZ0123456789/#';
+      const scramble = (el: HTMLElement) => {
+        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+        const nodes: { node: Text; text: string }[] = [];
+        while (walker.nextNode()) nodes.push({ node: walker.currentNode as Text, text: walker.currentNode.nodeValue ?? '' });
+        const total = nodes.reduce((n, t) => n + t.text.length, 0);
+        if (!total) return;
+        el.setAttribute('aria-label', el.textContent?.trim() ?? '');
+        el.style.height = `${el.offsetHeight}px`;
+        const start = performance.now();
+        const dur = 650 + total * 18;
+        let last = 0;
+        const tick = (now: number) => {
+          const t = (now - start) / dur;
+          if (now - last > 45 || t >= 1) {
+            last = now;
+            let i = 0;
+            for (const n of nodes) {
+              n.node.nodeValue = [...n.text]
+                .map((ch) => (ch.trim() === '' || i++ / total < t ? ch : glyphs[(Math.random() * glyphs.length) | 0]))
+                .join('');
+            }
+          }
+          if (t < 1) return requestAnimationFrame(tick);
+          nodes.forEach((n) => (n.node.nodeValue = n.text));
+          el.style.height = '';
+          el.removeAttribute('aria-label');
+        };
+        requestAnimationFrame(tick);
+      };
+
+      // Reveal [data-reveal] blocks and section titles once as they scroll into view.
       const io = new IntersectionObserver(
         (entries) =>
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
-            entry.target.classList.add('is-visible');
-            io.unobserve(entry.target);
+            const el = entry.target as HTMLElement;
+            el.classList.add('is-visible');
+            if (!calm && el.matches('.section-title, [data-scramble]')) scramble(el);
+            io.unobserve(el);
           }),
         { rootMargin: '0px 0px -8% 0px' },
       );
-      document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+      document.querySelectorAll('[data-reveal], .section-title, [data-scramble], [data-band]').forEach((el) => io.observe(el));
 
       // Count key numbers ([data-count]) up from zero when they come into view,
       // keeping their prefix, suffix, and decimals ("131M+", "0.77").
-      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (!calm) {
         const counter = new IntersectionObserver(
           (entries) =>
             entries.forEach((entry) => {

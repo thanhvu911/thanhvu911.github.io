@@ -108,13 +108,13 @@ const layers = [
       padding-inline: 1.875rem;
     }
   }
-  /* Each stage lights up in turn: a cyan rule on top and a lighter panel. */
+  /* Each stage lights up in turn: a accent rule on top and a lighter panel. */
   .node::before {
     content: '';
     position: absolute;
     inset: 0 0 auto;
     height: 4px;
-    background: var(--color-cyan);
+    background: var(--color-accent);
     transform: scaleX(0);
     transform-origin: left;
     animation: rule var(--cycle) cubic-bezier(0.22, 1, 0.36, 1) infinite;
@@ -277,7 +277,7 @@ const layers = [
     }
   }
   .runbar b {
-    color: var(--color-teal-ink);
+    color: var(--color-accent-ink);
     font-weight: 500;
   }
   .wire {
@@ -293,7 +293,7 @@ const layers = [
     left: 0;
     width: 7px;
     height: 7px;
-    background: var(--color-cyan);
+    background: var(--color-accent);
     animation: packet 4s linear infinite;
   }
   .wire i:nth-child(2) {
