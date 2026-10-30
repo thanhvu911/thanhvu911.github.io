@@ -542,7 +542,7 @@ export const projects: Project[] = [
     year: 'Oct 2026',
     kind: 'Machine learning · Evaluation',
     why: 'Census vacancy estimates arrive about nine months after the year ends, while USPS data comes out every quarter. A reliable early estimate would let a local economic development office see housing problems sooner, and if it is not reliable, it is better to know before anyone acts on its numbers.',
-    role: 'Solo follow-up to my housing vacancy project: SQL pipeline, from-scratch gradient-descent models, eight-model comparison, three evaluation designs, and prediction intervals.',
+    role: 'Follow-up to my housing vacancy project, built with the help of an AI assistant: SQL pipeline, from-scratch gradient-descent models, eight-model comparison, three evaluation designs, and prediction intervals.',
     challenges: [
       'A 2012 USPS definition change makes the broad vacancy rate jump 2.2–4.9 points in every county, so the pipeline zeroes that year’s change and adds a post-2012 flag; otherwise a model learns a fake trend.',
       'There is no 1-year Census release for 2020, so 2021 is compared with 2019 and the model table records the two-year gap.',
@@ -605,13 +605,13 @@ export const experience = [
   },
   {
     role: 'Data Science Intern',
-    tech: ['Python', 'Statistics', 'Machine learning', 'Seamless.AI'],
+    tech: ['Excel', 'Seamless.AI', 'AI screening tools'],
     company: 'KCC Capital Partners',
     location: 'Sheridan, WY',
     dates: 'Jan 2026 – May 2026',
     bullets: [
       'Integrated data on 100+ precious-metal and mining companies, markets, and transactions into one dataset and enriched 500+ contact records with Seamless.AI, improving data quality for deal sourcing.',
-      'Trained statistical and machine-learning models on mandate data, shortlisting 100+ likely buyers for outreach.',
+      'Screened the companies with the firm’s built-in AI tools and reviewed the resulting shortlist of 100+ likely buyers for outreach.',
       'Launched automated weekly deal-team reports and dashboards, replacing manual spreadsheets and saving 5+ hours per week.',
     ],
   },
@@ -682,7 +682,7 @@ export const education = {
   school: 'Franklin & Marshall College',
   location: 'Lancaster, PA',
   date: 'May 2026',
-  gpa: 'GPA 3.72 · Major 3.82',
+  gpa: 'GPA 3.72',
   honors: "Magna Cum Laude · Honors List (5 semesters) · Dean's List (Spring 2022)",
   honorsShort: 'Magna Cum Laude',
   coursework: [
@@ -747,7 +747,7 @@ export const research = {
     {
       title: 'Can a Model Nowcast Census Vacancy from Mail Data?',
       slug: 'vacancy-nowcast-ml',
-      meta: 'Python, NumPy, scikit-learn, SQLite. Oct 2026',
+      meta: 'Python, NumPy, scikit-learn, SQLite. Oct 2026, built with the help of an AI assistant',
       bullets: [
         'Compared eight models under three evaluation designs; none beat carrying last year’s Census value forward in a realistic forward-chaining nowcast (MAE 1.023 vs 1.054 for ridge), although two standard schemes would have shown a small win.',
         'Wrote gradient-descent linear and logistic regression from scratch with tests against closed-form and scikit-learn results, and found 80% conformal intervals that cover 81% pooled but only 57% in one county.',

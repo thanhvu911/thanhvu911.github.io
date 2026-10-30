@@ -14,7 +14,7 @@ export function knowledgeText(): string {
   lines.push(`Resumes: ${profile.resumes.map((r) => `${r.label} ${SITE}${r.href}`).join('; ')}.`);
 
   lines.push('\n## Education');
-  lines.push(`${education.degree}, ${education.school} (${education.location}), ${education.date}. GPA 3.72 overall, 3.82 in the major. ${education.honors}.`);
+  lines.push(`${education.degree}, ${education.school} (${education.location}), ${education.date}. GPA 3.72. ${education.honors}.`);
   lines.push(`Research interests: ${research.interests}`);
   research.coursework.forEach((g) => lines.push(`${g.group} coursework: ${g.items.join(', ')}.`));
   lines.push(`Certifications: ${credentials.map((c) => `${c.title} (${c.detail.replaceAll(' · ', ', ')})`).join('; ')}.`);
@@ -72,7 +72,7 @@ export const quickAnswers: QuickAnswer[] = [
   })),
   {
     keys: ['gpa', 'education', 'degree', 'college', 'franklin', 'marshall', 'f&m', 'honors', 'graduated', 'major'],
-    answer: `${education.degree} from ${education.school}, ${education.date}. GPA 3.72 overall and 3.82 in the major, with ${education.honors.replaceAll(' · ', ' and ')}.`,
+    answer: `${education.degree} from ${education.school}, ${education.date}. GPA 3.72, with ${education.honors.replaceAll(' · ', ' and ')}.`,
     link: { href: '/academics', label: 'Open Academics' },
   },
   {
@@ -82,7 +82,7 @@ export const quickAnswers: QuickAnswer[] = [
   },
   {
     keys: ['ai', 'artificial intelligence', 'llm', 'gemini', 'machine learning', 'ml', 'model', 'models'],
-    answer: `At EDC, Thanh built a Google Apps Script web app with a Gemini AI assistant that lets 6+ non-technical staff explore and maintain data. At KCC Capital Partners, Thanh trained statistical and machine-learning models that shortlisted 100+ likely buyers. Coursework covers AI (search, constraint satisfaction, Bayesian networks) and machine learning.`,
+    answer: `At EDC, Thanh built a Google Apps Script web app with a Gemini AI assistant that lets 6+ non-technical staff explore and maintain data. At KCC Capital Partners, Thanh gathered data on 100+ companies with Excel and Seamless.AI, screened it with the firm's built-in AI tools, and reviewed a shortlist of 100+ likely buyers. Coursework covers AI (search, constraint satisfaction, Bayesian networks) and machine learning.`,
     link: { href: '/academics', label: 'Open Academics' },
   },
   {
