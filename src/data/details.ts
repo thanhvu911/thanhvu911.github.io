@@ -265,7 +265,7 @@ export const details: Record<string, ProjectDetail> = {
       'Side-by-side comparisons let economic development staff see quickly where Lancaster outperforms or lags, in a format ready for presentations to investors, officials, and partners.',
     ],
     tools: [
-      { name: 'Power BI Desktop', use: 'Four report pages with toggles between Lancaster, Pennsylvania, and percentage-rate views, a custom Power KPI visual, and a navy theme.' },
+      { name: 'Power BI Desktop', use: 'Two report pages (60 visuals) with toggles between Lancaster, Pennsylvania, and percentage-rate views, a custom Power KPI visual, and a navy theme.' },
       { name: 'Power Query', use: 'Shaping seven Excel sheets: unpivoting, date parsing, type casting, and combining them into model tables.' },
       { name: 'DAX', use: 'Benchmarking measures: industry share of total, average annual rate, Lancaster ÷ PA, and Lancaster ÷ U.S.' },
       { name: 'BLS LAUS and QCEW', use: 'Monthly labor force, employment, and unemployment (2015–2025), plus private-sector wages by NAICS sector.' },
@@ -433,21 +433,83 @@ export const details: Record<string, ProjectDetail> = {
     ],
   },
 
-  'medical-cost-regression': {
+  'melbourne-housing-price-prediction': {
     overview: [
-      'A statistics project that asks how much age and sex explain differences in individual medical insurance charges, using linear regression in R on 1,338 U.S. insurance records.',
-      'Instead of fitting one model and reading its coefficients, it compares five nested models, from intercept-only to a sex × age interaction, and checks residual diagnostics before drawing conclusions.',
+      'A modeling study built on a Machine Learning course dataset: 13,580 Melbourne home sales from January 2016 to September 2017, with log price as the target.',
+      'The same four models are tested three different ways. The point is that the evaluation design, not just the model, decides how much you can trust the accuracy number.',
     ],
     tools: [
-      { name: 'R', use: 'Data manipulation, model fitting, and hypothesis testing.' },
-      { name: 'lm()', use: 'Five nested linear models: intercept only, sex, age, sex + age, and sex × age.' },
-      { name: 'ggplot2', use: 'Scatter plots with fitted lines, distributions, and residual plots.' },
-      { name: 'R Markdown', use: 'A reproducible report combining code, output, and interpretation.' },
+      { name: 'pandas', use: 'Feature preparation, log transforms, and median imputation with missing-value flags.' },
+      { name: 'scikit-learn', use: 'Ridge regression, random forest, gradient boosting, and the three cross-validation designs.' },
+      { name: 'matplotlib', use: 'The comparison charts.' },
     ],
     walkthrough: [
       {
+        image: '01-random-vs-future.png',
+        title: 'Random folds versus the future',
+        summary: 'Training on past sales and predicting the last 25% barely changes the error over this 20-month window.',
+        points: [
+          'Gradient boosting: 13.1% average error under random 5-fold CV and 13.1% on future sales.',
+          'The median baseline is off by about 42–44%; ridge regression by about 21–23%.',
+        ],
+      },
+      {
+        image: '02-leave-one-region-out.png',
+        title: 'A region the model has never seen',
+        summary: 'Holding out one region at a time shows where the accuracy breaks.',
+        points: [
+          'Error rises to 18–38% depending on the region.',
+          'Western Metropolitan reaches 37.9%, nearly three times the random-CV error.',
+          'Random CV measures “more houses like these”, not “somewhere new”.',
+        ],
+      },
+    ],
+  },
+
+  'medical-cost-regression': {
+    overview: [
+      'A two-part study of 1,338 U.S. health-insurance records. Part 1 (R, 2021) asked how much age and sex explain annual charges, and found they explain only 9% of the variance.',
+      'Part 2 (Python, 2026) explains the rest: a smoking × obesity interaction accounts for three distinct cost bands, nine models are compared with cross-validation, and the best model is tested for where it fails.',
+    ],
+    tools: [
+      { name: 'Python (pandas, NumPy)', use: 'Feature analysis, the cost bands, and bootstrap confidence intervals.' },
+      { name: 'scikit-learn', use: 'Pipelines, 5-fold cross-validation, ridge, lasso, random forest, gradient boosting, and permutation importance.' },
+      { name: 'Statistical tests', use: 'Nested-model F-tests and a Breusch–Pagan check for constant variance, written with NumPy.' },
+      { name: 'R and ggplot2', use: 'Part 1: five nested linear models and an R Markdown report.' },
+    ],
+    walkthrough: [
+      {
+        image: '01-three-bands.png',
+        title: 'The three cost bands',
+        summary: 'Charges fall into three bands that age and sex cannot explain. Smoking and obesity do.',
+        points: [
+          '94% of people in the top band (over $30K) smoke, and 92% have a BMI of 30 or more.',
+          'Obesity barely changes costs for non-smokers but doubles them for smokers: a median of $40,904 for obese smokers.',
+          'Adding a smoker × obesity term raises R² from 0.75 to 0.86 (nested F-test, p < 1e-170).',
+        ],
+      },
+      {
+        image: '02-model-comparison.png',
+        title: 'Nine models, compared fairly',
+        summary: 'All model selection uses 5-fold cross-validation on the training split; the test set is scored once.',
+        points: [
+          'The interpretable linear model with the interaction matched ridge, lasso, and random forest (CV R² 0.86) and beat boosting.',
+          'Held-out test: R² 0.88, RMSE $4,209.',
+          'A log transform hurt here, because back-transforming underestimates the high-cost smokers.',
+        ],
+      },
+      {
+        image: '03-subgroup-error.png',
+        title: 'Where the model fails',
+        summary: 'A strong overall R² hides uneven errors.',
+        points: [
+          'Relative error is 29% for non-smokers, 12% for smokers with BMI under 30, and 5% for obese smokers.',
+          'Once smoking is in the model, the earlier sex effect flips from +$1,539 to −$494: it was standing in for smoking.',
+        ],
+      },
+      {
         image: 'insight-summary.png',
-        title: 'Summary of findings',
+        title: 'Part 1 (2021): summary of findings',
         summary: 'What the models say about age, sex, and charges.',
         points: [
           'Age is a moderate, significant predictor: about +$258 in charges per year of age.',

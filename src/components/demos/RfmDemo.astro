@@ -1,103 +1,208 @@
 ---
-// Interactive RFM segment playbook with a "try a score" picker.
+// Interactive version of the Customer Analysis page: score gauges, customers by
+// RFM group and by age, and a "try a score" lookup into the segment table.
 import rfm from '../../data/demos/rfm-segments.json';
 
-const scores = [1, 2, 3, 4];
+const { averages, groups, ageGroups, source } = rfm.report;
+const scores = [4, 3, 2, 1];
+const total = ageGroups.reduce((s, a) => s + a.customers, 0);
+// Semicircle gauge: value on a 1–4 scale mapped onto a 180° arc.
+const arc = (v: number) => {
+  const t = Math.PI * (1 - (v - 1) / 3);
+  return `M 10 60 A 50 50 0 0 1 ${(60 + 50 * Math.cos(t)).toFixed(2)} ${(60 - 50 * Math.sin(t)).toFixed(2)}`;
+};
 ---
 
 <div class="demo" data-rfm-demo>
-  <div class="rounded-xl border border-line bg-soft/60 p-5" data-pbi-filters>
-    <p class="font-semibold text-strong">Try a score</p>
-    <div class="mt-4 grid gap-4 sm:grid-cols-3">
+  <div data-pbi-filters>
+    <p class="demo-label">RFM group</p>
+    <div class="mt-2 flex flex-wrap gap-2" role="group" aria-label="RFM group">
+      <button type="button" class="demo-chip" aria-pressed="true" data-group="all">All</button>
+      {groups.map((g) => <button type="button" class="demo-chip" aria-pressed="false" data-group={g.group}>{g.group}</button>)}
+    </div>
+
+    <p class="demo-label mt-6">Try a customer score</p>
+    <div class="mt-2 grid grid-cols-3 gap-2">
       {
         [
-          { key: 'r', label: 'Recency', hint: '4 = bought very recently' },
-          { key: 'f', label: 'Frequency', hint: '4 = buys very often' },
-          { key: 'm', label: 'Monetary', hint: '4 = spends the most' },
+          { key: 'r', label: 'Recency' },
+          { key: 'f', label: 'Frequency' },
+          { key: 'm', label: 'Monetary' },
         ].map((axis) => (
-          <div>
-            <p class="demo-label" id={`rfm-${axis.key}`}>{axis.label}</p>
-            <div class="mt-2 flex gap-2" role="radiogroup" aria-labelledby={`rfm-${axis.key}`}>
-              {scores.map((s) => (
-                <button type="button" class="demo-chip w-11 justify-center" role="radio" aria-checked={s === 4 ? 'true' : 'false'} data-axis={axis.key} data-score={s}>
-                  {s}
-                </button>
-              ))}
-            </div>
-            <p class="mt-1 text-xs text-muted">{axis.hint}</p>
-          </div>
+          <label class="text-xs text-muted">
+            {axis.label}
+            <select class="slicer mt-1" data-axis={axis.key}>
+              {scores.map((s) => <option value={s}>{s}</option>)}
+            </select>
+          </label>
         ))
       }
     </div>
-    <p class="mt-4 text-sm text-ink" aria-live="polite">
-      Code <span class="font-mono font-bold text-strong" data-code>444</span> belongs to
-      <span class="font-bold text-teal-ink" data-match>VIP</span>.
-    </p>
-    <p class="mt-2 text-xs text-muted">{rfm.scoring}</p>
+    <p class="mt-2 text-xs text-muted">4 is best: bought most recently, most often, or spent the most.</p>
   </div>
 
-  <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+  <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
     {
-      rfm.segments.map((s) => (
-        <li class="rfm-card rounded-xl border border-line bg-surface p-5 transition-all" data-segment={s.segment} data-codes={s.codes.join(',')}>
-          <div class="flex items-start justify-between gap-2">
-            <div>
-              <h4 class="font-bold text-strong">{s.segment}</h4>
-              {s.segmentVi !== s.segment && <p class="text-xs text-muted">{s.segmentVi}</p>}
-            </div>
-            <span class="rfm-badge hidden rounded-full bg-teal px-2 py-0.5 text-xs font-bold text-strong">Match</span>
-          </div>
-          <p class="mt-3 text-sm text-ink/85">{s.description}</p>
-          <p class="mt-3 text-sm">
-            <span class="font-semibold text-ink">Action: </span>
-            <span class="text-ink/85">{s.action}</span>
-          </p>
-          <p class="mt-3 flex flex-wrap gap-1">
-            {s.codes.map((c) => (
-              <span class="rounded bg-soft px-1.5 py-0.5 font-mono text-[11px] text-muted">{c}</span>
-            ))}
-          </p>
-        </li>
+      averages.map((a) => (
+        <figure class="demo-chart-card gauge">
+          <figcaption class="demo-chart-title">{a.label}</figcaption>
+          <svg viewBox="0 0 120 70" role="img" aria-label={`${a.label}: ${a.value} out of 4`}>
+            <path d="M 10 60 A 50 50 0 0 1 110 60" class="track" />
+            <path d={arc(a.value)} class="value" />
+            <text x="60" y="56" text-anchor="middle" class="num">{a.value.toFixed(2)}</text>
+            <text x="10" y="70" text-anchor="middle" class="end">1</text>
+            <text x="110" y="70" text-anchor="middle" class="end">4</text>
+          </svg>
+        </figure>
       ))
     }
-  </ul>
+  </div>
+
+  <figure class="demo-chart-card mt-4">
+    <figcaption class="demo-chart-title">Customers by RFM group</figcaption>
+    <div class="stack mt-4" role="img" aria-label={groups.map((g) => `${g.group} ${g.share}%`).join(', ')}>
+      {groups.map((g) => <button type="button" class="seg" style={`flex-basis:${g.share}%;background:${g.color}`} data-seg={g.group} aria-label={`${g.group}: ${g.share}%`}>{g.share.toFixed(1)}%</button>)}
+    </div>
+    <ul class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
+      {groups.map((g) => <li class="flex items-center gap-1.5"><span class="size-2 rounded-full" style={`background:${g.color}`}></span>{g.group}</li>)}
+    </ul>
+    <p class="demo-takeaway" data-group-takeaway></p>
+  </figure>
+
+  <div class="mt-4 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+    <figure class="demo-chart-card">
+      <figcaption class="demo-chart-title">Customers and average RFM score by age group</figcaption>
+      <div class="demo-chart"><canvas data-age role="img" aria-label="Bar and line chart of customers and RFM score by age group"></canvas></div>
+      <p class="demo-takeaway">{`Customers aged 26–35 are the largest group (${(8500 / total * 100).toFixed(0)}% of about ${(total / 1000).toFixed(1)}K), but under-18 customers score highest.`}</p>
+    </figure>
+    <figure class="demo-chart-card">
+      <figcaption class="demo-chart-title">Segment for this score</figcaption>
+      <p class="mt-3 text-sm text-muted">Code <span class="font-mono text-base font-bold text-strong" data-code>444</span></p>
+      <p class="mt-1 text-2xl font-bold tracking-tight text-strong" data-match>VIP</p>
+      <p class="text-xs text-muted" data-match-vi></p>
+      <p class="mt-3 text-sm text-ink" data-desc></p>
+      <p class="mt-3 text-sm"><span class="font-semibold text-strong">Action: </span><span class="text-ink" data-action></span></p>
+    </figure>
+  </div>
+  <p class="mt-4 text-xs text-muted">{source} {rfm.scoring}</p>
 </div>
 
 <style>
-  .rfm-card.is-match {
-    border-color: var(--color-teal);
-    box-shadow: 0 0 0 3px rgb(34 211 238 / 0.3), 0 16px 40px -12px rgb(34 211 238 / 0.4);
-    transform: translateY(-2px);
+  .gauge svg {
+    display: block;
+    width: 100%;
+    max-width: 10rem;
+    margin: 0.5rem auto 0;
   }
-  .rfm-card.is-match .rfm-badge {
-    display: inline-block;
+  .track,
+  .value {
+    fill: none;
+    stroke-width: 14;
+  }
+  .track {
+    stroke: #e1dfdd;
+  }
+  .value {
+    stroke: #4472c4;
+  }
+  .num {
+    fill: #252423;
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .end {
+    fill: #605e5c;
+    font-size: 9px;
+  }
+  .stack {
+    display: flex;
+    overflow: hidden;
+    height: 2.5rem;
+    border-radius: 2px;
+  }
+  .seg {
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 200ms;
+  }
+  .stack.has-pick .seg:not(.is-pick) {
+    opacity: 0.25;
+  }
+  .slicer {
+    display: block;
+    width: 100%;
+    height: 2.25rem;
+    padding: 0 0.5rem;
+    border: 1px solid #c8c6c4;
+    border-radius: 2px;
+    background: #fff;
+    color: #252423;
+    font-size: 0.875rem;
   }
 </style>
 
 <script>
+  import rfm from '../../data/demos/rfm-segments.json';
+  import { Chart, palette, axisTitle } from '../../lib/charts';
+
   const root = document.querySelector<HTMLElement>('[data-rfm-demo]');
   if (root) {
-    const score = { r: 4, f: 4, m: 4 };
-    const cards = [...root.querySelectorAll<HTMLElement>('[data-segment]')];
-    const update = () => {
-      const code = `${score.r}${score.f}${score.m}`;
-      root.querySelector('[data-code]')!.textContent = code;
-      let match = 'no listed segment';
-      cards.forEach((c) => {
-        const hit = c.dataset.codes!.split(',').includes(code);
-        c.classList.toggle('is-match', hit);
-        if (hit) match = c.dataset.segment!;
-      });
-      root.querySelector('[data-match]')!.textContent = match;
+    const { groups, ageGroups } = rfm.report;
+    const $ = (s: string) => root.querySelector<HTMLElement>(s)!;
+
+    // RFM group slicer: highlights one group in the stacked bar.
+    const stack = $('.stack');
+    const pickGroup = (name: string) => {
+      root.querySelectorAll('[data-group]').forEach((b) => b.setAttribute('aria-pressed', String((b as HTMLElement).dataset.group === name)));
+      stack.classList.toggle('has-pick', name !== 'all');
+      stack.querySelectorAll<HTMLElement>('[data-seg]').forEach((s) => s.classList.toggle('is-pick', s.dataset.seg === name));
+      const g = groups.find((x) => x.group === name);
+      $('[data-group-takeaway]').textContent = g
+        ? `${g.group} customers are ${g.share}% of all customers.`
+        : `At-risk customers are the largest group (${groups[0].share}%); premium customers are ${groups[2].share}%.`;
     };
-    root.querySelectorAll<HTMLButtonElement>('[data-axis]').forEach((b) =>
-      b.addEventListener('click', () => {
-        const axis = b.dataset.axis as 'r' | 'f' | 'm';
-        score[axis] = Number(b.dataset.score);
-        root.querySelectorAll(`[data-axis="${axis}"]`).forEach((x) => x.setAttribute('aria-checked', String(x === b)));
-        update();
-      }),
-    );
-    update();
+    root.querySelectorAll<HTMLElement>('[data-group]').forEach((b) => b.addEventListener('click', () => pickGroup(b.dataset.group!)));
+    stack.querySelectorAll<HTMLElement>('[data-seg]').forEach((s) => s.addEventListener('click', () => pickGroup(s.classList.contains('is-pick') ? 'all' : s.dataset.seg!)));
+    pickGroup('all');
+
+    // Score lookup: the same R-F-M code join the Power BI model uses.
+    const selects = [...root.querySelectorAll<HTMLSelectElement>('[data-axis]')];
+    const lookup = () => {
+      const code = selects.map((s) => s.value).join('');
+      const seg = rfm.segments.find((s) => s.codes.includes(code));
+      $('[data-code]').textContent = code;
+      $('[data-match]').textContent = seg ? seg.segment : 'No listed segment';
+      $('[data-match-vi]').textContent = seg && seg.segmentVi !== seg.segment ? seg.segmentVi : '';
+      $('[data-desc]').textContent = seg ? seg.description : '';
+      $('[data-action]').textContent = seg ? seg.action : 'None';
+    };
+    selects.forEach((s) => s.addEventListener('change', lookup));
+    lookup();
+
+    new Chart(root.querySelector<HTMLCanvasElement>('[data-age]')!, {
+      type: 'bar',
+      data: {
+        labels: ageGroups.map((a) => a.age),
+        datasets: [
+          { type: 'line', label: 'Average RFM score', data: ageGroups.map((a) => a.score), borderColor: palette.secondary, backgroundColor: palette.secondary, yAxisID: 'score', tension: 0.3, pointRadius: 4, order: 0 },
+          { type: 'bar', label: 'Customers', data: ageGroups.map((a) => a.customers), backgroundColor: '#4472C4', yAxisID: 'customers', order: 1 },
+        ],
+      },
+      options: {
+        interaction: { mode: 'index', intersect: false },
+        scales: {
+          customers: { position: 'left', beginAtZero: true, title: axisTitle('Customers'), ticks: { callback: (v) => `${Number(v) / 1000}K` } },
+          score: { position: 'right', min: 2, max: 2.8, grid: { display: false }, title: axisTitle('RFM score') },
+        },
+        plugins: {
+          tooltip: { callbacks: { label: (c) => (c.dataset.yAxisID === 'score' ? `RFM score: ${c.parsed.y.toFixed(2)}` : `Customers: about ${c.parsed.y.toLocaleString()}`) } },
+        },
+      },
+    });
   }
 </script>

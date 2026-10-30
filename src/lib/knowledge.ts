@@ -9,8 +9,7 @@ const SITE = 'https://thanhvu911.github.io';
 export function knowledgeText(): string {
   const lines: string[] = [];
   lines.push(`# ${profile.name}`);
-  lines.push(`Data analyst and data engineer based in ${profile.location}. ${profile.availability}. ${profile.locationNote}.`);
-  lines.push(`Applying to: ${research.applying}`);
+  lines.push(`Data engineer and data analyst based in ${profile.location}.`);
   lines.push(`Contact: email ${profile.email}; LinkedIn ${profile.linkedin}; GitHub ${profile.github}; contact section ${SITE}/#contact.`);
   lines.push(`Resumes: ${profile.resumes.map((r) => `${r.label} ${SITE}${r.href}`).join('; ')}.`);
 
@@ -78,7 +77,7 @@ export const quickAnswers: QuickAnswer[] = [
   },
   {
     keys: ['master', 'grad school', 'graduate school', 'admission', 'research', 'interests', 'phd', 'fall 2027', 'professor'],
-    answer: `${research.applying} Research interests: ${research.interests} The Academics page has coursework, research projects, and the graduate school resume.`,
+    answer: `Research interests: ${research.interests} The Academics page has coursework, research projects, and the graduate school resume.`,
     link: { href: '/academics', label: 'Open Academics' },
   },
   {
@@ -97,7 +96,8 @@ export const quickAnswers: QuickAnswer[] = [
   },
   {
     keys: ['available', 'open to', 'relocate', 'relocation', 'remote', 'new york', 'where', 'based', 'location', 'roles'],
-    answer: `Thanh is based in ${profile.location} and open to Data Analyst, Data Engineer, and Analytics Engineer roles in New York or remote.`,
+    answer: `Thanh is based in ${profile.location}. The fastest way to reach him is email: ${profile.email}.`,
+    link: { href: '/#contact', label: 'Contact' },
   },
   {
     keys: ['resume', 'cv', 'download', 'pdf'],

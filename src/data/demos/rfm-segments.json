@@ -1,5 +1,26 @@
 {
  "scoring": "In the Power BI model, DAX calculated columns on dim_customer score recency, frequency, and monetary value from 1 to 4; the R-F-M code (for example 444) links to the segment table.",
+ "report": {
+  "source": "Values as shown on the Customer Analysis page of the Power BI report (customer counts rounded to the nearest 100, as the report displays them).",
+  "averages": [
+   { "label": "Average score", "value": 2.15 },
+   { "label": "Recency", "value": 2.52 },
+   { "label": "Frequency", "value": 1.45 },
+   { "label": "Monetary", "value": 2.49 }
+  ],
+  "groups": [
+   { "group": "At-risk", "share": 41.98, "color": "#4472C4" },
+   { "group": "Growth", "share": 26.21, "color": "#E66C37" },
+   { "group": "Premium", "share": 10.32, "color": "#2A9D8F" },
+   { "group": "Standard", "share": 21.49, "color": "#F2B705" }
+  ],
+  "ageGroups": [
+   { "age": "Under 18", "customers": 100, "score": 2.75 },
+   { "age": "18–25", "customers": 4200, "score": 2.11 },
+   { "age": "26–35", "customers": 8500, "score": 2.2 },
+   { "age": "36–50", "customers": 5600, "score": 2.08 }
+  ]
+ },
  "segments": [
   {
    "segment": "VIP",

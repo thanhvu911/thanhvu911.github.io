@@ -3,19 +3,38 @@ import Icon from './Icon.astro';
 import { profile } from '../data/portfolio';
 ---
 
-<footer class="border-t border-line py-8">
-  <div class="container-page flex flex-col items-center justify-between gap-4 sm:flex-row">
-    <p class="text-sm text-muted">© {new Date().getFullYear()} {profile.name}, {profile.location}</p>
+<footer class="border-t border-line">
+  <div class="frame flex flex-col gap-4 px-4 py-6 sm:flex-row sm:items-center sm:justify-between md:px-10">
+    <p class="mono">© {new Date().getFullYear()} {profile.name} // {profile.location}</p>
     <div class="flex items-center gap-1">
-      <a href={profile.linkedin} class="grid size-10 place-items-center rounded-md text-muted hover:bg-soft hover:text-strong" aria-label="LinkedIn" target="_blank" rel="noopener" data-goatcounter-click="footer-linkedin">
-        <Icon name="linkedin" size={18} />
+      <a href={profile.linkedin} class="foot-link" aria-label="LinkedIn" target="_blank" rel="noopener" data-goatcounter-click="footer-linkedin">
+        <Icon name="linkedin" size={17} />
       </a>
-      <a href={profile.github} class="grid size-10 place-items-center rounded-md text-muted hover:bg-soft hover:text-strong" aria-label="GitHub" target="_blank" rel="noopener" data-goatcounter-click="footer-github">
-        <Icon name="github" size={18} />
+      <a href={profile.github} class="foot-link" aria-label="GitHub" target="_blank" rel="noopener" data-goatcounter-click="footer-github">
+        <Icon name="github" size={17} />
       </a>
-      <a href={`mailto:${profile.email}`} class="grid size-10 place-items-center rounded-md text-muted hover:bg-soft hover:text-strong" aria-label="Email" data-goatcounter-click="footer-email">
-        <Icon name="mail" size={18} />
+      <a href={`mailto:${profile.email}`} class="foot-link" aria-label="Email" data-goatcounter-click="footer-email">
+        <Icon name="mail" size={17} />
+      </a>
+      <a href="#main" class="mono ml-3 inline-flex min-h-11 items-center gap-1.5 hover:text-strong">
+        Top <Icon name="arrow-up-right" size={13} class="-rotate-45" />
       </a>
     </div>
   </div>
 </footer>
+
+<style>
+  .foot-link {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid transparent;
+    color: var(--color-muted);
+    transition: border-color 150ms, color 150ms;
+  }
+  .foot-link:hover {
+    border-color: var(--color-line);
+    color: var(--color-strong);
+  }
+</style>

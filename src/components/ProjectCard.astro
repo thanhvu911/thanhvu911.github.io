@@ -1,40 +1,97 @@
 ---
-import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
-import type { Project } from '../data/portfolio';
-import { projectImage } from '../lib/images';
+import ProjectVisual from './ProjectVisual.astro';
+import { dashboardSlugs, type Project } from '../data/portfolio';
 
 interface Props {
   project: Project;
+  /** Show the one-line summary and the tool tags (the full projects list). */
+  detailed?: boolean;
 }
-const { project } = Astro.props;
+const { project, detailed = false } = Astro.props;
+const hasDashboard = dashboardSlugs.includes(project.slug);
+const lead = project.metrics[0];
 ---
 
-<article class="card card-hover group flex h-full flex-col overflow-hidden">
-  <a href={`/projects/${project.slug}`} class="block aspect-[16/9] overflow-hidden border-b border-line bg-white" tabindex="-1" aria-hidden="true">
-    <Image
-      src={projectImage(project.slug, project.cover)}
-      alt=""
-      widths={[400, 640]}
-      sizes="(min-width: 1024px) 360px, (min-width: 768px) 50vw, 90vw"
-      class="size-full object-cover object-left-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-    />
+<article class="pcard group">
+  <a href={`/projects/${project.slug}${hasDashboard ? '#dashboard' : ''}`} class="block border-b border-line" tabindex="-1" aria-hidden="true">
+    <ProjectVisual project={project} />
   </a>
-  <div class="flex flex-1 flex-col p-6">
-    <p class="text-sm text-muted">{project.kind.replaceAll(' · ', ' / ')}, {project.year}</p>
-    <h3 class="mt-1.5 text-xl font-semibold leading-snug tracking-tight">
-      <a href={`/projects/${project.slug}`} class="hover:text-teal-ink">{project.title}</a>
+  <div class="flex flex-1 flex-col px-4 pb-6 pt-5 md:px-7 md:pb-7">
+    <p class="mono">{project.number} // {project.kind.split(' · ')[0]} · {project.year}</p>
+    <h3 class="display-md mt-3 text-[1.375rem] md:text-[1.5rem]">
+      <a href={`/projects/${project.slug}`} class="title-link">{project.title}</a>
     </h3>
-    <p class="mt-3 flex-1 text-[0.9375rem] leading-relaxed text-muted">{project.summary}</p>
-    <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="Technologies">
-      {project.tags.map((t) => <li class="pill">{t}</li>)}
-    </ul>
-    <div class="mt-6 flex flex-wrap gap-2">
-      <a href={`/projects/${project.slug}`} class="btn btn-primary">Case study</a>
-      <a href={project.repo} target="_blank" rel="noopener" class="btn btn-outline" data-goatcounter-click={`repo-${project.slug}`}>
-        <Icon name="github" size={15} />
-        Code
-      </a>
+    {detailed && <p class="mt-3 text-[0.9375rem] leading-relaxed text-muted">{project.summary}</p>}
+    {
+      detailed && (
+        <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="Technologies">
+          {project.tags.map((t) => (
+            <li class="pill">{t}</li>
+          ))}
+        </ul>
+      )
+    }
+    <p class="mt-auto flex items-baseline gap-3 pt-6">
+      <span class="display text-[2.25rem] text-strong" data-count={lead.value}>{lead.value}</span>
+      <span class="text-sm text-muted">{lead.label}</span>
+    </p>
+    <div class="mt-5 flex flex-wrap gap-2">
+      {
+        hasDashboard ? (
+          <a href={`/projects/${project.slug}#dashboard`} class="btn btn-primary min-h-11 px-4">
+            Open dashboard
+          </a>
+        ) : (
+          <a href={`/projects/${project.slug}`} class="btn btn-primary min-h-11 px-4">
+            Case study
+          </a>
+        )
+      }
+      {
+        project.repo && (
+          <a href={project.repo} target="_blank" rel="noopener" class="btn btn-outline min-h-11 px-4" data-goatcounter-click={`repo-${project.slug}`}>
+            <Icon name="github" size={15} />
+            Code
+          </a>
+        )
+      }
     </div>
   </div>
 </article>
+
+<style>
+  .pcard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--color-bg);
+    transition: background-color 300ms;
+  }
+  .pcard:hover {
+    background: var(--color-surface);
+  }
+  /* A cyan rule grows across the top on hover. */
+  .pcard::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 1;
+    height: 4px;
+    background: var(--color-cyan);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .pcard:hover::before {
+    transform: scaleX(1);
+  }
+  .title-link {
+    background: linear-gradient(var(--color-cyan), var(--color-cyan)) no-repeat 0 100% / 0 3px;
+    transition: background-size 350ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .title-link:hover {
+    background-size: 100% 3px;
+  }
+</style>

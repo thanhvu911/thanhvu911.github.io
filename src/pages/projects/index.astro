@@ -1,19 +1,22 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
-import { projects } from '../../data/portfolio';
+import { dashboardSlugs, projects } from '../../data/portfolio';
 ---
 
-<Base title="Projects" description="Data engineering and analytics projects by Thanh Vu: Microsoft Fabric, SQL Server warehouses, Power BI, and statistics.">
-  <section class="section">
-    <div class="container-page">
-      <h1 class="section-title">All projects</h1>
-      <p class="section-lede">
-        Seven end-to-end projects on public and business data. Each has a written case study and the full code on GitHub.
-      </p>
-      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {projects.map((p) => <ProjectCard project={p} />)}
+<Base title="Projects" description="Data engineering, analytics, and machine learning projects by Thanh Vu: Microsoft Fabric, SQL Server warehouses, Power BI, and Python.">
+  <div class="frame">
+    <div class="shead">
+      <p class="idx"><span class="sq"></span><span class="mono">Index // {projects.length} projects<br />{dashboardSlugs.length} with a Power BI report</span></p>
+      <div class="ttl">
+        <h1 class="section-title">All projects</h1>
+        <p class="section-lede">
+          End-to-end work across data engineering, Power BI, and machine learning. Each has a written case study and the code on GitHub; the Power BI projects open as an interactive report.
+        </p>
       </div>
     </div>
-  </section>
+    <div class="cells border-b border-line sm:grid-cols-2 lg:grid-cols-3">
+      {projects.map((p) => <ProjectCard project={p} detailed />)}
+    </div>
+  </div>
 </Base>

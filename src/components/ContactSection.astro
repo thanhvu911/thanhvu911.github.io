@@ -6,112 +6,147 @@ const hasForm = Boolean(profile.web3formsKey);
 const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${profile.email}&su=${encodeURIComponent('Opportunity for Thanh Vu')}`;
 
 const quick = [
-  { id: 'email', icon: 'mail', title: 'Email', detail: profile.email, href: `mailto:${profile.email}` },
-  { id: 'gmail', icon: 'external-link', title: 'Write in Gmail', detail: 'Opens Gmail in a new tab', href: gmailHref, external: true },
-  { id: 'linkedin', icon: 'linkedin', title: 'LinkedIn', detail: 'linkedin.com/in/thanh25', href: profile.linkedin, external: true },
+  { id: 'gmail', icon: 'external-link', title: 'Write in Gmail', href: gmailHref, external: true },
+  { id: 'linkedin', icon: 'linkedin', title: 'LinkedIn', href: profile.linkedin, external: true },
+  { id: 'github', icon: 'github', title: 'GitHub', href: profile.github, external: true },
 ] as const;
 ---
 
-<section id="contact" class="section">
-  <div class="container-page">
-    <h2 class="section-title" data-reveal>Get in touch</h2>
-    <p class="section-lede" data-reveal>
-      Hiring for a data role, reviewing my graduate application, or interested in a project? Use whichever is easiest. I usually reply within a day.
+<section id="contact" class="ct border-b border-line">
+  <div class="ct-side">
+    <p class="flex items-start gap-3"><span class="sq mt-0.5"></span><span class="mono">07 // Contact</span></p>
+    <div class="mt-auto hidden lg:block">
+      <p class="mono">{profile.location}<br />Eastern time</p>
+      <p class="mono mt-4">Usually replies<br />within a day</p>
+    </div>
+  </div>
+
+  <div class="ct-main">
+    <h2 class="display ct-title" data-reveal>Get in<br />touch</h2>
+    <p class="mt-6 max-w-[34rem] text-lg text-muted" data-reveal>
+      Questions about my work, a project, or a role? Use whichever is easiest.
     </p>
 
-    <div class:list={['mt-10 grid gap-10', hasForm && 'lg:grid-cols-2']}>
-      <div>
-        <ul class:list={['grid gap-3', !hasForm && 'sm:grid-cols-2']}>
-          {
-            quick.map((q) => (
-              <li>
-                <a
-                  href={q.href}
-                  target={'external' in q ? '_blank' : undefined}
-                  rel={'external' in q ? 'noopener' : undefined}
-                  class="contact-row"
-                  data-goatcounter-click={`contact-${q.id}`}
-                >
-                  <span class="icon-tile"><Icon name={q.icon} size={18} /></span>
-                  <span class="min-w-0">
-                    <span class="block font-semibold text-strong">{q.title}</span>
-                    <span class="block truncate text-sm text-muted">{q.detail}</span>
-                  </span>
-                </a>
-              </li>
-            ))
-          }
-          <li>
-            <a href="#contact" class="contact-row" data-phone={profile.phoneReversed} data-goatcounter-click="contact-phone" hidden>
-              <span class="icon-tile"><Icon name="phone" size={18} /></span>
-              <span class="min-w-0">
-                <span class="block font-semibold text-strong">Call or text</span>
-                <span class="block text-sm text-muted" data-phone-text></span>
-              </span>
-            </a>
-          </li>
-        </ul>
+    <a href={`mailto:${profile.email}`} class="mail" data-goatcounter-click="contact-email" data-reveal>
+      <span class="truncate">{profile.email}</span>
+      <Icon name="arrow-up-right" size={28} class="shrink-0 text-teal-ink" />
+    </a>
 
-        <p class="mt-5 flex items-center gap-2 text-muted">
-          <Icon name="map-pin" size={17} class="shrink-0 text-teal-ink" />
-          {profile.location}
-        </p>
-
-        <button
-          type="button"
-          class="mt-3 inline-flex min-h-11 items-center gap-2 rounded-md px-2 -ml-2 text-sm font-semibold text-teal-ink hover:bg-soft"
-          data-copy-email={profile.email}
-        >
-          <Icon name="copy" size={16} />
-          <span data-copy-label>Copy email address</span>
-        </button>
-        <span class="sr-only" aria-live="polite" data-copy-status></span>
-      </div>
-
+    <div class="mt-10 flex flex-wrap gap-2" data-reveal>
+      <a href={`mailto:${profile.email}`} class="btn btn-primary" data-goatcounter-click="contact-email-btn">
+        <Icon name="mail" size={16} />
+        Send an email
+      </a>
       {
-        hasForm && (
-          <form class="card space-y-5 p-6 md:p-8" data-contact-form data-key={profile.web3formsKey} novalidate>
-            <h3 class="text-lg font-semibold">Send a message</h3>
-            <div>
-              <label for="cf-name" class="mb-1.5 block text-sm font-semibold text-ink">Name</label>
-              <input id="cf-name" name="name" type="text" autocomplete="name" class="field" required />
-            </div>
-            <div>
-              <label for="cf-email" class="mb-1.5 block text-sm font-semibold text-ink">Email</label>
-              <input id="cf-email" name="email" type="email" autocomplete="email" class="field" required />
-            </div>
-            <div>
-              <label for="cf-message" class="mb-1.5 block text-sm font-semibold text-ink">Message</label>
-              <textarea id="cf-message" name="message" rows="5" placeholder="What role, program, or project is this about?" class="field resize-y" required />
-            </div>
-            <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
-            <p class="hidden rounded-md px-3 py-2 text-sm" role="status" data-form-status />
-            <button type="submit" class="btn btn-primary w-full" data-submit>
-              Send message
-            </button>
-          </form>
-        )
+        quick.map((q) => (
+          <a href={q.href} target="_blank" rel="noopener" class="btn btn-outline" data-goatcounter-click={`contact-${q.id}`}>
+            <Icon name={q.icon} size={16} />
+            {q.title}
+          </a>
+        ))
       }
+      <a href="#contact" class="btn btn-outline" data-phone={profile.phoneReversed} data-goatcounter-click="contact-phone" hidden>
+        <Icon name="phone" size={16} />
+        <span data-phone-text></span>
+      </a>
     </div>
+
+    <button
+      type="button"
+      class="mono mt-6 inline-flex min-h-11 items-center gap-2 hover:text-strong"
+      data-copy-email={profile.email}
+    >
+      <Icon name="copy" size={14} />
+      <span data-copy-label>Copy email address</span>
+    </button>
+    <span class="sr-only" aria-live="polite" data-copy-status></span>
+
+    {
+      hasForm && (
+        <form class="card mt-10 max-w-[40rem] space-y-5 p-6 md:p-8" data-contact-form data-key={profile.web3formsKey} novalidate>
+          <h3 class="display-md text-lg">Send a message</h3>
+          <div>
+            <label for="cf-name" class="mono mb-1.5 block">Name</label>
+            <input id="cf-name" name="name" type="text" autocomplete="name" class="field" required />
+          </div>
+          <div>
+            <label for="cf-email" class="mono mb-1.5 block">Email</label>
+            <input id="cf-email" name="email" type="email" autocomplete="email" class="field" required />
+          </div>
+          <div>
+            <label for="cf-message" class="mono mb-1.5 block">Message</label>
+            <textarea id="cf-message" name="message" rows="5" placeholder="What role, program, or project is this about?" class="field resize-y" required />
+          </div>
+          <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
+          <p class="hidden px-3 py-2 text-sm" role="status" data-form-status />
+          <button type="submit" class="btn btn-primary w-full" data-submit>
+            Send message
+          </button>
+        </form>
+      )
+    }
   </div>
 </section>
 
 <style>
-  .contact-row {
+  .ct {
+    display: grid;
+  }
+  .ct-side {
     display: flex;
+    flex-direction: column;
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .ct-main {
+    min-width: 0;
+    padding: 2.5rem 1rem 4rem;
+  }
+  @media (min-width: 768px) {
+    .ct-side {
+      padding-inline: 2.5rem;
+    }
+    .ct-main {
+      padding: 4rem 2.5rem 5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .ct {
+      grid-template-columns: 30% 1fr;
+      min-height: 40rem;
+    }
+    .ct-side {
+      padding-block: 2.25rem;
+      border-right: 1px solid var(--color-line);
+      border-bottom: 0;
+    }
+  }
+  .ct-title {
+    font-size: clamp(3.25rem, 9vw, 7.5rem);
+  }
+  .mail {
+    display: inline-flex;
     align-items: center;
-    gap: 0.875rem;
-    padding: 0.875rem 1rem;
-    border: 1px solid var(--card-border);
-    border-radius: 0.875rem;
-    background: var(--card-bg);
-    transition: border-color 200ms, box-shadow 200ms;
+    gap: 1rem;
+    max-width: 100%;
+    margin-top: 2.5rem;
+    padding-bottom: 0.375rem;
+    border-bottom: 2px solid var(--color-strong);
+    color: var(--color-strong);
+    font-size: clamp(1.125rem, 3.2vw, 2.125rem);
+    font-weight: 500;
+    transition: border-color 200ms;
   }
-  .contact-row:hover {
-    border-color: var(--card-hover-border);
-    box-shadow: var(--card-hover-shadow);
+  .mail:hover {
+    border-color: var(--color-cyan);
   }
-  .contact-row[hidden] {
+  .mail :global(svg) {
+    transition: transform 250ms;
+  }
+  .mail:hover :global(svg) {
+    transform: translate(3px, -3px);
+  }
+  [data-phone][hidden] {
     display: none;
   }
 </style>
@@ -144,7 +179,7 @@ const quick = [
     const data = new FormData(form);
     const show = (msg: string, ok: boolean) => {
       status.textContent = msg;
-      status.className = `rounded-md px-3 py-2 text-sm ${ok ? 'bg-teal-wash text-teal-ink' : 'bg-red-500/10 text-red-600'}`;
+      status.className = `px-3 py-2 text-sm ${ok ? 'bg-teal-wash text-teal-ink' : 'bg-red-500/10 text-red-600'}`;
     };
 
     const name = String(data.get('name') ?? '').trim();

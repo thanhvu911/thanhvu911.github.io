@@ -1,0 +1,237 @@
+---
+// The moving picture on a project card. Power BI projects page through their
+// report like a slideshow; the others draw a small chart from their own
+// results. Both start only when the card scrolls into view.
+import { Image } from 'astro:assets';
+import PbiBadge from './PbiBadge.astro';
+import { dashboardSlugs, type Project } from '../data/portfolio';
+import { cardCharts } from '../data/cardCharts';
+import { projectImage } from '../lib/images';
+
+interface Props {
+  project: Project;
+  sizes?: string;
+}
+const { project, sizes = '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw' } = Astro.props;
+
+const isReport = dashboardSlugs.includes(project.slug);
+const pages = isReport
+  ? [
+      project.cover,
+      ...project.images
+        .filter((i) => i.category === 'Power BI' && i.file.startsWith('powerbi-') && !i.file.includes('data-model'))
+        .map((i) => i.file),
+    ]
+      .filter((f, n, all) => all.indexOf(f) === n)
+      .slice(0, 4)
+  : [];
+const chart = isReport ? undefined : cardCharts[project.slug];
+---
+
+<div class="pv" data-pv>
+  {
+    isReport ? (
+      <>
+        <div class="slides" data-slides>
+          {pages.map((file, n) => (
+            <Image
+              src={projectImage(project.slug, file)}
+              alt=""
+              widths={[480, 720, 960]}
+              sizes={sizes}
+              loading={n === 0 ? undefined : 'lazy'}
+              class:list={['slide', { 'is-on': n === 0 }]}
+            />
+          ))}
+        </div>
+        <PbiBadge class="absolute left-3 top-3" />
+        {pages.length > 1 && (
+          <span class="pager mono" aria-hidden="true">
+            Page <b data-page>1</b> / {pages.length}
+          </span>
+        )}
+      </>
+    ) : chart ? (
+      <div class="chart">
+        <p class="mono chart-head">
+          <span>{chart.title}</span>
+          {chart.note && <span>{chart.note}</span>}
+        </p>
+        <ul class="bars">
+          {chart.bars.map((b, n) => (
+            <li style={`--w:${b.width}%;--n:${n}`} class:list={{ hi: b.hi }}>
+              <span class="bl">{b.label}</span>
+              <span class="bt">
+                <span class="bf" />
+              </span>
+              <span class="bv">{b.value}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ) : (
+      <Image src={projectImage(project.slug, project.cover)} alt="" widths={[480, 720]} sizes={sizes} class="size-full object-cover object-left-top" />
+    )
+  }
+</div>
+
+<style>
+  .pv {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: #fff;
+  }
+  .slides {
+    position: absolute;
+    inset: 0;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: left top;
+    opacity: 0;
+    transform: scale(1.04);
+    transition:
+      opacity 900ms ease,
+      transform 4s ease-out;
+  }
+  .slide.is-on {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .pager {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    padding: 0.1875rem 0.5rem;
+    background: rgb(20 24 30 / 0.82);
+    color: #e6eaee;
+    font-size: 0.625rem;
+  }
+  .pager b {
+    color: #2ee6e6;
+    font-weight: 500;
+  }
+
+  /* Chart cards: graph paper with bars that grow in. */
+  .chart {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem 1.25rem 1rem;
+    background-color: var(--color-surface);
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 1.5rem 1.5rem;
+  }
+  .chart-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.6875rem;
+  }
+  .chart-head span:first-child {
+    color: var(--color-strong);
+  }
+  .bars {
+    display: grid;
+    align-content: center;
+    gap: 0.75rem;
+    flex: 1;
+  }
+  .bars li {
+    display: grid;
+    grid-template-columns: minmax(0, 7.5rem) 1fr 3.25rem;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .bl {
+    overflow: hidden;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .bt {
+    display: block;
+    height: 0.875rem;
+  }
+  .bf {
+    display: block;
+    width: max(var(--w), 3px);
+    height: 100%;
+    background: color-mix(in srgb, var(--color-strong) 70%, transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1100ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--n) * 140ms + 150ms);
+  }
+  .hi .bf {
+    background: var(--color-cyan);
+  }
+  .bv {
+    color: var(--color-strong);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: right;
+  }
+  .pv.is-live .bf {
+    transform: scaleX(1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bf {
+      transform: none;
+    }
+    .slide {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  // Start each card's motion when it scrolls into view; stop when it leaves.
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const timers = new WeakMap<Element, number>();
+
+  const play = (pv: HTMLElement) => {
+    pv.classList.add('is-live');
+    const slides = [...pv.querySelectorAll<HTMLElement>('.slide')];
+    if (still || slides.length < 2 || timers.has(pv)) return;
+    const pageEl = pv.querySelector('[data-page]');
+    let n = slides.findIndex((s) => s.classList.contains('is-on'));
+    const id = window.setInterval(() => {
+      if (pv.matches(':hover')) return; // hold the page while someone looks at it
+      slides[n].classList.remove('is-on');
+      n = (n + 1) % slides.length;
+      slides[n].classList.add('is-on');
+      if (pageEl) pageEl.textContent = String(n + 1);
+    }, 3200);
+    timers.set(pv, id);
+  };
+  const stop = (pv: HTMLElement) => {
+    const id = timers.get(pv);
+    if (id) window.clearInterval(id);
+    timers.delete(pv);
+  };
+
+  const io = new IntersectionObserver(
+    (entries) =>
+      entries.forEach((e) => {
+        const pv = e.target as HTMLElement;
+        if (e.isIntersecting) play(pv);
+        else stop(pv);
+      }),
+    { threshold: 0.35 },
+  );
+  document.querySelectorAll<HTMLElement>('[data-pv]').forEach((pv) => io.observe(pv));
+</script>

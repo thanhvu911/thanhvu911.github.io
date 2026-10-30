@@ -1,151 +1,221 @@
 ---
 import Icon from './Icon.astro';
-import { nav, profile } from '../data/portfolio';
+import { nav } from '../data/portfolio';
 
 // Mark the menu item for the page you're on (Academics, Resume).
 const path = Astro.url.pathname.replace(/\/$/, '');
 ---
 
 <nav class="site-nav fixed inset-x-0 top-0 z-50" aria-label="Main">
-  <div class="container-page flex h-16 items-center justify-between gap-4">
-    <a href="/" class="flex items-center gap-2.5 text-lg font-bold tracking-tight text-strong">
-      <span class="brand-dot" aria-hidden="true"></span>
-      {profile.name}
+  <div class="frame flex h-[4.5rem] items-center gap-3 px-4 md:px-10">
+    <a href="/" class="brand" aria-label="Thanh Vu, home">
+      <b>Thanh</b>Vu
     </a>
 
-    <div class="flex items-center gap-1">
-      <ul class="hidden items-center gap-1 md:flex">
-        {
-          nav.map((item) => (
-            <li>
-              <a href={item.href} class="nav-item" aria-current={item.href === path ? 'page' : undefined}>
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-
-      <button type="button" class="theme-btn" aria-label="Switch to dark mode" aria-pressed="false" data-theme-toggle>
-        <Icon name="moon" size={17} class="icon-moon" />
-        <Icon name="sun" size={17} class="icon-sun" />
-      </button>
-
-      <button type="button" class="search-btn" aria-label="Search the site" data-palette-open>
-        <Icon name="search" size={16} />
-        <span class="hidden lg:inline">Search</span>
-        <kbd class="hidden sm:inline" data-shortcut>Ctrl K</kbd>
-      </button>
-
-      <button
-        type="button"
-        class="grid size-11 place-items-center rounded-md text-strong hover:bg-soft md:hidden"
-        aria-label="Open menu"
-        aria-expanded="false"
-        aria-controls="mobile-menu"
-        data-menu-toggle
-      >
-        <Icon name="menu" size={22} class="menu-open" />
-        <Icon name="x" size={22} class="menu-close hidden" />
-      </button>
-    </div>
-  </div>
-
-  <div id="mobile-menu" class="hidden border-t border-line md:hidden" data-menu>
-    <ul class="container-page py-2">
+    <ul class="ml-auto hidden items-center gap-7 lg:flex">
       {
         nav.map((item) => (
           <li>
-            <a href={item.href} class="block rounded-md px-3 py-3 font-medium text-ink hover:bg-soft hover:text-strong">
+            <a href={item.href} class="nav-item" aria-current={item.href === path ? 'page' : undefined}>
               {item.label}
             </a>
           </li>
         ))
       }
     </ul>
+
+    <div class="ml-auto flex items-center gap-2 lg:ml-6">
+      <button type="button" class="theme-switch" aria-label="Dark mode" role="switch" aria-checked="false" data-theme-toggle>
+        <span class="ts-opt ts-light"><Icon name="sun" size={14} /><span class="hidden xl:inline">Light</span></span>
+        <span class="ts-opt ts-dark"><Icon name="moon" size={14} /><span class="hidden xl:inline">Dark</span></span>
+      </button>
+
+      <button type="button" class="search-btn" aria-label="Search the site" data-palette-open>
+        <Icon name="search" size={16} />
+        <kbd class="hidden lg:inline" data-shortcut>Ctrl K</kbd>
+      </button>
+
+      <a href="/resume" class="btn btn-primary hidden min-h-11 sm:inline-flex">Resume</a>
+
+      <button
+        type="button"
+        class="menu-btn lg:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <Icon name="menu" size={20} class="menu-open" />
+        <Icon name="x" size={20} class="menu-close hidden" />
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden border-t border-line lg:hidden" data-menu>
+    <ul class="frame">
+      {
+        nav.map((item, i) => (
+          <li class="border-b border-line">
+            <a href={item.href} class="mobile-item">
+              <span class="mono">0{i + 1}</span>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+      <li class="sm:hidden">
+        <a href="/resume" class="mobile-item">
+          <span class="mono">0{nav.length + 1}</span>
+          Resume
+        </a>
+      </li>
+    </ul>
   </div>
 </nav>
 
 <style>
   .site-nav {
-    border-bottom: 1px solid var(--card-border);
+    border-bottom: 1px solid var(--color-line);
     background: var(--nav-bg);
     backdrop-filter: blur(14px) saturate(140%);
+    transition: background-color 250ms;
   }
-  .brand-dot {
-    width: 0.625rem;
-    height: 0.625rem;
-    border-radius: 999px;
-    background: var(--color-cyan);
-    box-shadow: 0 0 12px rgb(34 211 238 / 0.9);
-  }
-  .nav-item {
-    display: block;
-    padding: 0.5rem 0.875rem;
-    border-radius: 0.5rem;
-    color: var(--color-muted);
-    font-size: 0.9375rem;
-    font-weight: 500;
-    transition: color 150ms, background-color 150ms;
-  }
-  .nav-item:hover {
-    color: var(--color-strong);
-    background: var(--hover-bg);
-  }
-  .nav-item[aria-current='page'] {
-    color: var(--color-strong);
-    background: var(--color-teal-wash);
-  }
-  .search-btn {
+  .brand {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    min-height: 2.5rem;
-    margin-left: 0.25rem;
-    padding: 0 0.625rem 0 0.75rem;
-    border: 1px solid var(--chip-border);
-    border-radius: 0.625rem;
-    background: var(--chip-bg);
-    color: var(--color-muted);
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: border-color 150ms, color 150ms;
-  }
-  .search-btn:hover {
-    border-color: var(--color-cyan);
+    gap: 0.375rem;
     color: var(--color-strong);
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-stretch: 125%;
+    font-weight: 600;
+    text-transform: uppercase;
   }
-  .theme-btn {
-    display: grid;
-    place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    margin-left: 0.25rem;
-    border: 1px solid var(--chip-border);
-    border-radius: 0.625rem;
-    background: var(--chip-bg);
-    color: var(--color-muted);
-    cursor: pointer;
-    transition: border-color 150ms, color 150ms;
+  .brand b {
+    padding: 0.0625rem 0.375rem;
+    background: var(--color-strong);
+    color: var(--color-bg);
+    font-weight: 700;
+    transition: background-color 200ms;
   }
-  .theme-btn:hover {
-    border-color: var(--color-cyan);
-    color: var(--color-strong);
+  .brand:hover b {
+    background: var(--color-teal-ink);
   }
-  .theme-btn :global(.icon-sun),
-  :global([data-theme='dark']) .theme-btn :global(.icon-moon) {
-    display: none;
-  }
-  :global([data-theme='dark']) .theme-btn :global(.icon-sun) {
+  .nav-item {
+    position: relative;
     display: block;
+    padding-block: 0.5rem;
+    color: var(--color-strong);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  /* A cyan rule slides in under the hovered or current item. */
+  .nav-item::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.125rem;
+    height: 2px;
+    background: var(--color-cyan);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-item:hover::after,
+  .nav-item[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+
+  /* Light/dark switch: two labelled halves, the active one filled. */
+  .theme-switch {
+    display: inline-flex;
+    height: 2.75rem;
+    border: 1px solid var(--color-line);
+    cursor: pointer;
+  }
+  .ts-opt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0 0.75rem;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    transition: background-color 200ms, color 200ms;
+  }
+  .ts-light,
+  :global([data-theme='dark']) .ts-dark {
+    background: var(--color-strong);
+    color: var(--color-bg);
+  }
+  :global([data-theme='dark']) .ts-light {
+    background: none;
+    color: var(--color-muted);
+  }
+  .theme-switch:hover .ts-opt {
+    color: var(--color-strong);
+  }
+  .theme-switch:hover .ts-light,
+  :global([data-theme='dark']) .theme-switch:hover .ts-dark {
+    color: var(--color-bg);
+  }
+
+  .search-btn,
+  .menu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 2.75rem;
+    height: 2.75rem;
+    padding: 0 0.75rem;
+    border: 1px solid var(--color-line);
+    color: var(--color-strong);
+    cursor: pointer;
+    transition: border-color 150ms;
+  }
+  @media (min-width: 1024px) {
+    .menu-btn {
+      display: none;
+    }
+  }
+  /* The smallest phones drop the search button; the menu has every link. */
+  @media (max-width: 379px) {
+    .search-btn {
+      display: none;
+    }
+  }
+  .search-btn:hover,
+  .menu-btn:hover {
+    border-color: var(--color-strong);
   }
   .search-btn kbd {
-    padding: 0.0625rem 0.375rem;
-    border: 1px solid var(--chip-border);
-    border-radius: 0.3125rem;
-    font-family: inherit;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
     font-size: 0.6875rem;
+  }
+  .mobile-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.125rem 1rem;
+    color: var(--color-strong);
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-stretch: 120%;
     font-weight: 600;
+    text-transform: uppercase;
+  }
+  .mobile-item:hover {
+    background: var(--hover-bg);
+  }
+  @media (min-width: 768px) {
+    .mobile-item {
+      padding-inline: 2.5rem;
+    }
   }
 </style>
 
@@ -168,23 +238,31 @@ const path = Astro.url.pathname.replace(/\/$/, '');
     if (e.key === 'Escape') setOpen(false);
   });
 
-  // Light/dark toggle, remembered for the next visit.
+  // Light/dark: the device setting until the visitor picks one, then that choice is remembered.
+  const root = document.documentElement;
   const themeBtn = navEl.querySelector<HTMLButtonElement>('[data-theme-toggle]')!;
-  const syncThemeBtn = () => {
-    const dark = document.documentElement.dataset.theme === 'dark';
-    themeBtn.setAttribute('aria-pressed', String(dark));
-    themeBtn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+  const applyTheme = (dark: boolean) => {
+    if (dark) root.dataset.theme = 'dark';
+    else delete root.dataset.theme;
+    document.querySelector('[data-theme-color]')?.setAttribute('content', dark ? '#071226' : '#e4e6e6');
+    themeBtn.setAttribute('aria-checked', String(dark));
+    window.dispatchEvent(new Event('theme:change'));
   };
-  syncThemeBtn();
+  themeBtn.setAttribute('aria-checked', String(root.dataset.theme === 'dark'));
   themeBtn.addEventListener('click', () => {
-    const dark = document.documentElement.dataset.theme !== 'dark';
-    if (dark) document.documentElement.dataset.theme = 'dark';
-    else delete document.documentElement.dataset.theme;
-    document.querySelector('[data-theme-color]')?.setAttribute('content', dark ? '#050b18' : '#ffffff');
+    const dark = root.dataset.theme !== 'dark';
+    applyTheme(dark);
     try {
       localStorage.setItem('theme', dark ? 'dark' : 'light');
     } catch {}
-    syncThemeBtn();
+  });
+  const media = matchMedia('(prefers-color-scheme: dark)');
+  media.addEventListener('change', (e) => {
+    let saved: string | null = null;
+    try {
+      saved = localStorage.getItem('theme');
+    } catch {}
+    if (!saved) applyTheme(e.matches);
   });
 
   // Search button opens the command palette; show ⌘K on Apple devices.

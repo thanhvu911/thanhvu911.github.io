@@ -5,17 +5,21 @@ import { profile } from '../data/portfolio';
 ---
 
 <Base title="Resume" description="Download Thanh Vu's resume: Data Analyst, Data Engineer, or Graduate School (M.S. Computer Science, AI) version.">
-  <section class="section">
-    <div class="container-page max-w-3xl">
-      <h1 class="section-title">Resume</h1>
-      <p class="section-lede">Three one-page versions. Pick the one that fits the role or program.</p>
-
-      <ul class="mt-10 border-t border-line">
+  <div class="frame">
+    <div class="shead">
+      <p class="idx"><span class="sq"></span><span class="mono">Resume //<br />{profile.resumes.length} one-page versions</span></p>
+      <div class="ttl">
+        <h1 class="section-title">Resume</h1>
+        <p class="section-lede">Pick the version that fits the role or program.</p>
+      </div>
+    </div>
+    <div>
+      <ul>
         {
           profile.resumes.map((r) => (
-            <li class="flex flex-col gap-4 border-b border-line py-6 sm:flex-row sm:items-center sm:justify-between">
+            <li class="flex flex-col gap-4 border-b border-line px-4 py-7 sm:flex-row sm:items-center sm:justify-between md:px-10">
               <div>
-                <h2 class="text-lg font-semibold">{r.label} resume</h2>
+                <h2 class="display-md text-xl md:text-2xl">{r.label}</h2>
                 <p class="text-[0.9375rem] text-muted">{r.note}</p>
               </div>
               <div class="flex shrink-0 gap-2">
@@ -30,5 +34,5 @@ import { profile } from '../data/portfolio';
         }
       </ul>
     </div>
-  </section>
+  </div>
 </Base>

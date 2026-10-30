@@ -4,11 +4,14 @@ import Icon from '../components/Icon.astro';
 ---
 
 <Base title="Page not found">
-  <section class="section">
-    <div class="container-page">
-      <h1 class="section-title">Page not found</h1>
-      <p class="section-lede">This page doesn't exist or has moved. The home page links to every project, the resume, and contact details.</p>
-      <a href="/" class="btn btn-primary mt-8"><Icon name="arrow-left" size={16} /> Go to the home page</a>
+  <div class="frame">
+    <div class="shead border-b-0">
+      <p class="idx"><span class="sq"></span><span class="mono">Error // 404</span></p>
+      <div class="ttl pb-16">
+        <h1 class="section-title">Page not found</h1>
+        <p class="section-lede">This page doesn't exist or has moved. The home page links to every project, the resume, and contact details.</p>
+        <a href="/" class="btn btn-primary mt-8"><Icon name="arrow-left" size={16} /> Go to the home page</a>
+      </div>
     </div>
-  </section>
+  </div>
 </Base>

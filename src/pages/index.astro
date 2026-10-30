@@ -2,358 +2,647 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
-import HeroViz from '../components/HeroViz.astro';
+import PipelineShowcase from '../components/PipelineShowcase.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import ContactSection from '../components/ContactSection.astro';
 import portrait from '../assets/photo/thanh-portrait.jpg';
-import { credentials, education, experience, profile, projects, research, skills } from '../data/portfolio';
-import { projectImage } from '../lib/images';
+import { credentials, education, experience, profile, projects, skills } from '../data/portfolio';
 
-const featured = projects.filter((p) => p.featured);
-
-const facts = [
-  { count: 131, suffix: 'M+', label: 'transaction rows modeled in a SQL Server warehouse' },
-  { count: projects.length, label: 'end-to-end data projects, all on GitHub' },
-  { text: 'DP-700', label: 'Microsoft Certified: Fabric Data Engineer Associate' },
-  { count: 3.82, decimals: 2, label: 'major GPA, B.A. Computer Science, Franklin & Marshall' },
+// Five projects, one strength each: pipelines, warehousing, ML evaluation, BI, statistics.
+const featuredOrder = ['can-mail-data-predict-housing-vacancy', 'grocery-transaction-data-warehouse', 'vacancy-nowcast-ml', 'sales-planning-analysis', 'medical-cost-regression'];
+const featured = featuredOrder.map((slug) => projects.find((p) => p.slug === slug)!).filter((p) => p?.featured);
+const strengths = [
+  { label: 'Pipelines', title: 'Pipelines', note: 'Fabric, Dataflow Gen2, PySpark' },
+  { label: 'Storage', title: 'Warehousing', note: 'SQL Server, Medallion, star schema' },
+  { label: 'Reporting', title: 'Dashboards', note: 'Power BI, DAX, Power Query' },
+  { label: 'Modeling', title: 'Analysis', note: 'Python, scikit-learn, R' },
 ];
-const skillIcons = ['code', 'layers', 'database', 'wrench'] as const;
+const facts = [
+  { label: 'Now', value: 'Data Analyst Fellow, EDC Lancaster County' },
+  { label: 'Education', value: `${education.degree}, ${education.school}, ${education.honorsShort}` },
+  { label: 'Certified', value: 'Microsoft Fabric Data Engineer (DP-700)' },
+  { label: 'Based in', value: profile.location },
+];
 ---
 
 <Base>
-  <!-- Hero -->
-  <section id="home" class="pb-6 pt-10 md:pt-16">
-    <div class="container-page grid items-center gap-10 md:grid-cols-[1fr_16rem] lg:grid-cols-[1fr_19rem] lg:gap-16">
-      <div class="hero-copy">
-        <p class="inline-flex items-center gap-2.5 rounded-full border border-cyan/30 bg-cyan/10 px-3.5 py-1.5 text-sm font-medium text-teal-ink">
-          <span class="relative flex size-2" aria-hidden="true">
-            <span class="absolute inline-flex size-full animate-ping rounded-full bg-cyan opacity-60 motion-reduce:hidden"></span>
-            <span class="relative inline-flex size-2 rounded-full bg-cyan"></span>
-          </span>
-          Data Analyst Fellow, EDC Lancaster County
-        </p>
-        <div class="mt-6 flex items-center gap-4">
-          <Image src={portrait} alt="" widths={[160]} sizes="72px" loading="eager" class="size-[4.5rem] rounded-xl object-cover object-top ring-1 ring-cyan/40 md:hidden" />
-          <h1 class="text-gradient pb-1 text-[3.25rem] font-bold leading-[0.95] tracking-[-0.045em] sm:text-7xl lg:text-8xl">{profile.name}</h1>
-        </div>
-        <p class="mt-6 max-w-[34rem] text-xl font-medium leading-snug text-strong md:text-2xl">
-          Data analyst and data engineer, applying to M.S. programs in Computer Science (AI) for Fall 2027.
-        </p>
-        <p class="mt-4 max-w-[36rem] text-lg leading-relaxed text-muted">{profile.tagline}</p>
-        <p class="mt-4 flex items-center gap-2 text-muted">
-          <Icon name="map-pin" size={17} class="shrink-0 text-teal-ink" />
-          {profile.location}. Open to data roles in New York or remote.
-        </p>
-
-        <div class="mt-8 flex flex-wrap gap-2">
-          {
-            profile.resumes.map((r, i) => (
-              <a href={r.href} target="_blank" class:list={['btn', i === 0 ? 'btn-primary' : 'btn-outline']} data-goatcounter-click={`resume-${r.id}`}>
-                <Icon name="download" size={16} />
-                {r.label} resume
-              </a>
-            ))
-          }
-        </div>
-
-        <ul class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[0.9375rem]">
-          <li><a href={`mailto:${profile.email}`} class="inline-flex items-center gap-2 text-link" data-goatcounter-click="hero-email"><Icon name="mail" size={16} />Email</a></li>
-          <li><a href={profile.linkedin} target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-link" data-goatcounter-click="hero-linkedin"><Icon name="linkedin" size={16} />LinkedIn</a></li>
-          <li><a href={profile.github} target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-link" data-goatcounter-click="hero-github"><Icon name="github" size={16} />GitHub</a></li>
-        </ul>
-      </div>
-
-      <div class="hero-photo relative hidden md:block">
-        <div class="photo-glow" aria-hidden="true"></div>
-        <div class="photo-frame">
+  <!-- Hero: a measured grid with my name, my photo, and my role. -->
+  <section id="home" class="border-b border-line">
+    <div class="frame hero">
+      <p class="h-blurb rise" style="--d:0">
+        <span class="sq mb-5 block"></span>
+        I build data pipelines, warehouses, and Power BI reports, and I test machine-learning models honestly. Currently at EDC Lancaster County.
+      </p>
+      <h1 class="h-name display" aria-label="Thanh Vu">
+        <span class="line"><span style="--d:1">Thanh</span></span>
+        <span class="line"><span style="--d:2">Vu</span></span>
+      </h1>
+      <p class="h-lab1 mono rise" style="--d:3">Source //<br />BLS · BEA<br />Census · USPS</p>
+      <div class="h-band" aria-hidden="true"></div>
+      <figure class="h-photo">
+        <div class="frame-img">
           <Image
             src={portrait}
             alt="Portrait of Thanh Vu"
-            widths={[320, 480, 640]}
-            sizes="(min-width: 1024px) 304px, 256px"
+            widths={[360, 520, 720, 960]}
+            sizes="(min-width: 1024px) 28vw, 92vw"
             loading="eager"
             fetchpriority="high"
-            class="aspect-[4/5] w-full rounded-[1.1rem] object-cover"
+            class="size-full object-cover object-[50%_22%]"
           />
         </div>
+        <figcaption class="mono mt-2.5">IMG_01 // Lancaster, PA</figcaption>
+      </figure>
+      <p class="h-role display rise" style="--d:3">Data engineer<br />&amp; analyst</p>
+      <p class="h-lab2 mono rise" style="--d:4"><span class="sq mb-4 block"></span>131M+ rows<br />// Medallion</p>
+      <a href="#projects" class="h-go go">
+        <span class="arr"><Icon name="arrow-right" size={24} /></span>
+        <span class="lbl">See my work</span>
+      </a>
+      <div class="h-strip">
+        <ul class="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <li><a href={profile.github} target="_blank" rel="noopener" class="soc" data-goatcounter-click="hero-github">GitHub <Icon name="arrow-up-right" size={13} /></a></li>
+          <li><a href={profile.linkedin} target="_blank" rel="noopener" class="soc" data-goatcounter-click="hero-linkedin">LinkedIn <Icon name="arrow-up-right" size={13} /></a></li>
+          <li><a href={`mailto:${profile.email}`} class="soc" data-goatcounter-click="hero-email">Email <Icon name="arrow-up-right" size={13} /></a></li>
+          <li><a href="/resume" class="soc">Resume <Icon name="arrow-up-right" size={13} /></a></li>
+        </ul>
+        <a href="#about" class="mono hidden items-center gap-2 hover:text-strong lg:inline-flex">Scroll <Icon name="arrow-down" size={14} class="cue" /></a>
       </div>
     </div>
-
-    <div class="container-page mt-14 md:mt-20" data-reveal>
-      <HeroViz />
-    </div>
-
-    <dl class="container-page mt-4 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-      {
-        facts.map((f, i) => (
-          <div class="card flex flex-col p-5 md:p-6" data-reveal style={`--reveal-delay:${i * 80}ms`}>
-            <dt class="order-2 mt-1.5 text-sm leading-snug text-muted">{f.label}</dt>
-            <dd class="order-1 text-3xl font-semibold tabular-nums tracking-tight text-strong md:text-4xl">
-              {'count' in f ? (
-                <>
-                  <span data-count={f.count} data-decimals={f.decimals ?? 0}>{f.count}</span>
-                  {f.suffix}
-                </>
-              ) : (
-                <span class="text-gradient">{f.text}</span>
-              )}
-            </dd>
-          </div>
-        ))
-      }
-    </dl>
   </section>
 
-  <!-- Selected projects -->
-  <section id="projects" class="section">
-    <div class="container-page">
-      <div class="flex flex-wrap items-end justify-between gap-4" data-reveal>
-        <div>
-          <h2 class="section-title">Selected projects</h2>
-          <p class="section-lede">
-            Research on public data, a data warehouse, and a Power BI report. Each has a written case study and the full code, and the Power BI work has a dashboard you can use in the browser.
+  <!-- About -->
+  <section id="about" class="border-b border-line">
+    <div class="frame">
+      <div class="shead">
+        <p class="idx"><span class="sq"></span><span class="mono">02 // About</span></p>
+        <h2 class="ttl section-title" data-reveal>About me</h2>
+      </div>
+      <div class="about">
+        <dl class="facts">
+          {
+            facts.map((f) => (
+              <div data-reveal>
+                <dt class="mono">{f.label}</dt>
+                <dd>{f.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <div class="about-txt" data-reveal>
+          <p>
+            I'm a Data Analyst Fellow at the Economic Development Corporation of Lancaster County, where I automate federal economic data from <mark>BLS, BEA, Census, and USPS</mark> into Power BI reports that refresh every day.
+          </p>
+          <p>
+            I studied Computer Science at Franklin &amp; Marshall College and I'm a Microsoft Certified Fabric Data Engineer. I like work where the data has to be <mark>checked before anyone can trust it</mark>.
           </p>
         </div>
-        <a href="/projects" class="text-link">See all {projects.length} projects</a>
       </div>
-
-      <div class="mt-12 space-y-6">
+      <ul class="cells grid-cols-1 border-t border-line min-[480px]:grid-cols-2 lg:grid-cols-4">
         {
-          featured.map((p, i) => {
-            const lead = p.metrics[0];
-            return (
-              <article class="card card-hover group grid overflow-hidden md:grid-cols-12" data-reveal>
-                <a
-                  href={`/projects/${p.slug}`}
-                  class:list={['relative block overflow-hidden border-line bg-white md:col-span-7', i % 2 === 1 ? 'md:order-2 md:border-l' : 'md:border-r', 'border-b md:border-b-0']}
-                  tabindex="-1"
-                  aria-hidden="true"
-                >
-                  <Image
-                    src={projectImage(p.slug, p.cover)}
-                    alt=""
-                    widths={[560, 840, 1120]}
-                    sizes="(min-width: 1152px) 640px, (min-width: 768px) 58vw, 100vw"
-                    class="aspect-[16/10] size-full object-cover object-left-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                  />
-                </a>
-                <div class="flex flex-col justify-center p-6 md:col-span-5 md:p-10">
-                  <p class="text-sm text-muted">{p.kind.replaceAll(' · ', ' / ')}, {p.year}</p>
-                  <h3 class="mt-2 text-2xl font-semibold leading-tight tracking-tight md:text-[1.75rem]">
-                    <a href={`/projects/${p.slug}`} class="hover:text-teal-ink">{p.title}</a>
-                  </h3>
-                  <p class="serif mt-3 text-xl leading-snug text-ink">{p.headline}</p>
-                  <p class="mt-3 leading-relaxed text-muted">{p.summary}</p>
-                  <p class="mt-6 flex items-baseline gap-3">
-                    <span class="text-gradient text-4xl font-semibold tabular-nums tracking-tight">{lead.value}</span>
-                    <span class="text-sm text-muted">{lead.label}</span>
-                  </p>
-                  <div class="mt-6 flex flex-wrap gap-2">
-                    <a href={`/projects/${p.slug}`} class="btn btn-primary">Read the case study</a>
-                    <a href={p.repo} target="_blank" rel="noopener" class="btn btn-outline" data-goatcounter-click={`repo-${p.slug}`}>
-                      <Icon name="github" size={16} />
-                      Code
-                    </a>
-                  </div>
-                </div>
-              </article>
-            );
-          })
+          strengths.map((s, n) => (
+            <li class="strength" data-reveal style={`--reveal-delay:${n * 80}ms`}>
+              <span class="mono">0{n + 1} // {s.label}</span>
+              <b class="display-md">{s.title}</b>
+              <span>{s.note}</span>
+            </li>
+          ))
         }
-      </div>
+      </ul>
     </div>
   </section>
 
-  <!-- Experience -->
-  <section id="experience" class="section">
-    <div class="container-page">
-      <h2 class="section-title" data-reveal>Experience</h2>
-      <ol class="timeline mt-12 space-y-5">
+  <!-- What I build: four pipeline stages, each linked to a project -->
+  <section id="build" class="border-b border-line">
+    <div class="frame">
+      <div class="shead">
+        <p class="idx"><span class="sq"></span><span class="mono">03 // What I build<br />Each stage links to a project</span></p>
+        <h2 class="ttl section-title" data-reveal>What I build</h2>
+      </div>
+      <PipelineShowcase />
+    </div>
+  </section>
+
+  <!-- Selected work -->
+  <section id="projects" class="border-b border-line">
+    <div class="frame">
+      <div class="shead">
+        <p class="idx"><span class="sq"></span><span class="mono">04 // Selected work<br />{projects.length} projects in total</span></p>
+        <h2 class="ttl section-title" data-reveal>Selected work</h2>
+      </div>
+      <div class="cells md:grid-cols-2 lg:grid-cols-6">
+        {
+          featured.map((p, n) => (
+            <div class:list={[n < 3 ? 'lg:col-span-2' : 'lg:col-span-3', n === featured.length - 1 && featured.length % 2 === 1 && 'md:col-span-2']}>
+              <ProjectCard project={p} />
+            </div>
+          ))
+        }
+      </div>
+      <a href="/projects" class="go border-t border-line">
+        <span class="arr"><Icon name="arrow-right" size={24} /></span>
+        <span class="lbl">See all {projects.length} projects</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Skills, each group backed by a project -->
+  <section id="skills" class="border-b border-line">
+    <div class="frame">
+      <div class="shead">
+        <p class="idx"><span class="sq"></span><span class="mono">05 // Skills<br />Each group links to proof</span></p>
+        <h2 class="ttl section-title" data-reveal>Skills</h2>
+      </div>
+      <ul class="cells sm:grid-cols-2 lg:grid-cols-5">
+        {
+          skills.map((g, n) => (
+            <li class="skill" data-reveal style={`--reveal-delay:${n * 70}ms`}>
+              <span class="mono">0{n + 1}</span>
+              <h3 class="display-md mt-4 text-lg">{g.group}</h3>
+              <ul class="mt-4 space-y-2 text-[0.9375rem] text-ink">
+                {g.items.map((i) => (
+                  <li>{i}</li>
+                ))}
+              </ul>
+              <a href={g.proof.href} class="proof">
+                <span class="mono">Seen in</span>
+                <span class="flex items-center gap-1.5">{g.proof.label} <Icon name="arrow-right" size={13} /></span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Experience and education -->
+  <section id="experience" class="border-b border-line">
+    <div class="frame">
+      <div class="shead">
+        <p class="idx"><span class="sq"></span><span class="mono">06 // Experience</span></p>
+        <h2 class="ttl section-title" data-reveal>Experience</h2>
+      </div>
+      <ol>
         {
           experience.map((job) => (
-            <li class="relative pl-8 md:pl-12" data-reveal>
-              <span class:list={['timeline-dot', job.current && 'is-current']} aria-hidden="true" />
-              <article class="card grid gap-3 p-6 md:grid-cols-[12rem_1fr] md:gap-8 md:p-8">
-                <div class="text-sm">
-                  <p class="font-semibold text-strong">{job.dates}</p>
-                  <p class="mt-0.5 text-muted">{job.location}</p>
-                  {job.current && <p class="mt-2 inline-flex rounded-full bg-cyan/15 px-2.5 py-0.5 text-xs font-semibold text-teal-ink">Current role</p>}
-                </div>
-                <div>
-                  <h3 class="text-xl font-semibold tracking-tight">{job.role}</h3>
-                  <p class="mt-0.5 text-muted">{job.company}</p>
-                  <ul class="dot-list mt-4 max-w-[46rem] space-y-2 leading-relaxed">
-                    {job.bullets.map((b) => <li>{b}</li>)}
-                  </ul>
-                  <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="Tools used">
-                    {job.tech.map((t) => <li class="pill">{t}</li>)}
-                  </ul>
-                </div>
-              </article>
+            <li class:list={['job', { 'is-now': 'current' in job && job.current }]} data-reveal>
+              <p class="job-when mono">
+                {job.dates}
+                <br />
+                {job.location}
+              </p>
+              <div class="job-what">
+                <h3 class="display-md text-[1.375rem] md:text-[1.625rem]">{job.role}</h3>
+                <p class="mt-1 font-medium text-strong">{job.company}</p>
+                <p class="mt-2 max-w-[38rem] leading-relaxed text-muted">{job.bullets[0]}</p>
+              </div>
+              <ul class="job-tags flex flex-wrap content-start gap-1.5" aria-label="Tools used">
+                {job.tech.map((t) => (
+                  <li class="pill">{t}</li>
+                ))}
+              </ul>
             </li>
           ))
         }
       </ol>
-    </div>
-  </section>
-
-  <!-- Education and research -->
-  <section id="education" class="section">
-    <div class="container-page">
-      <h2 class="section-title" data-reveal>Education and research</h2>
-      <div class="mt-12 grid gap-5 md:grid-cols-2">
-        <div class="card p-6 md:p-8" data-reveal>
-          <span class="icon-tile"><Icon name="graduation-cap" size={20} /></span>
-          <h3 class="mt-5 text-xl font-semibold tracking-tight">{education.school}</h3>
-          <p class="mt-1 text-muted">Bachelor of Arts in Computer Science, {education.date}</p>
-          <dl class="mt-6 space-y-4 text-[0.9375rem]">
-            <div>
-              <dt class="font-semibold text-strong">GPA</dt>
-              <dd class="text-muted">3.72 overall, 3.82 in the major</dd>
-            </div>
-            <div>
-              <dt class="font-semibold text-strong">Honors</dt>
-              <dd class="text-muted">Honors List, Fall 2021, 2023, 2024, and 2025. Dean's List, Spring 2022.</dd>
-            </div>
-            <div>
-              <dt class="font-semibold text-strong">Certifications</dt>
-              <dd>
-                <ul class="space-y-1 text-muted">
-                  {credentials.map((c) => <li>{c.title}, {c.detail.split(' · ').slice(-2).join(', ')}</li>)}
-                </ul>
-              </dd>
-            </div>
-          </dl>
+      <div id="education" class="cells md:grid-cols-3">
+        <div class="edu" data-reveal>
+          <p class="mono">Education</p>
+          <h3 class="display-md mt-4 text-xl">{education.school}</h3>
+          <p class="mt-2 text-muted">{education.degree}, {education.date}. {education.gpa.replace(' · ', ', ')}. {education.honorsShort}.</p>
+          <a href="/academics" class="text-link mt-4 inline-block text-[0.9375rem]">Coursework and research</a>
         </div>
-        <div class="card flex flex-col p-6 md:p-8" data-reveal style="--reveal-delay:100ms">
-          <span class="icon-tile"><Icon name="target" size={20} /></span>
-          <h3 class="mt-5 text-xl font-semibold tracking-tight">Research interests</h3>
-          <p class="serif mt-3 text-xl leading-relaxed text-strong">{research.interests}</p>
-          <p class="mt-4 leading-relaxed text-muted">
-            My applied research tests whether public data can act as a predictive signal, such as USPS mail data as an early warning for Census housing vacancy.
-          </p>
-          <div class="mt-auto pt-6">
-            <a href="/academics" class="btn btn-outline">Coursework, research, and grad school resume</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Skills -->
-  <section id="skills" class="section">
-    <div class="container-page">
-      <h2 class="section-title" data-reveal>Skills</h2>
-      <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {
-          skills.map((g, i) => (
-            <div class="card p-6" data-reveal style={`--reveal-delay:${i * 80}ms`}>
-              <span class="icon-tile"><Icon name={skillIcons[i]} size={20} /></span>
-              <h3 class="mt-5 text-base font-semibold">{g.group}</h3>
-              <ul class="mt-3 space-y-1.5 text-[0.9375rem]">
-                {g.items.map((item) => <li>{item}</li>)}
-              </ul>
+          credentials.map((c) => (
+            <div class="edu" data-reveal>
+              <p class="mono">Certification</p>
+              <h3 class="display-md mt-4 text-xl">{c.title.replace('Microsoft Certified: ', '')}</h3>
+              <p class="mt-2 text-muted">{c.detail.split(' · ').reverse().slice(0, 2).reverse().join(', ')}</p>
+              {'note' in c && <p class="mono mt-3">{c.note}</p>}
             </div>
           ))
         }
       </div>
+      <a href="/resume" class="go border-t border-line">
+        <span class="arr"><Icon name="arrow-right" size={24} /></span>
+        <span class="lbl">View full resume</span>
+      </a>
     </div>
   </section>
 
-  <ContactSection />
+  <div class="frame">
+    <ContactSection />
+  </div>
 </Base>
 
 <style>
-  .photo-frame {
-    position: relative;
-    padding: 1px;
-    border-radius: 1.2rem;
-    background: linear-gradient(150deg, rgb(103 232 249 / 0.9), rgb(96 165 250 / 0.25) 45%, rgb(148 170 220 / 0.12));
+  /* ---------- Hero ---------- */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'blurb' 'name' 'photo' 'role' 'lab1' 'go' 'strip';
   }
-  .photo-glow {
-    position: absolute;
-    inset: 12% -10% -6%;
-    border-radius: 2rem;
-    background: radial-gradient(closest-side, var(--glow), transparent);
-    filter: blur(30px);
+  .h-blurb {
+    grid-area: blurb;
+    max-width: 22rem;
+    padding: 2rem 1rem 0;
+    color: var(--color-strong);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+  .h-name {
+    grid-area: name;
+    padding: 1.75rem 1rem 2rem;
+    font-size: clamp(3.5rem, 17.5vw, 9.75rem);
+  }
+  .h-name .line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.04em;
+  }
+  .h-name .line > span {
+    display: block;
+    animation: up 1000ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--d) * 110ms);
+  }
+  .h-lab1 {
+    grid-area: lab1;
+    display: none;
+  }
+  .h-band {
+    grid-area: band;
+    display: none;
+  }
+  .h-photo {
+    grid-area: photo;
+    padding: 0 1rem 1.75rem;
+  }
+  .frame-img {
+    aspect-ratio: 1 / 1.04;
+    overflow: hidden;
+    border: 1px solid var(--color-strong);
+    background: var(--color-surface);
+    animation: wipe 1200ms cubic-bezier(0.22, 1, 0.36, 1) 250ms both;
+  }
+  .frame-img :global(img) {
+    animation: settle 1800ms cubic-bezier(0.22, 1, 0.36, 1) 250ms both;
+  }
+  .h-role {
+    grid-area: role;
+    padding: 1.75rem 1rem 1.5rem;
+    border-top: 1px solid var(--color-line);
+    color: var(--color-strong);
+    font-size: clamp(2rem, 8.5vw, 6rem);
+  }
+  .h-lab2 {
+    grid-area: lab2;
+    display: none;
+  }
+  .h-go {
+    grid-area: go;
+    border-top: 1px solid var(--color-line);
+  }
+  .h-strip {
+    grid-area: strip;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .soc {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: 2.75rem;
+    color: var(--color-strong);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .soc:hover {
+    color: var(--color-teal-ink);
+  }
+  .cue {
+    animation: nudge 2.4s ease-in-out infinite;
   }
 
-  .timeline::before {
-    content: "";
-    position: absolute;
-    left: 0.4375rem;
-    top: 0.5rem;
-    bottom: 0.5rem;
-    width: 1px;
-    background: linear-gradient(to bottom, rgb(34 211 238 / 0.7), rgb(96 165 250 / 0.25) 60%, transparent);
-  }
-  @media (min-width: 768px) {
-    .timeline::before {
-      left: 0.6875rem;
+  @media (min-width: 640px) {
+    .h-photo {
+      max-width: 32rem;
     }
-  }
-  .timeline {
-    position: relative;
-  }
-  .timeline-dot {
-    position: absolute;
-    left: 0;
-    top: 2rem;
-    width: 0.9375rem;
-    height: 0.9375rem;
-    border: 2px solid var(--color-cyan);
-    border-radius: 999px;
-    background: var(--color-bg);
-  }
-  @media (min-width: 768px) {
-    .timeline-dot {
-      left: 0.25rem;
+    .h-name,
+    .h-role,
+    .h-blurb,
+    .h-photo,
+    .h-strip {
+      padding-inline: 2.5rem;
     }
-  }
-  .timeline-dot.is-current {
-    background: var(--color-cyan);
-    box-shadow: 0 0 0 5px rgb(34 211 238 / 0.15), 0 0 18px rgb(34 211 238 / 0.8);
   }
 
-  /* One entrance on load. */
-  .hero-copy,
-  .hero-photo {
-    animation: settle 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  @media (min-width: 1024px) {
+    .hero {
+      grid-template-columns: 30% 1fr 15%;
+      grid-template-rows: auto 8.5rem 1fr auto;
+      grid-template-areas:
+        'blurb name  lab1'
+        'photo band  band'
+        'photo role  lab2'
+        'go    strip strip';
+      min-height: min(calc(100svh - 4.5rem), 62rem);
+    }
+    .hero > * {
+      min-width: 0;
+    }
+    .h-blurb {
+      max-width: none;
+      padding: 5rem 2.5rem 2rem;
+      border-right: 1px solid var(--color-line);
+      border-bottom: 1px solid var(--color-line);
+    }
+    .h-blurb {
+      padding-right: 3.5rem;
+    }
+    .h-name {
+      align-self: stretch;
+      padding: 3.5rem 2.5rem 3rem;
+      border-bottom: 1px solid var(--color-line);
+      font-size: min(calc((55vw - 5rem) / 5.2), 9.5rem);
+    }
+    .h-lab1 {
+      display: block;
+      padding: 2.75rem 1.5rem;
+      border-left: 1px solid var(--color-line);
+      border-bottom: 1px solid var(--color-line);
+    }
+    /* A hatched band between the name and the role, drawn in on load. */
+    .h-band {
+      display: block;
+      position: relative;
+      border-bottom: 1px solid var(--color-line);
+      background:
+        repeating-linear-gradient(0deg, transparent 0 calc(2.125rem - 1px), var(--color-line) calc(2.125rem - 1px) 2.125rem),
+        repeating-linear-gradient(-58deg, transparent 0 3.5rem, var(--color-line) 3.5rem calc(3.5rem + 1px));
+      animation: draw 1400ms cubic-bezier(0.65, 0, 0.35, 1) 500ms both;
+    }
+    .h-photo {
+      position: relative;
+      z-index: 1;
+      align-self: start;
+      max-width: none;
+      margin-right: clamp(-6rem, -5vw, -3rem);
+      padding: 2rem 0 2.25rem clamp(2.5rem, 7.5vw, 7rem);
+      border-right: 1px solid var(--color-line);
+    }
+    .h-photo,
+    .h-go {
+      border-right: 1px solid var(--color-line);
+    }
+    .h-photo {
+      border-right: 0;
+    }
+    .h-role {
+      align-self: end;
+      padding: 2.5rem 1.5rem 2.75rem clamp(4.5rem, 9vw, 9rem);
+      border-top: 0;
+      font-size: clamp(3rem, 5.6vw, 5.75rem);
+    }
+    .h-lab2 {
+      display: block;
+      align-self: end;
+      padding: 2rem 1.5rem 2.75rem;
+      border-left: 1px solid var(--color-line);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .h-strip {
+      padding-inline: 2.5rem;
+    }
+    /* The column rule under the photo. */
+    .hero {
+      background: linear-gradient(var(--color-line), var(--color-line)) no-repeat 30% 0 / 1px 100%;
+    }
   }
-  .hero-photo {
-    animation-delay: 150ms;
+
+  .rise {
+    animation: rise 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--d) * 110ms);
   }
-  @keyframes settle {
+  @keyframes up {
+    from {
+      transform: translateY(105%);
+    }
+  }
+  @keyframes rise {
     from {
       opacity: 0;
       transform: translateY(14px);
     }
   }
-</style>
-
-<script>
-  // Count the key numbers up once, when they first scroll into view.
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!reduce) {
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          io.unobserve(entry.target);
-          const el = entry.target as HTMLElement;
-          const end = Number(el.dataset.count);
-          const decimals = Number(el.dataset.decimals ?? 0);
-          const start = performance.now();
-          const tick = (now: number) => {
-            const t = Math.min((now - start) / 1400, 1);
-            const eased = 1 - Math.pow(1 - t, 3);
-            el.textContent = (end * eased).toFixed(decimals);
-            if (t < 1) requestAnimationFrame(tick);
-          };
-          requestAnimationFrame(tick);
-        });
-      },
-      { threshold: 0.6 },
-    );
-    document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => io.observe(el));
+  @keyframes wipe {
+    from {
+      clip-path: inset(100% 0 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
   }
-</script>
+  @keyframes settle {
+    from {
+      transform: scale(1.12);
+    }
+  }
+  @keyframes draw {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  @keyframes nudge {
+    50% {
+      transform: translateY(4px);
+    }
+  }
+
+  /* ---------- About ---------- */
+  .about {
+    display: grid;
+  }
+  .facts {
+    display: grid;
+    gap: 1.25rem;
+    padding: 1.75rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .facts dd {
+    margin-top: 0.125rem;
+    color: var(--color-strong);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .about-txt {
+    padding: 2rem 1rem 2.5rem;
+    color: var(--color-ink);
+    font-size: 1.1875rem;
+    line-height: 1.6;
+  }
+  .about-txt p + p {
+    margin-top: 1.25rem;
+  }
+  .about-txt mark {
+    background: linear-gradient(transparent 60%, rgb(18 196 204 / 0.32) 0);
+    color: var(--color-strong);
+    font-weight: 600;
+  }
+  @media (min-width: 768px) {
+    .facts,
+    .about-txt {
+      padding-inline: 2.5rem;
+    }
+    .about-txt {
+      font-size: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .about {
+      grid-template-columns: 30% 1fr;
+    }
+    .facts {
+      align-content: start;
+      gap: 1.5rem;
+      padding-block: 2.5rem;
+      border-right: 1px solid var(--color-line);
+      border-bottom: 0;
+    }
+    .about-txt {
+      max-width: 58rem;
+      padding-block: 2.75rem 3.5rem;
+    }
+  }
+  .strength {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1rem 1.75rem;
+    transition: background-color 250ms;
+  }
+  .strength:hover {
+    background: var(--color-surface);
+  }
+  .strength b {
+    margin-top: 1.25rem;
+    color: var(--color-strong);
+    font-size: 1.125rem;
+  }
+  .strength > span:last-child {
+    margin-top: 0.375rem;
+    color: var(--color-muted);
+    font-size: 0.9375rem;
+  }
+  @media (min-width: 768px) {
+    .strength {
+      padding: 1.75rem 1.875rem 2rem;
+    }
+    .strength b {
+      font-size: 1.375rem;
+    }
+  }
+  /* ---------- Skills ---------- */
+  .skill {
+    display: flex;
+    flex-direction: column;
+    padding: 1.75rem 1rem 1.5rem;
+    transition: background-color 250ms;
+  }
+  .skill:hover {
+    background: var(--color-surface);
+  }
+  @media (min-width: 768px) {
+    .skill {
+      padding: 2rem 1.75rem 1.75rem;
+    }
+  }
+  .proof {
+    display: grid;
+    gap: 0.25rem;
+    margin-top: auto;
+    padding-top: 1.75rem;
+    color: var(--color-strong);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .proof:hover {
+    color: var(--color-teal-ink);
+  }
+
+  /* ---------- Experience ---------- */
+  .job {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.5rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+    transition: background-color 250ms;
+  }
+  .job:hover {
+    background: var(--color-surface);
+  }
+  .job.is-now {
+    background: var(--color-surface);
+    box-shadow: inset 4px 0 0 var(--color-cyan);
+  }
+  @media (min-width: 768px) {
+    .job {
+      grid-template-columns: 13rem 1fr;
+      padding-inline: 2.5rem;
+    }
+    .job-tags {
+      grid-column: 2;
+    }
+  }
+  @media (min-width: 1024px) {
+    .job {
+      grid-template-columns: 30% minmax(0, 1fr) clamp(13rem, 20vw, 18rem);
+      gap: 0;
+      padding: 0;
+    }
+    .job > * {
+      min-width: 0;
+      padding: 1.875rem 2.5rem;
+    }
+    .job-when {
+      align-self: stretch;
+      border-right: 1px solid var(--color-line);
+    }
+    .job-tags {
+      grid-column: auto;
+      padding-left: 0;
+    }
+  }
+  .edu {
+    padding: 1.75rem 1rem 2rem;
+  }
+  @media (min-width: 768px) {
+    .edu {
+      padding: 2rem 2.5rem 2.25rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .h-name .line > span,
+    .rise,
+    .frame-img,
+    .frame-img :global(img),
+    .h-band,
+    .cue {
+      animation: none;
+    }
+  }
+</style>

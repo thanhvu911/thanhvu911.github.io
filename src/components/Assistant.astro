@@ -8,22 +8,22 @@ import { quickAnswers, suggestions } from '../lib/knowledge';
 
 const endpoint = profile.assistantEndpoint;
 const subtitle = endpoint
-  ? 'AI answers from this portfolio, powered by Gemini'
-  : 'Quick answers from this portfolio. The AI version is being connected.';
+  ? 'Answers from this portfolio, powered by Gemini'
+  : 'Quick answers about my experience and projects';
 ---
 
 <div data-assistant data-endpoint={endpoint} data-answers={JSON.stringify(quickAnswers)}>
   <button type="button" class="assistant-launch" aria-expanded="false" aria-controls="assistant-panel" data-assistant-toggle>
-    <Icon name="sparkles" size={18} />
-    <span>Ask about Thanh</span>
+    <Icon name="message" size={18} />
+    <span class="max-sm:sr-only">Ask about my work</span>
   </button>
 
   <section id="assistant-panel" class="assistant-panel card" role="dialog" aria-modal="false" aria-labelledby="assistant-title" hidden data-assistant-panel>
     <header class="flex items-start justify-between gap-3 border-b border-line p-4">
       <div class="flex items-start gap-3">
-        <span class="icon-tile size-9"><Icon name="sparkles" size={17} /></span>
+        <span class="icon-tile size-9"><Icon name="message" size={17} /></span>
         <div>
-          <h2 id="assistant-title" class="text-[0.9375rem] font-semibold">Ask about Thanh</h2>
+          <h2 id="assistant-title" class="display-md text-[0.9375rem]">Ask about my work</h2>
           <p class="text-xs text-muted">{subtitle}</p>
         </div>
       </div>
@@ -33,9 +33,9 @@ const subtitle = endpoint
     </header>
 
     <div class="assistant-log" aria-live="polite" data-assistant-log>
-      <p class="msg msg-bot">Hi! Ask me about Thanh's experience, projects, skills, or graduate plans.</p>
+      <p class="msg msg-bot">Ask about my experience, projects, or skills.</p>
       <ul class="flex flex-wrap gap-1.5" data-assistant-suggestions>
-        {suggestions.map((s) => <li><button type="button" class="demo-chip min-h-8 px-3 text-[0.8125rem]" data-suggestion>{s}</button></li>)}
+        {suggestions.map((s) => <li><button type="button" class="sugg" data-suggestion>{s}</button></li>)}
       </ul>
     </div>
 
@@ -60,23 +60,23 @@ const subtitle = endpoint
     gap: 0.5rem;
     min-height: 2.875rem;
     padding: 0 1.125rem;
-    border: 1px solid color-mix(in srgb, var(--color-cyan) 55%, transparent);
-    border-radius: 999px;
-    background: var(--panel-bg);
-    backdrop-filter: blur(12px);
-    color: var(--color-strong);
-    font-size: 0.9375rem;
+    border-left: 4px solid var(--color-cyan);
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-fg);
+    font-size: 0.8125rem;
     font-weight: 600;
-    box-shadow: 0 0 0 4px rgb(8 145 178 / 0.08), 0 12px 36px -10px var(--glow);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    box-shadow: 0 14px 34px -14px rgb(2 8 23 / 0.55);
     cursor: pointer;
-    transition: border-color 200ms, box-shadow 200ms;
+    transition: background-color 200ms, transform 200ms;
   }
   .assistant-launch:hover {
-    border-color: var(--color-cyan);
-    box-shadow: 0 0 0 4px rgb(8 145 178 / 0.14), 0 14px 40px -8px var(--glow);
+    background: var(--btn-primary-hover);
+    transform: translateY(-2px);
   }
   .assistant-launch :global(svg) {
-    color: var(--color-teal-ink);
+    color: var(--color-cyan);
   }
   .assistant-launch[aria-expanded='true'] {
     display: none;
@@ -93,7 +93,20 @@ const subtitle = endpoint
     height: min(34rem, calc(100dvh - 6rem));
     background: var(--panel-bg);
     backdrop-filter: blur(16px);
-    box-shadow: 0 30px 80px -20px rgb(2 8 23 / 0.45), 0 0 0 1px var(--card-border);
+    box-shadow: 0 30px 80px -20px rgb(2 8 23 / 0.45);
+  }
+  .sugg {
+    min-height: 2.25rem;
+    padding: 0 0.75rem;
+    border: 1px solid var(--color-line);
+    color: var(--color-strong);
+    font-size: 0.8125rem;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 150ms;
+  }
+  .sugg:hover {
+    border-color: var(--color-strong);
   }
   .assistant-panel[hidden] {
     display: none;
@@ -110,7 +123,6 @@ const subtitle = endpoint
   .assistant-log :global(.msg) {
     max-width: 92%;
     padding: 0.625rem 0.875rem;
-    border-radius: 0.875rem;
     font-size: 0.9375rem;
     line-height: 1.55;
     white-space: pre-line;
@@ -123,6 +135,7 @@ const subtitle = endpoint
   }
   .assistant-log :global(.msg-user) {
     align-self: flex-end;
+    border-right: 3px solid var(--color-cyan);
     background: var(--color-teal-wash);
     color: var(--color-strong);
   }
@@ -145,7 +158,6 @@ const subtitle = endpoint
   .assistant-log :global(.typing span) {
     width: 0.375rem;
     height: 0.375rem;
-    border-radius: 999px;
     background: var(--color-cyan);
     animation: blink 1.2s infinite both;
   }

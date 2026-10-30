@@ -3,10 +3,10 @@
 ---
 
 <div class="demo" data-vacancy-demo>
-  <fieldset data-pbi-filters>
-    <legend class="demo-label">Counties</legend>
+  <div role="group" aria-labelledby="vacancy-counties" data-pbi-filters>
+    <p class="demo-label" id="vacancy-counties">Counties</p>
     <div class="mt-2 flex flex-wrap gap-2" data-county-chips></div>
-  </fieldset>
+  </div>
 
   <div class="mt-6 grid gap-3 sm:grid-cols-3" aria-live="polite">
     <div class="demo-kpi">

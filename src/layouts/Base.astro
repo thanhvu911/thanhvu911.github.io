@@ -44,17 +44,21 @@ const personSchema = {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#ffffff" data-theme-color />
+    <meta name="theme-color" content="#e4e6e6" data-theme-color />
     <script is:inline>
-      // Apply the saved theme before first paint (light unless the visitor chose dark).
+      // Apply the theme before first paint: the visitor's saved choice,
+      // otherwise their device setting.
       (function () {
         var root = document.documentElement;
         root.classList.add('js');
-        var t = null;
-        try { t = localStorage.getItem('theme'); } catch (e) {}
+        var t = new URLSearchParams(location.search).get('theme');
+        if (!t) {
+          try { t = localStorage.getItem('theme'); } catch (e) {}
+        }
+        if (!t && window.matchMedia('(prefers-color-scheme: dark)').matches) t = 'dark';
         if (t === 'dark') {
           root.dataset.theme = 'dark';
-          document.querySelector('[data-theme-color]').setAttribute('content', '#050b18');
+          document.querySelector('[data-theme-color]').setAttribute('content', '#071226');
         }
       })();
     </script>
@@ -78,12 +82,11 @@ const personSchema = {
   <body class="flex min-h-dvh flex-col">
     <a
       href="#main"
-      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-navy focus:px-4 focus:py-2 focus:text-white"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-strong focus:px-4 focus:py-2 focus:text-bg"
       >Skip to content</a
     >
-    <div class="spotlight" aria-hidden="true"></div>
     <Nav />
-    <main id="main" class="flex-1 pt-16">
+    <main id="main" class="flex-1 pt-[4.5rem]">
       <slot />
     </main>
     <Footer />
@@ -112,34 +115,36 @@ const personSchema = {
       );
       document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
 
-      // A soft light that follows the pointer on desktop.
-      const spot = document.querySelector<HTMLElement>('.spotlight');
-      if (spot && matchMedia('(hover: hover) and (pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        let frame = 0;
-        window.addEventListener('pointermove', (e) => {
-          cancelAnimationFrame(frame);
-          frame = requestAnimationFrame(() => {
-            spot.style.setProperty('--x', `${e.clientX}px`);
-            spot.style.setProperty('--y', `${e.clientY}px`);
-            spot.classList.add('is-on');
-          });
-        });
+      // Count key numbers ([data-count]) up from zero when they come into view,
+      // keeping their prefix, suffix, and decimals ("131M+", "0.77").
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const counter = new IntersectionObserver(
+          (entries) =>
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              counter.unobserve(entry.target);
+              const el = entry.target as HTMLElement;
+              const m = (el.dataset.count ?? '').match(/^([$€£]?)(\d[\d,]*(?:\.\d+)?)(.*)$/);
+              if (!m) return;
+              const [, pre, num, post] = m;
+              const target = Number(num.replace(/,/g, ''));
+              const decimals = (num.split('.')[1] ?? '').length;
+              const commas = num.includes(',');
+              const start = performance.now();
+              const tick = (now: number) => {
+                const t = Math.min((now - start) / 1200, 1);
+                const v = target * (1 - Math.pow(1 - t, 3));
+                const s = commas ? v.toLocaleString('en-US', { maximumFractionDigits: decimals, minimumFractionDigits: decimals }) : v.toFixed(decimals);
+                el.textContent = t < 1 ? `${pre}${s}${post}` : el.dataset.count!;
+                if (t < 1) requestAnimationFrame(tick);
+              };
+              requestAnimationFrame(tick);
+            }),
+          { threshold: 0.6 },
+        );
+        document.querySelectorAll('[data-count]').forEach((el) => counter.observe(el));
       }
     </script>
 
-    <style>
-      .spotlight {
-        position: fixed;
-        inset: 0;
-        z-index: -1;
-        pointer-events: none;
-        opacity: 0;
-        background: radial-gradient(36rem circle at var(--x, 50%) var(--y, 50%), var(--spot), transparent 60%);
-        transition: opacity 600ms;
-      }
-      .spotlight.is-on {
-        opacity: 1;
-      }
-    </style>
   </body>
 </html>

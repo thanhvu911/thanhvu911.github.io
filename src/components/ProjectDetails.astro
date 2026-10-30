@@ -29,20 +29,20 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
 {showIntro && (
 <>
 <section class="card p-6 md:p-8" aria-labelledby="overview">
-  <h2 id="overview" class="text-2xl font-bold text-strong">Project overview</h2>
+  <h2 id="overview" class="display-md text-2xl">Project overview</h2>
   <div class="mt-4 space-y-4 leading-relaxed text-ink/85">
     {detail.overview.map((p) => <p>{p}</p>)}
   </div>
 </section>
 
 <section class="card p-6 md:p-8" aria-labelledby="tools">
-  <h2 id="tools" class="text-2xl font-bold text-strong">Tools and technologies used</h2>
+  <h2 id="tools" class="display-md text-2xl">Tools and technologies used</h2>
   <ul class="mt-6 grid gap-4 sm:grid-cols-2">
     {
       detail.tools.map((t) => (
         <li class="rounded-xl border border-line bg-soft/60 p-5 transition-colors hover:border-teal">
           <h3 class="flex items-center gap-2 font-bold text-strong">
-            <span class="size-2 rounded-full bg-teal" aria-hidden="true" />
+            <span class="size-2 bg-cyan" aria-hidden="true" />
             {t.name}
           </h3>
           <p class="mt-2 text-sm leading-relaxed text-ink/80">{t.use}</p>
@@ -55,7 +55,7 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
 {
   detail.model && (
     <section class="card p-6 md:p-8" aria-labelledby="model">
-      <h2 id="model" class="text-2xl font-bold text-strong">Data model breakdown</h2>
+      <h2 id="model" class="display-md text-2xl">Data model breakdown</h2>
       <p class="mt-3 leading-relaxed text-ink/80">{detail.model.note}</p>
       <ul class="mt-6 grid gap-3 sm:grid-cols-2">
         {detail.model.tables.map((t) => (
@@ -82,7 +82,7 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
 
 {showWalk && (
 <section class="card p-6 md:p-8" aria-labelledby="walkthrough" data-zoom-root>
-  <h2 id="walkthrough" class="text-2xl font-bold text-strong">Walkthrough</h2>
+  <h2 id="walkthrough" class="display-md text-2xl">Walkthrough</h2>
   <p class="mt-2 text-sm text-muted">What each dashboard and diagram shows, and why it matters. Click an image to enlarge it.</p>
   <ol class="mt-8 space-y-12">
     {
@@ -98,9 +98,9 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
             />
           </button>
           <div class="mt-5 flex gap-4">
-            <span class="grid size-9 shrink-0 place-items-center rounded-full bg-cyan text-sm font-bold text-bg shadow-[0_0_18px_rgb(34_211_238/0.5)]">{i + 1}</span>
+            <span class="grid size-9 shrink-0 place-items-center bg-strong font-mono text-xs font-semibold text-bg">{i + 1}</span>
             <div class="min-w-0">
-              <h3 class="text-xl font-bold text-strong">{s.title}</h3>
+              <h3 class="display-md text-lg">{s.title}</h3>
               <p class="mt-2 leading-relaxed text-ink/85">{s.summary}</p>
               <ul class="mt-4 space-y-2.5">
                 {s.points.map((pt) => (
