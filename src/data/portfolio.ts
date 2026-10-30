@@ -105,6 +105,7 @@ export const projects: Project[] = [
     repo: 'https://github.com/thanhvu911/can-mail-data-predict-housing-vacancy',
     featured: true,
     animation: 'Six county charts draw Census and USPS vacancy rates from 2011 to 2024, mark the 2012 USPS redefinition, and note that the pooled correlation of 0.77 ranges from 0.72 to -0.01 by county.',
+    powerbiVideo: 'can-mail-data-predict-housing-vacancy',
     cover: 'powerbi-dashboard-overview-all-counties.png',
     metrics: [
       { value: '0.77', label: 'Pooled Pearson r' },

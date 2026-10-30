@@ -1,0 +1,29 @@
+---
+// The animated explainer for a project: square version on phones and in cards,
+// wide version on larger screens, and a still frame for reduced motion.
+interface Props {
+  slug: string;
+  alt: string;
+  /** Always use the square version (cards). */
+  square?: boolean;
+  eager?: boolean;
+  class?: string;
+}
+const { slug, alt, square = false, eager = false, class: cls } = Astro.props;
+const base = `/animations/${slug}`;
+---
+
+<picture class:list={['block', cls]}>
+  <source srcset={`${base}-sq-still.webp`} media={square ? '(prefers-reduced-motion: reduce)' : '(prefers-reduced-motion: reduce) and (max-width: 767px)'} />
+  {!square && <source media="(prefers-reduced-motion: reduce)" srcset={`${base}-still.webp`} />}
+  {!square && <source media="(max-width: 767px)" srcset={`${base}-sq.webp`} width="900" height="900" />}
+  <img
+    src={square ? `${base}-sq.webp` : `${base}.webp`}
+    alt={alt}
+    width={square ? 900 : 1200}
+    height={square ? 900 : 675}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding="async"
+    class="block h-auto w-full"
+  />
+</picture>
