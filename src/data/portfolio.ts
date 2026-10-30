@@ -552,8 +552,7 @@ export const projects: Project[] = [
     ],
     tags: ['Python', 'NumPy', 'scikit-learn', 'SQLite', 'pytest'],
     summary: 'Can last year’s Census rate plus this year’s USPS movement predict this year’s Census vacancy? Eight models, three evaluation designs, and an honest answer: not yet.',
-    // Empty until github.com/thanhvu911/vacancy-nowcast-ml is public; an empty repo hides the Code buttons.
-    repo: '',
+    repo: 'https://github.com/thanhvu911/vacancy-nowcast-ml',
     featured: true,
     animation: 'Persistence has the lowest error (1.023 points) among six models, and 80% intervals cover 81% overall but only 57% in Champaign.',
     cover: '01-error-by-scheme.png',
