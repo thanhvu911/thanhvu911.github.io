@@ -36,8 +36,15 @@ const { slug, pg } = Astro.props;
   </div>
 
   <div class="lab-editor">
-    <label for={`sql-${slug}`} class="sr-only">Code editor</label>
-    <textarea id={`sql-${slug}`} class="lab-sql" spellcheck="false" autocapitalize="off" autocomplete="off" rows="7" data-editor>{pg.queries[0].sql}</textarea>
+    <div class="lab-top" aria-hidden="true">
+      <span class="lab-dots"><i></i><i></i><i></i></span>
+      <span class="lab-file" data-file>query.sql</span>
+    </div>
+    <div class="lab-ed">
+      <pre class="lab-hl" aria-hidden="true"><code data-hl></code></pre>
+      <label for={`sql-${slug}`} class="sr-only">Code editor</label>
+      <textarea id={`sql-${slug}`} class="lab-sql" spellcheck="false" autocapitalize="off" autocomplete="off" rows="8" data-editor>{pg.queries[0].sql}</textarea>
+    </div>
     <div class="lab-bar">
       <button type="button" class="btn btn-primary lab-run" data-run>
         <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"></path></svg>
@@ -146,38 +153,117 @@ const { slug, pg } = Astro.props;
     border-color: var(--color-strong);
   }
   .lab-editor {
-    margin-top: 0.75rem;
-    border: 1px solid var(--color-line);
-    background: var(--color-bg);
+    margin-top: 1rem;
+    overflow: hidden;
+    border: 1px solid #1d2b43;
+    border-radius: 0.6rem;
+    background: #0d1829;
+    box-shadow: 0 18px 40px -22px rgb(8 18 36 / 0.65);
+    transition: box-shadow 200ms, border-color 200ms;
+  }
+  .lab-top {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.6rem 0.9rem;
+    border-bottom: 1px solid #1d2b43;
+    background: #0a1322;
+  }
+  .lab-dots {
+    display: inline-flex;
+    gap: 0.4rem;
+  }
+  .lab-dots i {
+    width: 0.62rem;
+    height: 0.62rem;
+    border-radius: 50%;
+    background: #2a3a57;
+  }
+  .lab-dots i:first-child {
+    background: #e8c27a;
+  }
+  .lab-file {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    color: #7f93b3;
+  }
+  .lab-ed {
+    position: relative;
+    min-height: 11rem;
+  }
+  .lab-hl,
+  .lab-sql {
+    margin: 0;
+    padding: 1rem 1.15rem;
+    border: 0;
+    font-family: var(--font-mono);
+    font-size: 0.84rem;
+    line-height: 1.7;
+    tab-size: 4;
+    white-space: pre;
+    letter-spacing: 0;
+  }
+  .lab-hl {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    color: #dbe5f5;
+    pointer-events: none;
+  }
+  .lab-hl code {
+    font: inherit;
   }
   .lab-sql {
+    position: relative;
     display: block;
     width: 100%;
+    height: 100%;
+    min-height: 11rem;
     resize: vertical;
-    min-height: 8rem;
-    padding: 0.9rem 1rem;
-    border: 0;
     outline: 0;
     background: transparent;
-    color: var(--color-strong);
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    line-height: 1.55;
-    tab-size: 2;
-    white-space: pre;
-    overflow-x: auto;
+    color: transparent;
+    caret-color: #e8c27a;
+    overflow: auto;
+  }
+  .lab-sql::selection {
+    background: rgb(232 194 122 / 0.28);
+  }
+  .lab-hl :global(.k) {
+    color: #e8c27a;
+    font-weight: 600;
+  }
+  .lab-hl :global(.s) {
+    color: #9fd8ae;
+  }
+  .lab-hl :global(.n) {
+    color: #f4a98f;
+  }
+  .lab-hl :global(.c) {
+    color: #667b9c;
+    font-style: italic;
+  }
+  .lab-hl :global(.f) {
+    color: #8fb8ff;
   }
   .lab-editor:focus-within {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgb(201 154 69 / 0.3);
+    border-color: #e8c27a;
+    box-shadow: 0 0 0 3px rgb(201 154 69 / 0.28), 0 18px 40px -22px rgb(8 18 36 / 0.65);
   }
   .lab-bar {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 0.75rem;
-    padding: 0.55rem 0.75rem;
-    border-top: 1px solid var(--color-line);
+    padding: 0.65rem 0.9rem;
+    border-top: 1px solid #1d2b43;
+    background: #0a1322;
+  }
+  .lab-bar :global(.btn-primary) {
+    background: #e8c27a;
+    color: #0d1829;
+    border-color: #e8c27a;
   }
   .lab-run {
     gap: 0.4rem;
@@ -187,50 +273,76 @@ const { slug, pg } = Astro.props;
   .lab-hint,
   .lab-stat {
     font-size: 0.7rem;
-    color: var(--color-muted);
+    color: #7f93b3;
   }
   .lab-stat {
     margin-left: auto;
   }
   .lab-stat.is-error {
-    color: var(--color-accent-ink);
+    color: #f4a98f;
   }
   .lab-out {
-    margin-top: 0.75rem;
+    width: fit-content;
+    max-width: 100%;
+    min-width: min(100%, 24rem);
+    margin-top: 1rem;
     overflow-x: auto;
     border: 1px solid var(--color-line);
+    border-radius: 0.6rem;
     background: var(--color-bg);
     min-height: 4rem;
   }
   .lab-empty {
-    padding: 1.1rem 1rem;
+    padding: 1.25rem 1.25rem;
     font-size: 0.85rem;
     color: var(--color-muted);
   }
   .lab-out :global(table) {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
   }
   .lab-out :global(th),
   .lab-out :global(td) {
-    padding: 0.5rem 0.9rem;
+    padding: 0.7rem 1.4rem 0.7rem 1.25rem;
     text-align: left;
     white-space: nowrap;
-    border-bottom: 1px solid var(--color-line);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-line) 60%, transparent);
+  }
+  .lab-out :global(tbody tr:last-child td) {
+    border-bottom: 0;
   }
   .lab-out :global(th) {
+    position: sticky;
+    top: 0;
+    padding-block: 0.8rem;
     color: var(--color-muted);
+    font-size: 0.68rem;
     font-weight: 500;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     background: var(--color-surface);
+    border-bottom: 1px solid var(--color-line);
   }
   .lab-out :global(td) {
-    color: var(--color-strong);
+    color: var(--color-ink);
   }
+  .lab-out :global(td:first-child) {
+    color: var(--color-strong);
+    font-weight: 600;
+  }
+  .lab-out :global(th.num),
   .lab-out :global(td.num) {
     text-align: right;
+  }
+  .lab-out :global(tbody tr:nth-child(even) td) {
+    background: color-mix(in srgb, var(--color-surface) 55%, transparent);
+  }
+  .lab-out :global(tbody tr:hover td) {
+    background: var(--color-accent-wash);
   }
   .lab-out :global(tr.row-in) {
     animation: lab-row 320ms ease-out both;
@@ -342,6 +454,34 @@ def _run(code):
         return db;
       })());
 
+    const file = lab.querySelector<HTMLElement>('[data-file]')!;
+    const hl = lab.querySelector<HTMLElement>('[data-hl]')!;
+    const SQLK = new Set('select from where group by order having limit offset as and or not in is null like between case when then else end distinct join left right inner outer on union all asc desc count sum avg min max round'.split(' '));
+    const PYK = new Set('import from as def return if elif else for in while not and or is None True False lambda with try except class print'.split(' '));
+    const paint = () => {
+      const kw = mode === 'sql' ? SQLK : PYK;
+      const re = mode === 'sql' ? /(--[^\n]*)|('(?:[^'\\]|\\.)*')|\b(\d+(?:\.\d+)?)\b|\b([A-Za-z_][A-Za-z0-9_]*)\b(\s*\()?/g : /(#[^\n]*)|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")|\b(\d+(?:\.\d+)?)\b|\b([A-Za-z_][A-Za-z0-9_]*)\b(\s*\()?/g;
+      const src = editor.value;
+      let outHtml = '';
+      let at = 0;
+      src.replace(re, (m: string, c: string, str: string, num: string, word: string, call: string, idx: number) => {
+        outHtml += esc(src.slice(at, idx));
+        at = idx + m.length;
+        if (c) outHtml += `<span class="c">${esc(c)}</span>`;
+        else if (str) outHtml += `<span class="s">${esc(str)}</span>`;
+        else if (num) outHtml += `<span class="n">${esc(num)}</span>`;
+        else if (kw.has(mode === 'sql' ? word.toLowerCase() : word)) outHtml += `<span class="k">${esc(word)}</span>${esc(call ?? '')}`;
+        else if (call) outHtml += `<span class="f">${esc(word)}</span>${esc(call)}`;
+        else outHtml += esc(word);
+        return m;
+      });
+      outHtml += esc(src.slice(at));
+      hl.innerHTML = outHtml + '\n';
+      hl.parentElement!.scrollTop = editor.scrollTop;
+      hl.parentElement!.scrollLeft = editor.scrollLeft;
+      file.textContent = mode === 'sql' ? 'query.sql' : 'analysis.py';
+    };
+
     const draw = (rows: Rows, total: number, ms: number) => {
       if (!rows.length) {
         out.innerHTML = '<p class="lab-empty">The code ran but returned no rows.</p>';
@@ -350,7 +490,7 @@ def _run(code):
       }
       const cols = Object.keys(rows[0]);
       const shown = rows.slice(0, 10);
-      const head = cols.map((c) => `<th scope="col">${esc(c)}</th>`).join('');
+      const head = cols.map((c) => `<th scope="col"${typeof rows[0][c] === 'number' ? ' class="num"' : ''}>${esc(c)}</th>`).join('');
       const body = shown
         .map((r, i) => `<tr class="row-in" style="animation-delay:${i * 35}ms">${cols.map((c) => `<td${typeof r[c] === 'number' ? ' class="num"' : ''}>${esc(typeof r[c] === 'number' ? (Number.isInteger(r[c]) ? (r[c] as number).toLocaleString() : r[c]) : r[c])}</td>`).join('')}</tr>`)
         .join('');
@@ -407,12 +547,19 @@ def _run(code):
       modes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
       chipBoxes.forEach((c) => (c.hidden = c.dataset.chips !== m));
       editor.value = drafts[m];
+      paint();
       hint.textContent = m === 'sql' ? 'Ctrl + Enter' : 'Ctrl + Enter. Python loads on first run';
       stat.classList.remove('is-error');
     };
     modes.forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode!)));
 
     runBtn.addEventListener('click', run);
+    editor.addEventListener('input', paint);
+    editor.addEventListener('scroll', () => {
+      hl.parentElement!.scrollTop = editor.scrollTop;
+      hl.parentElement!.scrollLeft = editor.scrollLeft;
+    });
+    paint();
     editor.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
@@ -427,6 +574,7 @@ def _run(code):
       chip.addEventListener('click', () => {
         chip.parentElement!.querySelectorAll('[data-code]').forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
         editor.value = chip.dataset.code!;
+        paint();
         run();
       }),
     );

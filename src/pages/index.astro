@@ -144,18 +144,21 @@ const facts = [
             ))
           }
         </div>
+        <div class="sc-dots" role="group" aria-label="Choose a project">
+          {featured.map((p, i) => <button type="button" data-dot={i} aria-label={p.title} aria-current={i === 0 ? 'true' : 'false'}></button>)}
+        </div>
         <ol class="work-list" aria-label="Projects">
           {
             featured.map((p, i) => (
               <li>
-                <button type="button" class="work-row" data-pick={i} data-href={`/projects/${p.slug}`} title="Double-click to open" aria-pressed={i === 0 ? 'true' : 'false'}>
+                <a href={`/projects/${p.slug}`} class="work-row" data-pick={i} data-on={i === 0 ? 'true' : 'false'}>
                   <span class="work-no" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
                   <span class="work-body">
                     <span class="work-ttl">{p.title}</span>
                     <span class="mono">{p.kind.split(' · ')[0]} · {p.year}</span>
                   </span>
                   <span class="work-arr" aria-hidden="true"><Icon name="arrow-right" size={20} /></span>
-                </button>
+                </a>
               </li>
             ))
           }
@@ -265,6 +268,7 @@ const facts = [
   }
   .sc-stage {
     position: relative;
+    touch-action: pan-y;
     border: 1px solid var(--color-line);
     background: var(--color-surface);
   }
@@ -279,6 +283,41 @@ const facts = [
   }
   .sc-vis {
     display: block;
+  }
+  .sc-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-top: -0.75rem;
+  }
+  .sc-dots button {
+    position: relative;
+    width: 2.75rem;
+    height: 2.75rem;
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+  .sc-dots button::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--color-line);
+    transform: translate(-50%, -50%);
+    transition: width 350ms cubic-bezier(0.22, 1, 0.36, 1), background 250ms;
+  }
+  .sc-dots button[aria-current='true']::after {
+    width: 1.6rem;
+    background: var(--color-accent);
+  }
+  @media (min-width: 1024px) {
+    .sc-dots {
+      display: none;
+    }
   }
   .sc-cap {
     display: flex;
@@ -330,7 +369,7 @@ const facts = [
     width: 100%;
     padding: 1.1rem 0.25rem;
     text-align: left;
-    user-select: none;
+    text-decoration: none;
     background: none;
     border: 0;
     border-top: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent);
@@ -353,14 +392,14 @@ const facts = [
     transform-origin: left;
     transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .work-row[aria-pressed='true'] {
+  .work-row[data-on='true'] {
     opacity: 1;
     padding-left: 0.9rem;
   }
-  .work-row[aria-pressed='true']::before {
+  .work-row[data-on='true']::before {
     transform: scaleX(var(--p, 1));
   }
-  .work.auto .work-row[aria-pressed='true']::before {
+  .work.auto .work-row[data-on='true']::before {
     transition: none;
   }
   .sc-cursor {
@@ -403,7 +442,7 @@ const facts = [
     font-size: 0.8rem;
     color: var(--color-muted);
   }
-  .work-row[aria-pressed='true'] .work-no {
+  .work-row[data-on='true'] .work-no {
     color: var(--color-accent);
   }
   .work-body {
@@ -424,7 +463,7 @@ const facts = [
     opacity: 0;
     transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), opacity 300ms, color 300ms;
   }
-  .work-row[aria-pressed='true'] .work-arr {
+  .work-row[data-on='true'] .work-arr {
     opacity: 1;
     transform: none;
     color: var(--color-accent);
@@ -1389,7 +1428,8 @@ const facts = [
   // top line fills as a timer. Pauses on hover/focus and under reduced motion.
   document.querySelectorAll<HTMLElement>('[data-showcase]').forEach((box) => {
     const panels = [...box.querySelectorAll<HTMLElement>('[data-panel]')];
-    const rows = [...box.querySelectorAll<HTMLButtonElement>('[data-pick]')];
+    const rows = [...box.querySelectorAll<HTMLAnchorElement>('[data-pick]')];
+    const dots = [...box.querySelectorAll<HTMLButtonElement>('[data-dot]')];
     const stage = box.querySelector<HTMLElement>('.sc-stage')!;
     const cur = box.querySelector<HTMLElement>('.sc-cursor')!;
     const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1399,9 +1439,10 @@ const facts = [
       n = i;
       panels.forEach((p, j) => (p.hidden = j !== i));
       rows.forEach((r, j) => {
-        r.setAttribute('aria-pressed', String(j === i));
+        r.dataset.on = String(j === i);
         r.style.removeProperty('--p');
       });
+      dots.forEach((d, j) => d.setAttribute('aria-current', String(j === i)));
       t0 = performance.now();
       if (!calm) rows[i].style.setProperty('--p', '0');
     };
@@ -1430,14 +1471,35 @@ const facts = [
         if (seen) run();
       }, { threshold: 0.4 }).observe(box);
     }
+    // Mouse: hover previews, a click opens (the rows are plain links). Keyboard: focus previews,
+    // Enter opens. Phone: a tap opens; swipe the graphic or use the dots to browse.
     rows.forEach((r, i) => {
-      r.addEventListener('click', () => show(i));
-      r.addEventListener('dblclick', () => location.assign(r.dataset.href!));
       r.addEventListener('focus', () => show(i));
       r.addEventListener('pointerenter', (e) => {
         if ((e as PointerEvent).pointerType === 'mouse') show(i);
       });
     });
+    dots.forEach((d, i) => d.addEventListener('click', () => show(i)));
+    let sx = 0, sy = 0, swiped = false;
+    stage.addEventListener('pointerdown', (e) => {
+      sx = e.clientX;
+      sy = e.clientY;
+      swiped = false;
+    });
+    stage.addEventListener('pointerup', (e) => {
+      if (e.pointerType === 'mouse') return;
+      const dx = e.clientX - sx;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(e.clientY - sy) * 1.5) {
+        swiped = true;
+        show((n + (dx < 0 ? 1 : panels.length - 1)) % panels.length);
+      }
+    });
+    stage.addEventListener('click', (e) => {
+      if (swiped) {
+        e.preventDefault();
+        swiped = false;
+      }
+    }, true);
     box.addEventListener('pointerenter', () => hold(true));
     box.addEventListener('pointerleave', () => hold(false));
     box.addEventListener('focusin', () => hold(true));
