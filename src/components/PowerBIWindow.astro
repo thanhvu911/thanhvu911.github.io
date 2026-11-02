@@ -90,7 +90,7 @@ const id = `pbi-${project.slug}`;
           <div class="pbi-page" role="tabpanel" id={`${id}-${i}`} aria-label={p.label} hidden={i > 0} data-pbi-page={i}>
             {'image' in p && p.image ? (
               <div class="pbi-shot">
-                <Image src={projectImage(project.slug, p.image.file)} alt={p.image.caption} widths={[800, 1200, 1600]} sizes="(min-width: 1152px) 900px, 100vw" class="h-auto w-full" />
+                <Image src={projectImage(project.slug, p.image.file)} alt={p.image.caption} widths={[900, 1400, 1800, 2400]} quality={90} sizes="(min-width: 1152px) 900px, 100vw" class="h-auto w-full" />
               </div>
             ) : (
               <div class="pbi-canvas">

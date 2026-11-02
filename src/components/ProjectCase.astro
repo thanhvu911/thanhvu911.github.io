@@ -17,11 +17,11 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
 <div class="case">
   <section class="short" aria-labelledby="case-short">
     <h2 id="case-short" class="mono flex items-center gap-2"><span class="sq"></span>In short</h2>
-    <div class="cells mt-5 lg:grid-cols-3">
-      <div class="cell">
-        <p class="mono">The question</p>
-        <p class="q">{project.problem}</p>
-      </div>
+    <div class="mt-10">
+      <p class="mono">The question</p>
+      <p class="q">{project.problem}</p>
+    </div>
+    <div class="cols">
       <div class="cell">
         <p class="mono">What I built</p>
         <ol class="mt-4 space-y-2" aria-label="Pipeline">
@@ -37,7 +37,7 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
       </div>
       <div class="cell">
         <p class="mono">What it found</p>
-        <ul class="mt-4 space-y-3">
+        <ul class="mt-4 space-y-4">
           {
             project.results.slice(0, 3).map((r) => (
               <li class="result">
@@ -216,18 +216,29 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
 
 <style>
   .short {
-    padding: 1.75rem 1rem 2rem;
+    padding: 2.5rem 1rem 3rem;
     border-bottom: 1px solid var(--color-line);
   }
+  .cols {
+    display: grid;
+    gap: 2.5rem;
+    margin-top: 3rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--color-line);
+  }
   .cell {
-    padding: 1.25rem 1.125rem 1.5rem;
+    min-width: 0;
   }
   .q {
-    margin-top: 0.875rem;
+    max-width: 48rem;
+    margin-top: 1rem;
     color: var(--color-strong);
-    font-size: 1.125rem;
-    font-weight: 500;
-    line-height: 1.45;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem);
+    font-weight: 600;
+    line-height: 1.22;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
   }
   .full {
     padding: 1.5rem 1rem 0.75rem;
@@ -239,8 +250,8 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
     display: flex;
     align-items: center;
     gap: 0.875rem;
-    min-height: 3.75rem;
-    padding: 0.875rem 1rem;
+    min-height: 4.75rem;
+    padding: 1.1rem 1rem;
     color: var(--color-strong);
     font-family: var(--font-display);
     font-size: 1.0625rem;
@@ -272,14 +283,17 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
   }
   .body {
     min-width: 0;
-    padding: 0.5rem 1rem 2.25rem;
+    padding: 0.75rem 1rem 3rem;
+  }
+  @media (min-width: 1024px) {
+    .cols {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: 5rem;
+    }
   }
   @media (min-width: 768px) {
     .short {
-      padding: 2.5rem 2.5rem 2.75rem;
-    }
-    .cell {
-      padding: 1.5rem 1.5rem 1.75rem;
+      padding: 4rem 2.5rem 4.5rem;
     }
     .full,
     .acc summary,
@@ -290,7 +304,8 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
       font-size: 1.1875rem;
     }
     .body {
-      padding-bottom: 2.75rem;
+      padding-top: 1rem;
+      padding-bottom: 4rem;
     }
   }
   .lead {
@@ -341,7 +356,7 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
     gap: 0.625rem;
     max-width: 48rem;
     color: var(--color-strong);
-    font-size: 0.9375rem;
-    line-height: 1.5;
+    font-size: 1rem;
+    line-height: 1.6;
   }
 </style>

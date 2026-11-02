@@ -44,7 +44,7 @@ const Demo = demos[project.slug];
 // Size the title so its longest word always fits on one line.
 const longestWord = Math.max(...project.title.split(/\s+/).map((w) => w.length));
 // Long titles get a smaller ceiling so they stay within three lines.
-const titleMax = project.title.length > 34 ? 3.5 : project.title.length > 24 ? 4.25 : 5;
+const titleMax = project.title.length > 34 ? 4 : project.title.length > 24 ? 5 : 6;
 const hasDashboard = Boolean(Demo || project.powerbiEmbed || project.powerbiVideo);
 const tabs = [
   { id: 'overview', label: 'Case study' },
@@ -55,6 +55,7 @@ const tabs = [
 ---
 
 <Base title={project.title} description={project.summary}>
+  <div class="read-bar" aria-hidden="true"></div>
   <div class="frame">
     <header class="ph border-b border-line">
       <div class="ph-meta">
@@ -74,6 +75,7 @@ const tabs = [
         </div>
       </div>
       <div class="ph-main">
+        <span class="ph-num" aria-hidden="true">{project.number}</span>
         <p class="mono lg:hidden">Project {project.number} // {project.kind.split(' · ')[0]} · {project.year}</p>
         <h1 class="display ph-title mt-3 lg:mt-0" data-band style={`--lw:${longestWord};--max:${titleMax}rem`}>{project.title}</h1>
         <p class="mt-6 max-w-3xl text-xl leading-snug text-strong md:text-2xl">{project.headline}</p>
@@ -106,7 +108,8 @@ const tabs = [
           <Image
             src={cover}
             alt={project.images.find((i) => i.file === project.cover)?.caption ?? project.title}
-            widths={[800, 1280, 1800]}
+            widths={[1280, 1800, 2400]}
+            quality={90}
             sizes="(min-width: 1440px) 1440px, 100vw"
             loading="eager"
             class="mx-auto h-auto max-h-[44rem] w-full object-contain"
@@ -248,8 +251,77 @@ const tabs = [
     container-type: inline-size;
   }
   .ph-title {
-    font-size: clamp(1.5rem, min(6.4vw, calc(100cqi / (var(--lw) * 0.92)), var(--max)), 5rem);
+    font-size: clamp(1.5rem, min(6.4vw, calc(100cqi / (var(--lw) * 0.92)), var(--max)), 6rem);
     line-height: 0.95;
+    position: relative;
+    animation: ph-rise 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .ph-main > :not(.ph-title):not(.ph-num) {
+    animation: ph-rise 900ms cubic-bezier(0.22, 1, 0.36, 1) 160ms both;
+  }
+  @keyframes ph-rise {
+    from {
+      opacity: 0;
+      transform: translateY(26px);
+    }
+  }
+  .ph-main {
+    position: relative;
+    overflow: hidden;
+  }
+  .ph-num {
+    position: absolute;
+    right: 1rem;
+    top: -0.5rem;
+    font-family: var(--font-display);
+    font-size: clamp(7rem, 22vw, 16rem);
+    font-weight: 800;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--color-accent) 45%, transparent);
+    pointer-events: none;
+    user-select: none;
+    animation: ph-fade 1400ms 200ms both;
+  }
+  @keyframes ph-fade {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+  }
+  .read-bar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 60;
+    height: 3px;
+    width: 100%;
+    background: var(--color-accent);
+    transform: scaleX(var(--read, 0));
+    transform-origin: left;
+    pointer-events: none;
+  }
+  .cells :global(dd) {
+    position: relative;
+  }
+  .cells :global(dd)::after {
+    content: '';
+    display: block;
+    width: 1.75rem;
+    height: 3px;
+    margin-top: 0.6rem;
+    background: var(--color-accent);
+    transition: width 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .cells > div:hover :global(dd)::after {
+    width: 4rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ph-title,
+    .ph-main > :not(.ph-title):not(.ph-num),
+    .ph-num {
+      animation: none;
+    }
   }
   @media (min-width: 768px) {
     .ph-meta {
@@ -300,6 +372,13 @@ const tabs = [
 <script>
   // Tabs: one panel at a time, deep-linkable with #overview, #dashboard, #walkthrough, #gallery.
   // Without JavaScript the tab bar stays hidden and every panel shows in order.
+  const rb = document.querySelector<HTMLElement>('.read-bar');
+  const readPos = () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    rb?.style.setProperty('--read', String(h > 0 ? Math.min(scrollY / h, 1) : 0));
+  };
+  addEventListener('scroll', readPos, { passive: true });
+  readPos();
   const bar = document.querySelector<HTMLElement>('[data-tabbar]');
   const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-tab]')];
   const panels = [...document.querySelectorAll<HTMLElement>('[data-panel]')];

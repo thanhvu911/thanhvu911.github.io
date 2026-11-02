@@ -13,7 +13,7 @@ const { project } = Astro.props;
 const items = await Promise.all(
   project.images.map(async (img) => {
     const src = projectImage(project.slug, img.file);
-    const full = await getImage({ src, width: Math.min(src.width, 2000), format: 'webp' });
+    const full = await getImage({ src, width: Math.min(src.width, 3000), format: 'webp', quality: 92 });
     return { ...img, src, full: full.src };
   }),
 );
@@ -29,7 +29,8 @@ const items = await Promise.all(
               <Image
                 src={img.src}
                 alt={img.caption}
-                widths={[480, 800]}
+                widths={[640, 960, 1280, 1600]}
+                quality={90}
                 sizes="(min-width: 1024px) 340px, (min-width: 640px) 50vw, 100vw"
                 class="size-full object-cover object-left-top"
               />

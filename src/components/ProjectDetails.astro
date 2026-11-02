@@ -19,7 +19,7 @@ const showWalk = part !== 'intro';
 const steps = await Promise.all(
   detail.walkthrough.map(async (w) => {
     const src = projectImage(slug, w.image);
-    const full = await getImage({ src, width: Math.min(src.width, 2000), format: 'webp' });
+    const full = await getImage({ src, width: Math.min(src.width, 3000), format: 'webp', quality: 92 });
     return { ...w, src, full: full.src };
   }),
 );
@@ -92,7 +92,8 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
             <Image
               src={s.src}
               alt={s.title}
-              widths={[640, 960, 1400]}
+              widths={[720, 1080, 1440, 1920, 2560]}
+              quality={90}
               sizes="(min-width: 1024px) 720px, 100vw"
               class="h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
             />

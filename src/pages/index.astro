@@ -148,7 +148,7 @@ const facts = [
           {
             featured.map((p, i) => (
               <li>
-                <button type="button" class="work-row" data-pick={i} aria-pressed={i === 0 ? 'true' : 'false'}>
+                <button type="button" class="work-row" data-pick={i} data-href={`/projects/${p.slug}`} title="Double-click to open" aria-pressed={i === 0 ? 'true' : 'false'}>
                   <span class="work-no" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
                   <span class="work-body">
                     <span class="work-ttl">{p.title}</span>
@@ -330,6 +330,7 @@ const facts = [
     width: 100%;
     padding: 1.1rem 0.25rem;
     text-align: left;
+    user-select: none;
     background: none;
     border: 0;
     border-top: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent);
@@ -1431,6 +1432,7 @@ const facts = [
     }
     rows.forEach((r, i) => {
       r.addEventListener('click', () => show(i));
+      r.addEventListener('dblclick', () => location.assign(r.dataset.href!));
       r.addEventListener('focus', () => show(i));
       r.addEventListener('pointerenter', (e) => {
         if ((e as PointerEvent).pointerType === 'mouse') show(i);
