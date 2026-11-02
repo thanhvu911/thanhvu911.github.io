@@ -60,6 +60,14 @@ const personSchema = {
           root.dataset.theme = 'dark';
           document.querySelector('[data-theme-color]').setAttribute('content', '#0f0f0f');
         }
+        // Cross-page view transitions (global.css) reject their promises when
+        // the browser skips one; nothing depends on them, so keep that quiet.
+        function quiet(e) {
+          var vt = e.viewTransition;
+          if (vt) [vt.ready, vt.finished, vt.updateCallbackDone].forEach(function (p) { if (p) p.catch(function () {}); });
+        }
+        addEventListener('pageswap', quiet);
+        addEventListener('pagereveal', quiet);
         // Arriving through the page wipe: start covered, then the wipe
         // script at the end of the body slides the cover away.
         try {
@@ -101,12 +109,15 @@ const personSchema = {
     <CommandPalette />
     <Assistant />
     <div class="pwipe" aria-hidden="true">
-      <p class="pwipe-to mono" data-wipe-path></p>
-      <p class="pwipe-ttl" data-wipe-title></p>
+      <span class="band"><span class="band-run"><i></i><i></i><i></i><i></i><i></i></span></span>
+      <div class="pwipe-txt">
+        <p class="mono" data-wipe-path></p>
+        <p class="pwipe-ttl" data-wipe-title></p>
+      </div>
     </div>
     <script is:inline>
-      // Page wipe. Leaving: the cover slides in from the left, then the browser
-      // navigates. Arriving: the cover (already in place) slides off to the right.
+      // Page wipe. Leaving: the band sweeps in from the left, then the browser
+      // navigates. Arriving: the band (already in place) pulls back to the left.
       (function () {
         var root = document.documentElement;
         var path = document.querySelector('[data-wipe-path]');
@@ -121,7 +132,7 @@ const personSchema = {
         function reveal() {
           root.classList.remove('wipe-cover');
           root.classList.add('wipe-out');
-          setTimeout(function () { root.classList.remove('wipe-out'); }, 700);
+          setTimeout(function () { root.classList.remove('wipe-out'); }, 800);
         }
 
         var arrived = null;
@@ -157,7 +168,7 @@ const personSchema = {
           setTimeout(function () {
             try { sessionStorage.setItem('wipe', url.pathname); } catch (err) {}
             location.href = url.href;
-          }, 330);
+          }, 400);
         });
       })();
     </script>
@@ -206,15 +217,63 @@ const personSchema = {
         requestAnimationFrame(tick);
       };
 
-      // Reveal [data-reveal] blocks and section titles once as they scroll into view.
+      // Sweep the accent band (styled in global.css) across a title's first line:
+      // it runs in past the start of the text, the letters scramble in over it,
+      // and it pulls back, leaving hatch marks beside section titles.
+      const ease = 'cubic-bezier(0.65, 0, 0.35, 1)';
+      const sweep = (el: HTMLElement) => {
+        const host = el.closest<HTMLElement>('.shead, section') ?? el.parentElement!;
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const text = range.getBoundingClientRect();
+        const line = range.getClientRects()[0] ?? text;
+        const box = host.getBoundingClientRect();
+        if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+        const band = document.createElement('span');
+        band.className = 'band';
+        band.setAttribute('aria-hidden', 'true');
+        band.innerHTML = '<span class="band-run"><i></i><i></i><i></i><i></i><i></i></span>';
+        const h = line.height;
+        band.style.top = `${line.top - box.top - host.clientTop}px`;
+        band.style.height = `${h}px`;
+        host.append(band);
+        const run = band.firstElementChild as HTMLElement;
+        const runW = run.offsetWidth;
+        const left = text.left - box.left - host.clientLeft;
+        const at = (x: number) => ({ transform: `translateX(${x - runW}px)` });
+        const out = -0.4 * h;
+        const peak = Math.min(left + Math.min(text.width, box.width) * 0.55 + 2.2 * h, band.clientWidth + 2.6 * h);
+        run
+          .animate(
+            [
+              { ...at(out), easing: ease },
+              { ...at(peak), offset: 0.36, easing: 'linear' },
+              { ...at(peak + 0.12 * h), offset: 0.52, easing: ease },
+              at(out),
+            ],
+            { duration: 1700, fill: 'both' },
+          )
+          .finished.then(() => band.remove());
+        const scrambles = el.matches('.section-title, [data-scramble]');
+        setTimeout(() => {
+          el.classList.add('is-visible');
+          if (scrambles) scramble(el);
+        }, scrambles ? 280 : 0);
+        setTimeout(() => el.classList.add('is-hatched'), 1150);
+      };
+
+      // Reveal [data-reveal] blocks and section titles once as they scroll into
+      // view. Titles inside the home page's scroll stage (.staged) are run by
+      // index.astro instead.
       const io = new IntersectionObserver(
         (entries) =>
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
             const el = entry.target as HTMLElement;
-            el.classList.add('is-visible');
-            if (!calm && el.matches('.section-title, [data-scramble]')) scramble(el);
             io.unobserve(el);
+            if (el.closest('.staged')) return;
+            if (!calm && el.matches('.section-title, [data-scramble], [data-band]')) return sweep(el);
+            el.classList.add('is-visible', 'is-hatched');
           }),
         { rootMargin: '0px 0px -8% 0px' },
       );

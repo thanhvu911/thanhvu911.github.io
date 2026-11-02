@@ -58,8 +58,6 @@
   --grid-line: rgb(17 17 17 / 0.05);
   --spot: transparent;
   --glow: rgb(255 90 31 / 0.25);
-  --stripe-dark: #d9430f;
-  --wipe-bg: #111111;
 }
 
 :root[data-theme="dark"] {
@@ -85,8 +83,6 @@
   --btn-primary-fg: #0f0f0f;
   --btn-primary-hover: #ffffff;
   --grid-line: rgb(255 255 255 / 0.05);
-  --stripe-dark: #d9430f;
-  --wipe-bg: #1c1c1c;
 }
 
 /* Cross-page fade using the browser's native View Transitions. */
@@ -285,6 +281,9 @@
       border-bottom: 0;
     }
     .shead > .ttl {
+      --tpl: 2.5rem;
+      --tpt: 2rem;
+      --tpb: 1.75rem;
       padding-block: 2rem 1.75rem;
     }
   }
@@ -473,14 +472,49 @@
     }
   }
 
-  /* Section titles: a hatched accent band sweeps across while the letters
-     scramble into place (see Base.astro). [data-band] titles get the band
-     only, so they stay readable. Without motion they just appear. */
+  /* The accent band (built by the scripts in Base.astro and index.astro): a
+     solid body with a slanted front edge and four loose teeth. Section titles,
+     the home hero, and the page wipe all use it. Sizes are in cqh, so the shape
+     scales with the band's height. */
+  .band {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+    container-type: size;
+  }
+  .band-run {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    display: flex;
+    will-change: transform;
+  }
+  .band-run > i {
+    flex: none;
+    background: var(--color-accent);
+    transform: skewX(-35deg);
+  }
+  .band-run > i:first-child {
+    width: calc(100cqw + 100cqh);
+    margin-left: -100cqh;
+  }
+  .band-run > i + i {
+    width: 30cqh;
+    margin-left: 24cqh;
+  }
+
+  /* Section titles: the band sweeps across the title's row, the letters
+     scramble in over it, and the band pulls back, leaving faint hatch marks
+     beside the title. [data-band] titles get the band only, so they stay
+     readable. Without motion they just appear. */
   .section-title,
   [data-scramble],
   [data-band] {
     position: relative;
-    overflow: hidden;
+    z-index: 2;
   }
   @media (prefers-reduced-motion: no-preference) {
     .js .section-title[data-reveal],
@@ -492,71 +526,86 @@
     .js [data-scramble]:not(.is-visible) {
       color: transparent;
     }
-    .js .section-title.is-visible::after,
-    .js [data-scramble].is-visible::after,
-    .js [data-band].is-visible::after {
+  }
+  @media (min-width: 1024px) {
+    .section-title::before {
       content: '';
       position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: repeating-linear-gradient(-45deg, var(--color-accent) 0 0.5rem, var(--stripe-dark) 0.5rem 1rem);
-      mask: linear-gradient(90deg, transparent 0 62%, #000 62% 100%);
-      transform: translateX(-100%);
-      animation: band-sweep 1100ms cubic-bezier(0.65, 0, 0.35, 1) both;
+      top: var(--tpt, 0px);
+      bottom: var(--tpb, 0px);
+      left: calc(var(--tpl, 0px) - 1.6em);
+      width: 1.35em;
+      border-block: 1px solid var(--color-line);
+      background: repeating-linear-gradient(
+        -55deg,
+        transparent 0 0.2em,
+        var(--color-line) 0.2em calc(0.2em + 1px),
+        transparent calc(0.2em + 1px) 0.34em,
+        var(--color-line) 0.34em calc(0.34em + 1px),
+        transparent calc(0.34em + 1px) 0.5em
+      );
+      mask: linear-gradient(90deg, transparent, #000 75%);
+      opacity: 0;
+      transition: opacity 700ms;
     }
-  }
-  @keyframes band-sweep {
-    to {
-      transform: translateX(62%);
+    .section-title.is-hatched::before {
+      opacity: 1;
     }
   }
 
-  /* Page wipe: a dark panel with hatched accent edges crosses the screen
-     between pages, showing where you are going. */
+  /* Page wipe: the band sweeps in from the left across the middle of the
+     screen carrying the page name, the page changes behind it (cross-faded
+     where the browser supports view transitions), and it pulls back left. */
+  @media (prefers-reduced-motion: no-preference) {
+    @view-transition {
+      navigation: auto;
+    }
+  }
   .pwipe {
     position: fixed;
     inset: 0;
     z-index: 100;
-    display: grid;
-    align-content: center;
-    gap: 1rem;
-    padding: 1.5rem;
-    background: var(--wipe-bg);
-    color: #f3f4f4;
     pointer-events: none;
     visibility: hidden;
-    transform: translateX(calc(-100% - 6rem));
   }
-  .pwipe::before,
-  .pwipe::after {
-    content: '';
+  .pwipe .band {
+    top: 50%;
+    height: clamp(7.5rem, 24vh, 13rem);
+    transform: translateY(-50%);
+  }
+  .pwipe .band-run {
+    transform: translateX(calc(-100% - 40cqh));
+  }
+  .pwipe-txt {
     position: absolute;
-    inset-block: 0;
-    width: 6rem;
-    background: repeating-linear-gradient(-45deg, var(--color-accent) 0 0.625rem, var(--stripe-dark) 0.625rem 1.25rem);
-  }
-  .pwipe::before {
-    right: 100%;
-  }
-  .pwipe::after {
-    left: 100%;
-  }
-  .pwipe-to {
-    color: var(--color-accent-bright);
+    top: 50%;
+    left: 1rem;
+    right: 1rem;
+    z-index: 2;
+    color: #111111;
+    opacity: 0;
+    transform: translateY(-50%);
   }
   .pwipe-ttl {
-    max-width: 18ch;
+    overflow: hidden;
     font-family: var(--font-display);
-    font-size: clamp(2rem, 7vw, 5.5rem);
+    font-size: clamp(1.75rem, 5.5vw, 4.75rem);
     font-stretch: 125%;
     font-weight: 700;
     letter-spacing: -0.02em;
-    line-height: 0.92;
+    line-height: 0.95;
+    text-overflow: ellipsis;
     text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .pwipe-txt .mono {
+    margin-bottom: 0.5rem;
+    color: #111111;
   }
   @media (min-width: 768px) {
-    .pwipe {
-      padding-inline: 2.5rem 8rem;
+    .pwipe-txt {
+      left: 2.5rem;
+      right: 2.5rem;
     }
   }
   .wipe-cover .pwipe,
@@ -564,16 +613,25 @@
   .wipe-out .pwipe {
     visibility: visible;
   }
-  .wipe-cover .pwipe {
-    transform: none;
-    transition: transform 320ms cubic-bezier(0.7, 0, 0.84, 0);
+  .wipe-cover .pwipe .band-run,
+  .wipe-hold .pwipe .band-run {
+    transform: translateX(40cqh);
   }
-  .wipe-hold .pwipe {
-    transform: none;
+  .wipe-cover .pwipe .band-run {
+    transition: transform 380ms cubic-bezier(0.7, 0, 0.84, 0);
   }
-  .wipe-out .pwipe {
-    transform: translateX(calc(100% + 6rem));
-    transition: transform 550ms cubic-bezier(0.16, 1, 0.3, 1) 80ms;
+  .wipe-cover .pwipe-txt,
+  .wipe-hold .pwipe-txt {
+    opacity: 1;
+  }
+  .wipe-cover .pwipe-txt {
+    transition: opacity 160ms 200ms;
+  }
+  .wipe-out .pwipe .band-run {
+    transition: transform 650ms cubic-bezier(0.65, 0, 0.35, 1) 60ms;
+  }
+  .wipe-out .pwipe-txt {
+    transition: opacity 140ms;
   }
 
   .field {

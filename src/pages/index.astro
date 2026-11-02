@@ -19,6 +19,10 @@ const facts = [
 ---
 
 <Base>
+  <!-- Hero and About share a scroll stage: on laptops the page holds while the
+       accent band sweeps across, the hero pans out left, and About pans in. -->
+  <div class="stage" data-stage>
+  <div class="stage-pin">
   <!-- Hero: a measured grid with my name, my photo, and my role. -->
   <section id="home" class="border-b border-line">
     <div class="frame hero">
@@ -32,7 +36,20 @@ const facts = [
         <span class="line"><span style="--d:2">Vu</span></span>
       </h1>
       <p class="h-lab1 mono rise" style="--d:3">Source //<br />BLS · BEA<br />Census · USPS</p>
-      <div class="h-band" aria-hidden="true"></div>
+      <!-- The pipeline at work: records flow from raw files through the
+           Bronze, Silver, and Gold layers into a Power BI chart. -->
+      <div class="h-band" aria-hidden="true">
+        <div class="pipe">
+          <span class="pipe-track">{[-7, 5, -3, 8, -6, 2, 7, -4].map((y, i) => <span class="pkt" style={`--i:${i};--jy:${y}px`}></span>)}</span>
+          <ol class="pipe-nodes">
+            <li><span class="pn pn-raw"></span><span class="pl mono">Raw</span></li>
+            <li><span class="pn pn-bronze"></span><span class="pl mono">Bronze</span></li>
+            <li><span class="pn pn-silver"></span><span class="pl mono">Silver</span></li>
+            <li><span class="pn pn-gold"></span><span class="pl mono">Gold</span></li>
+            <li><span class="pn pn-bi"><i></i><i></i><i></i><i></i></span><span class="pl mono">Power BI</span></li>
+          </ol>
+        </div>
+      </div>
       <figure class="h-photo">
         <div class="frame-img">
           <Image
@@ -91,6 +108,8 @@ const facts = [
       </div>
     </div>
   </section>
+  </div>
+  </div>
 
   <!-- Selected work -->
   <section id="projects" class="border-b border-line">
@@ -242,7 +261,8 @@ const facts = [
   }
   .h-band {
     grid-area: band;
-    display: none;
+    height: 4.75rem;
+    padding: 0 1rem 1rem;
   }
   .h-photo {
     grid-area: photo;
@@ -318,7 +338,7 @@ const facts = [
   @media (max-width: 1023px) {
     .hero {
       grid-template-columns: minmax(0, 1fr) auto;
-      grid-template-areas: 'name photo' 'role role' 'blurb blurb' 'go go' 'strip strip';
+      grid-template-areas: 'name photo' 'role role' 'band band' 'blurb blurb' 'go go' 'strip strip';
     }
     .h-name {
       align-self: center;
@@ -354,7 +374,8 @@ const facts = [
       max-width: 14.5rem;
       padding-right: 2.5rem;
     }
-    .h-blurb {
+    .h-blurb,
+    .h-band {
       padding-inline: 2.5rem;
     }
   }
@@ -362,7 +383,8 @@ const facts = [
   @media (min-width: 1024px) {
     .hero {
       grid-template-columns: 30% 1fr 15%;
-      grid-template-rows: auto 8.5rem 1fr auto;
+      /* Sized by height too, so the whole hero fits one screen. */
+      grid-template-rows: auto clamp(6rem, 14svh, 8.5rem) 1fr auto;
       grid-template-areas:
         'blurb name  lab1'
         'photo band  band'
@@ -375,7 +397,7 @@ const facts = [
     }
     .h-blurb {
       max-width: none;
-      padding: 5rem 2.5rem 2rem;
+      padding: clamp(2.5rem, 7svh, 5rem) 2.5rem 2rem;
       border-right: 1px solid var(--color-line);
       border-bottom: 1px solid var(--color-line);
     }
@@ -384,9 +406,9 @@ const facts = [
     }
     .h-name {
       align-self: stretch;
-      padding: 3.5rem 2.5rem 3rem;
+      padding: clamp(2rem, 5svh, 3.5rem) 2.5rem clamp(1.75rem, 4svh, 3rem);
       border-bottom: 1px solid var(--color-line);
-      font-size: min(calc((55vw - 5rem) / 5.2), 9.5rem);
+      font-size: min(calc((55vw - 5rem) / 5.2), 9.5rem, 14svh);
     }
     .h-lab1 {
       display: block;
@@ -396,8 +418,9 @@ const facts = [
     }
     /* A hatched band between the name and the role, drawn in on load. */
     .h-band {
-      display: block;
       position: relative;
+      height: auto;
+      padding: 0 2.5rem 0 clamp(4.5rem, 9vw, 9rem);
       border-bottom: 1px solid var(--color-line);
       background:
         repeating-linear-gradient(0deg, transparent 0 calc(2.125rem - 1px), var(--color-line) calc(2.125rem - 1px) 2.125rem),
@@ -413,6 +436,9 @@ const facts = [
       padding: 2rem 0 2.25rem clamp(2.5rem, 7.5vw, 7rem);
       border-right: 1px solid var(--color-line);
     }
+    .h-photo .frame-img {
+      width: min(100%, 30svh);
+    }
     .h-photo,
     .h-go {
       border-right: 1px solid var(--color-line);
@@ -422,9 +448,10 @@ const facts = [
     }
     .h-role {
       align-self: end;
-      padding: 2.5rem 1.5rem 2.75rem clamp(4.5rem, 9vw, 9rem);
+      padding: clamp(1.5rem, 3.5svh, 2.5rem) 1.5rem clamp(1.75rem, 4svh, 2.75rem) clamp(4.5rem, 9vw, 9rem);
       border-top: 0;
-      font-size: clamp(3rem, 5.6vw, 5.75rem);
+      /* "Data engineer" (about 10.2em) stays on one line. */
+      font-size: clamp(2.5rem, min((min(100vw, 90rem) * 0.55 - clamp(4.5rem, 9vw, 9rem) - 1.5rem) / 10.6, 8svh), 5.75rem);
     }
     .h-lab2 {
       display: block;
@@ -485,6 +512,238 @@ const facts = [
     50% {
       transform: translateY(4px);
     }
+  }
+
+  /* ---------- Pipeline strip ----------
+     Records (small squares) leave the raw files scattered, line up at Bronze,
+     darken through Silver, turn orange at Gold, and feed the Power BI bars.
+     Transform-only CSS animation, so it runs at the display's frame rate. */
+  .pipe {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    overflow: clip;
+  }
+  .pipe-track {
+    position: absolute;
+    top: 50%;
+    left: 1.75rem;
+    right: 1.75rem;
+    height: 1px;
+    background: var(--color-line);
+  }
+  .pkt {
+    position: absolute;
+    inset: 0;
+    animation: flow 4.8s linear infinite;
+    animation-delay: calc(var(--i) * -0.6s);
+  }
+  .pkt::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 8px;
+    height: 8px;
+    background: #a8a29a;
+    animation: tint 4.8s linear infinite;
+    animation-delay: inherit;
+  }
+  .pipe-nodes {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .pipe-nodes li {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+  }
+  .pn {
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 1px solid var(--color-strong);
+    background: var(--color-bg);
+  }
+  .pn-raw {
+    border-style: dashed;
+    border-color: var(--color-muted);
+  }
+  .pn-bronze {
+    background: repeating-linear-gradient(-55deg, var(--color-bg) 0 3px, var(--color-muted) 3px 4px);
+  }
+  .pn-silver {
+    background: var(--color-muted);
+  }
+  .pn-gold {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+  }
+  .pn-bi {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    padding: 3px;
+  }
+  .pn-bi i {
+    flex: 1;
+    height: 100%;
+    background: var(--color-strong);
+    transform-origin: bottom;
+    animation: bars 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+  .pn-bi i:nth-child(2) {
+    background: var(--color-accent);
+    animation-delay: -0.6s;
+  }
+  .pn-bi i:nth-child(3) {
+    animation-delay: -1.2s;
+  }
+  .pn-bi i:nth-child(4) {
+    background: var(--color-accent);
+    animation-delay: -1.8s;
+  }
+  .pl {
+    position: absolute;
+    top: calc(100% + 0.375rem);
+    padding-inline: 0.25rem;
+    background: var(--color-bg);
+    font-size: 0.625rem;
+    white-space: nowrap;
+  }
+  @keyframes flow {
+    to {
+      transform: translateX(100%);
+    }
+  }
+  @keyframes tint {
+    0% {
+      opacity: 0;
+      transform: translateY(var(--jy));
+    }
+    5% {
+      opacity: 1;
+    }
+    21% {
+      transform: none;
+    }
+    25% {
+      background: #a8a29a;
+    }
+    25.1%,
+    50% {
+      background: var(--color-muted);
+    }
+    50.1%,
+    75% {
+      background: var(--color-strong);
+    }
+    75.1% {
+      background: var(--color-accent);
+    }
+    95% {
+      opacity: 1;
+      transform: none;
+      background: var(--color-accent);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.3);
+      background: var(--color-accent);
+    }
+  }
+  @keyframes bars {
+    0%,
+    100% {
+      transform: scaleY(0.35);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pkt,
+    .pkt::before,
+    .pn-bi i {
+      animation-play-state: paused;
+    }
+  }
+
+  /* ---------- Scroll stage (laptops, set by the script below) ----------
+     The pin holds for 110vh of scrolling. About sits on top of the hero:
+     its text above the band row, its title in the band row (lined up with
+     the hero's pipeline strip), and its facts below. */
+  .stage.staged {
+    height: calc(100svh - 4.5rem + 110vh);
+  }
+  .staged .stage-pin {
+    position: sticky;
+    top: 4.5rem;
+    height: calc(100svh - 4.5rem);
+    overflow: hidden;
+  }
+  .staged #home {
+    border-bottom: 0;
+  }
+  .staged #about {
+    position: absolute;
+    inset: 0;
+    border-bottom: 0;
+  }
+  .staged #about > .frame {
+    display: grid;
+    grid-template-columns: 30% minmax(0, 1fr);
+    grid-template-rows: var(--band-y) var(--band-h) minmax(0, 1fr);
+    height: 100%;
+  }
+  .staged #about .shead,
+  .staged #about .about {
+    display: contents;
+  }
+  .staged #about [data-reveal] {
+    opacity: 1;
+    transition: none;
+  }
+  .staged #about .idx {
+    grid-area: 1 / 1;
+    align-self: end;
+    padding: 0 2.5rem 1.75rem;
+    border: 0;
+  }
+  .staged #about .about-txt {
+    grid-area: 1 / 2;
+    align-self: end;
+    padding: 0 2.5rem 1.75rem;
+    font-size: clamp(1.125rem, 1.7vw, 1.5rem);
+  }
+  .staged #about .ttl {
+    --tpt: 0px;
+    --tpb: 0px;
+    grid-area: 2 / 2;
+    align-self: center;
+    padding: 0 2.5rem;
+  }
+  .staged #about .facts {
+    grid-area: 3 / 1 / 4 / 3;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-content: start;
+    padding: 2rem 2.5rem;
+    border: 0;
+    border-top: 1px solid var(--color-line);
+  }
+  .staged #about .idx,
+  .staged #about .about-txt,
+  .staged #about .facts {
+    will-change: transform;
+  }
+  .staged #about > .frame::before {
+    content: '';
+    grid-area: 2 / 1 / 3 / 3;
+    border-top: 1px solid var(--color-line);
   }
 
   /* ---------- About ---------- */
@@ -634,3 +893,132 @@ const facts = [
     }
   }
 </style>
+
+<script>
+  // Scroll stage (laptops): while the hero is pinned, the accent band grows
+  // across its middle row, the hero pans out left as About pans in, "About me"
+  // scrambles in over the band, and the band pulls back, leaving hatch marks.
+  // Everything follows the scroll position, so scrolling up plays it backwards.
+  // Phones and reduced motion get the normal page, where the About title
+  // animates like every other section title.
+  const stage = document.querySelector<HTMLElement>('[data-stage]')!;
+  const pin = stage.firstElementChild as HTMLElement;
+  const hero = pin.querySelector<HTMLElement>('#home')!;
+  const strip = hero.querySelector<HTMLElement>('.h-band')!;
+  const title = pin.querySelector<HTMLElement>('#about .section-title')!;
+  const panIn = [...pin.querySelectorAll<HTMLElement>('#about .idx, #about .about-txt, #about .facts')];
+  const wide = matchMedia('(min-width: 1024px) and (min-height: 720px) and (prefers-reduced-motion: no-preference)');
+
+  const band = document.createElement('span');
+  band.className = 'band';
+  band.setAttribute('aria-hidden', 'true');
+  band.innerHTML = '<span class="band-run"><i></i><i></i><i></i><i></i><i></i></span>';
+  const run = band.firstElementChild as HTMLElement;
+
+  const glyphs = 'ABCDEFGHKNOPRSTUVXYZ0123456789/#';
+  const label = title.textContent?.trim() ?? '';
+  const walker = document.createTreeWalker(title, NodeFilter.SHOW_TEXT);
+  const nodes: { node: Text; text: string }[] = [];
+  while (walker.nextNode()) nodes.push({ node: walker.currentNode as Text, text: walker.currentNode.nodeValue ?? '' });
+  const total = nodes.reduce((n, t) => n + t.text.length, 0);
+  // Letters left of share s are settled; the rest show random glyphs.
+  const letters = (s: number) => {
+    let i = 0;
+    for (const n of nodes) {
+      n.node.nodeValue = s >= 1 ? n.text : [...n.text].map((ch) => (ch.trim() === '' || i++ / total < s ? ch : glyphs[(Math.random() * glyphs.length) | 0])).join('');
+    }
+    title.classList.toggle('is-visible', s > 0);
+  };
+
+  const inOut = (x: number) => (x < 0.5 ? 4 * x ** 3 : 1 - (-2 * x + 2) ** 3 / 2);
+  const clamp = (x: number) => Math.min(Math.max(x, 0), 1);
+  const seg = (p: number, a: number, b: number) => inOut(clamp((p - a) / (b - a)));
+
+  let on = false;
+  let raf = 0;
+  let lastS = -1;
+  let W = 0, h = 0, runW = 0, mid = 0, peak = 0, dist = 1, top = 0;
+
+  const measure = () => {
+    hero.style.transform = '';
+    const pr = pin.getBoundingClientRect();
+    const sr = strip.getBoundingClientRect();
+    stage.style.setProperty('--band-y', `${sr.top - pr.top}px`);
+    stage.style.setProperty('--band-h', `${sr.height}px`);
+    band.style.top = `${sr.top - pr.top}px`;
+    band.style.height = `${sr.height}px`;
+    W = pin.clientWidth;
+    h = sr.height;
+    runW = run.offsetWidth;
+    dist = Math.max(stage.offsetHeight - pin.offsetHeight, 1);
+    top = parseFloat(getComputedStyle(pin).top) || 0;
+    letters(1);
+    const range = document.createRange();
+    range.selectNodeContents(title);
+    const tr = range.getBoundingClientRect();
+    mid = 0.42 * W;
+    peak = Math.min(tr.left - pr.left + tr.width * 0.55 + 2.2 * h, W + 2.6 * h);
+    lastS = -1;
+  };
+
+  const update = () => {
+    raf = 0;
+    const p = clamp((top - stage.getBoundingClientRect().top) / dist);
+    const out = -0.4 * h;
+    const front = p < 0.66 ? out + (mid - out) * seg(p, 0, 0.32) + (peak - mid) * seg(p, 0.3, 0.58) : peak + (out - peak) * seg(p, 0.66, 0.94);
+    run.style.transform = `translateX(${front - runW}px)`;
+    const q = seg(p, 0.16, 0.56);
+    hero.style.transform = q ? `translateX(${-q * W}px)` : '';
+    hero.inert = q > 0.5;
+    panIn.forEach((el) => (el.style.transform = `translateX(${(1 - q) * W}px)`));
+    const s = clamp((p - 0.36) / 0.34);
+    if (s !== lastS) letters(s);
+    lastS = s;
+    title.classList.toggle('is-hatched', p > 0.84);
+  };
+  const onScroll = () => {
+    if (!raf) raf = requestAnimationFrame(update);
+  };
+
+  const setup = () => {
+    // Only pin when the whole hero fits the screen under the nav.
+    const want = wide.matches && hero.offsetHeight <= innerHeight - 72 + 2;
+    if (want === on) {
+      if (on) {
+        measure();
+        update();
+      }
+      return;
+    }
+    on = want;
+    stage.classList.toggle('staged', on);
+    if (on) {
+      title.setAttribute('aria-label', label);
+      pin.append(band);
+      measure();
+      update();
+      addEventListener('scroll', onScroll, { passive: true });
+      if (location.hash === '#about') scrollTo(0, stage.getBoundingClientRect().top + scrollY - top + dist);
+    } else {
+      removeEventListener('scroll', onScroll);
+      band.remove();
+      hero.style.transform = '';
+      hero.inert = false;
+      panIn.forEach((el) => (el.style.transform = ''));
+      letters(1);
+      title.removeAttribute('aria-label');
+      title.classList.add('is-hatched');
+    }
+  };
+  setup();
+  addEventListener('resize', setup);
+
+  // The hero's "Scroll" link plays the stage through to About.
+  document.querySelectorAll('a[href="#about"]').forEach((a) =>
+    a.addEventListener('click', (e) => {
+      if (!on) return;
+      e.preventDefault();
+      scrollTo({ top: stage.getBoundingClientRect().top + scrollY - top + dist, behavior: 'smooth' });
+    }),
+  );
+</script>
