@@ -8,19 +8,19 @@
    warm near-black. Corners are square everywhere except the Power BI report,
    which keeps Power BI's own look. */
 @theme {
-  --color-bg: #ebe8e2;
-  --color-surface: #f3f1ec;
-  --color-surface-2: #f8f7f4;
+  --color-bg: #efe6d6;
+  --color-surface: #f7f1e5;
+  --color-surface-2: #fbf7ee;
   --color-navy: #0b1f47;
-  --color-strong: #111111; /* headings and key numbers */
-  --color-ink: #2a2826; /* body text */
-  --color-muted: #625c55;
-  --color-line: #cfcac1;
-  --color-soft: #e2ded6;
-  --color-accent: #ff5a1f; /* fills: squares, bars, rules */
-  --color-accent-bright: #ff6a33;
-  --color-accent-ink: #b53a0c; /* accent dark enough for text on paper */
-  --color-accent-wash: rgb(255 90 31 / 0.12);
+  --color-strong: #16213b; /* headings and key numbers */
+  --color-ink: #2a3350; /* body text */
+  --color-muted: #5d6379;
+  --color-line: #d3c6ad;
+  --color-soft: #e6dcc8;
+  --color-accent: #c99a45; /* fills: squares, bars, rules */
+  --color-accent-bright: #d6a850;
+  --color-accent-ink: #7a561a; /* accent dark enough for text on paper */
+  --color-accent-wash: rgb(201 154 69 / 0.16);
   --color-blue: #2563eb;
 
   --font-sans: "Space Grotesk Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -44,43 +44,43 @@
   --card-shadow: none;
   --card-hover-border: var(--color-strong);
   --card-hover-shadow: none;
-  --panel-bg: rgb(243 241 236 / 0.98);
-  --nav-bg: rgb(235 232 226 / 0.86);
-  --hover-bg: rgb(17 17 17 / 0.05);
+  --panel-bg: rgb(247 241 229 / 0.98);
+  --nav-bg: rgb(239 230 214 / 0.86);
+  --hover-bg: rgb(22 33 59 / 0.05);
   --chip-bg: transparent;
   --chip-border: var(--color-line);
   --btn-primary-bg: var(--color-strong);
-  --btn-primary-fg: #f8f7f4;
+  --btn-primary-fg: #fbf7ee;
   --btn-primary-shadow: none;
-  --btn-primary-hover: #2a2826;
+  --btn-primary-hover: #2a3350;
   --gradient-text: linear-gradient(var(--color-accent-ink), var(--color-accent-ink));
   --ambient: none;
-  --grid-line: rgb(17 17 17 / 0.05);
+  --grid-line: rgb(22 33 59 / 0.05);
   --spot: transparent;
-  --glow: rgb(255 90 31 / 0.25);
+  --glow: rgb(201 154 69 / 0.3);
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-bg: #0f0f0f;
-  --color-surface: #181818;
-  --color-surface-2: #202020;
-  --color-strong: #f4f1ec;
-  --color-ink: #cdc8c1;
-  --color-muted: #9a948c;
-  --color-line: #2b2b2b;
-  --color-soft: #141414;
-  --color-accent: #ff6a33;
-  --color-accent-bright: #ff6a33;
-  --color-accent-ink: #ff8a5c;
-  --color-accent-wash: rgb(255 106 51 / 0.12);
+  --color-bg: #0e1424;
+  --color-surface: #161e34;
+  --color-surface-2: #1d2744;
+  --color-strong: #f6efe0;
+  --color-ink: #d6d3cb;
+  --color-muted: #9097ac;
+  --color-line: #273250;
+  --color-soft: #121a2d;
+  --color-accent: #e8c27a;
+  --color-accent-bright: #e8c27a;
+  --color-accent-ink: #e8c27a;
+  --color-accent-wash: rgb(232 194 122 / 0.14);
   --color-blue: #60a5fa;
 
-  --panel-bg: rgb(24 24 24 / 0.98);
-  --nav-bg: rgb(15 15 15 / 0.86);
+  --panel-bg: rgb(22 30 52 / 0.98);
+  --nav-bg: rgb(14 20 36 / 0.86);
   --hover-bg: rgb(255 255 255 / 0.05);
-  --btn-primary-bg: #f4f1ec;
-  --btn-primary-fg: #0f0f0f;
+  --btn-primary-bg: #f6efe0;
+  --btn-primary-fg: #0e1424;
   --btn-primary-hover: #ffffff;
   --grid-line: rgb(255 255 255 / 0.05);
 }
@@ -123,7 +123,7 @@
   }
 
   ::selection {
-    background: rgb(255 90 31 / 0.28);
+    background: rgb(201 154 69 / 0.32);
   }
 
   :focus-visible {
@@ -432,7 +432,7 @@
     flex-shrink: 0;
     width: 5rem;
     background: var(--color-accent);
-    color: #111111;
+    color: #16213b;
     transition: width 300ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .go > .arr svg {
@@ -582,7 +582,7 @@
     left: 1rem;
     right: 1rem;
     z-index: 2;
-    color: #111111;
+    color: #16213b;
     opacity: 0;
     transform: translateY(-50%);
   }
@@ -600,7 +600,7 @@
   }
   .pwipe-txt .mono {
     margin-bottom: 0.5rem;
-    color: #111111;
+    color: #16213b;
   }
   @media (min-width: 768px) {
     .pwipe-txt {
@@ -650,7 +650,7 @@
   .field:focus {
     outline: none;
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgb(255 90 31 / 0.25);
+    box-shadow: 0 0 0 3px rgb(201 154 69 / 0.3);
   }
 
   /* Interactive dashboards: styled like a Power BI report in every theme

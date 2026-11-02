@@ -244,7 +244,7 @@ const path = Astro.url.pathname.replace(/\/$/, '');
   const applyTheme = (dark: boolean) => {
     if (dark) root.dataset.theme = 'dark';
     else delete root.dataset.theme;
-    document.querySelector('[data-theme-color]')?.setAttribute('content', dark ? '#0f0f0f' : '#ebe8e2');
+    document.querySelector('[data-theme-color]')?.setAttribute('content', dark ? '#0e1424' : '#efe6d6');
     themeBtn.setAttribute('aria-checked', String(dark));
     window.dispatchEvent(new Event('theme:change'));
   };

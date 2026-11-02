@@ -674,11 +674,11 @@ const facts = [
   }
 
   /* ---------- Scroll stage (laptops, set by the script below) ----------
-     The pin holds for 110vh of scrolling. About sits on top of the hero:
+     The pin holds for 135vh of scrolling. About sits on top of the hero:
      its text above the band row, its title in the band row (lined up with
      the hero's pipeline strip), and its facts below. */
   .stage.staged {
-    height: calc(100svh - 4.5rem + 110vh);
+    height: calc(100svh - 4.5rem + 135vh);
   }
   .staged .stage-pin {
     position: sticky;
@@ -773,7 +773,7 @@ const facts = [
     margin-top: 1.25rem;
   }
   .about-txt mark {
-    background: linear-gradient(transparent 60%, rgb(255 90 31 / 0.3) 0);
+    background: linear-gradient(transparent 60%, rgb(201 154 69 / 0.3) 0);
     color: var(--color-strong);
     font-weight: 600;
   }
@@ -961,9 +961,16 @@ const facts = [
     lastS = -1;
   };
 
+  // The stage chases the scroll position with easing instead of tracking it
+  // one-to-one, so a flick of the wheel glides rather than jumps.
+  let cur = -1;
   const update = () => {
     raf = 0;
-    const p = clamp((top - stage.getBoundingClientRect().top) / dist);
+    const target = clamp((top - stage.getBoundingClientRect().top) / dist);
+    cur = cur < 0 ? target : cur + (target - cur) * 0.1;
+    if (Math.abs(target - cur) < 0.0005) cur = target;
+    const p = cur;
+    if (cur !== target) raf = requestAnimationFrame(update);
     const out = -0.4 * h;
     const front = p < 0.66 ? out + (mid - out) * seg(p, 0, 0.32) + (peak - mid) * seg(p, 0.3, 0.58) : peak + (out - peak) * seg(p, 0.66, 0.94);
     run.style.transform = `translateX(${front - runW}px)`;
@@ -995,6 +1002,7 @@ const facts = [
     if (on) {
       title.setAttribute('aria-label', label);
       pin.append(band);
+      cur = -1;
       measure();
       update();
       addEventListener('scroll', onScroll, { passive: true });

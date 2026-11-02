@@ -5,7 +5,9 @@ import Icon from '../../components/Icon.astro';
 import Gallery from '../../components/Gallery.astro';
 import ProjectDetails from '../../components/ProjectDetails.astro';
 import ProjectCase from '../../components/ProjectCase.astro';
-import Explainer from '../../components/Explainer.astro';
+import MotionGraphic from '../../components/MotionGraphic.astro';
+import CodeLab from '../../components/CodeLab.astro';
+import { playgrounds } from '../../data/playgrounds';
 import { details } from '../../data/details';
 import { projects, type Project } from '../../data/portfolio';
 import { projectImage } from '../../lib/images';
@@ -97,7 +99,7 @@ const tabs = [
     {
       project.animation ? (
         <div class="hero-anim border-b border-line">
-          <Explainer slug={project.slug} alt={project.animation} eager />
+          <MotionGraphic slug={project.slug} alt={project.animation} />
         </div>
       ) : (
         <div class="border-b border-line bg-white">
@@ -142,6 +144,11 @@ const tabs = [
   <div class="project-layout frame" data-project-layout>
     <div role="tabpanel" id="panel-overview" aria-labelledby="tab-overview" data-panel="overview">
       <ProjectCase project={project} detail={detail} />
+      {playgrounds[project.slug] && (
+        <div class="mt-10">
+          <CodeLab slug={project.slug} pg={playgrounds[project.slug]} />
+        </div>
+      )}
     </div>
 
     {
@@ -217,7 +224,7 @@ const tabs = [
   .hero-anim {
     background: #f3f1ec;
   }
-  .hero-anim :global(picture) {
+  .hero-anim :global(.mg) {
     max-width: 75rem;
     margin-inline: auto;
   }

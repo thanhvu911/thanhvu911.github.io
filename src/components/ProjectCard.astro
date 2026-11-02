@@ -1,7 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import ProjectVisual from './ProjectVisual.astro';
-import Explainer from './Explainer.astro';
+import MotionGraphic from './MotionGraphic.astro';
 import PbiBadge from './PbiBadge.astro';
 import { dashboardSlugs, type Project } from '../data/portfolio';
 
@@ -17,7 +17,7 @@ const lead = project.metrics[0];
 
 <article class="pcard group">
   <a href={`/projects/${project.slug}`} class="visual relative block border-b border-line" tabindex="-1" aria-hidden="true">
-    {project.animation ? <Explainer slug={project.slug} alt="" square /> : <ProjectVisual project={project} />}
+    {project.animation ? <MotionGraphic slug={project.slug} alt={project.animation} compact /> : <ProjectVisual project={project} />}
     {project.animation && hasDashboard && <PbiBadge class="absolute right-3 top-3" />}
   </a>
   <div class="flex flex-1 flex-col px-4 pb-6 pt-5 md:px-7 md:pb-7">

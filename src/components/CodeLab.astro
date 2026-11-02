@@ -1,0 +1,293 @@
+---
+// Runnable SQL on a project page: edit the query, press Run (or Ctrl+Enter),
+// and the first 10 rows come back. The query runs in the visitor's browser
+// against a small public table, so nothing is sent anywhere.
+import type { Playground } from '../data/playgrounds';
+interface Props {
+  slug: string;
+  pg: Playground;
+}
+const { slug, pg } = Astro.props;
+---
+
+<section class="lab" data-lab data-table={pg.table} aria-labelledby={`lab-${slug}`}>
+  <div class="lab-head">
+    <p class="mono lab-kicker">Try it // runs in your browser</p>
+    <h2 id={`lab-${slug}`} class="lab-title">Run the SQL yourself</h2>
+    <p class="lab-blurb">{pg.blurb}</p>
+    <p class="mono lab-cols">Table <b>{pg.table}</b>: {pg.columns}</p>
+  </div>
+
+  <div class="lab-chips" role="group" aria-label="Example queries">
+    {pg.queries.map((q, i) => (
+      <button type="button" class="lab-chip" data-sql={q.sql} aria-pressed={i === 0 ? 'true' : 'false'}>{q.label}</button>
+    ))}
+  </div>
+
+  <div class="lab-editor">
+    <label for={`sql-${slug}`} class="sr-only">SQL query</label>
+    <textarea id={`sql-${slug}`} class="lab-sql" spellcheck="false" autocapitalize="off" autocomplete="off" rows="7" data-editor>{pg.queries[0].sql}</textarea>
+    <div class="lab-bar">
+      <button type="button" class="btn btn-primary lab-run" data-run>
+        <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"></path></svg>
+        Run
+      </button>
+      <span class="mono lab-hint">Ctrl + Enter</span>
+      <span class="mono lab-stat" data-stat role="status" aria-live="polite">Loading data...</span>
+    </div>
+  </div>
+
+  <div class="lab-out" data-out>
+    <p class="lab-empty">Results appear here (first 10 rows).</p>
+  </div>
+</section>
+
+<style>
+  .lab {
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    padding: 1.25rem;
+    min-width: 0;
+  }
+  @media (min-width: 768px) {
+    .lab {
+      padding: 1.75rem 2rem;
+    }
+  }
+  .lab-kicker {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .lab-title {
+    margin-top: 0.35rem;
+    font-family: var(--font-display);
+    font-stretch: 112%;
+    font-weight: 800;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    color: var(--color-strong);
+  }
+  .lab-blurb {
+    margin-top: 0.5rem;
+    color: var(--color-ink);
+    max-width: 46rem;
+  }
+  .lab-cols {
+    margin-top: 0.5rem;
+    font-size: 0.74rem;
+    color: var(--color-muted);
+    overflow-wrap: anywhere;
+  }
+  .lab-cols b {
+    color: var(--color-strong);
+  }
+  .lab-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .lab-chip {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--color-line);
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+    transition: border-color 150ms, background 150ms;
+  }
+  .lab-chip:hover {
+    border-color: var(--color-strong);
+  }
+  .lab-chip[aria-pressed='true'] {
+    background: var(--color-strong);
+    color: var(--color-bg);
+    border-color: var(--color-strong);
+  }
+  .lab-editor {
+    margin-top: 0.75rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-bg);
+  }
+  .lab-sql {
+    display: block;
+    width: 100%;
+    resize: vertical;
+    min-height: 8rem;
+    padding: 0.9rem 1rem;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--color-strong);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    line-height: 1.55;
+    tab-size: 2;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .lab-editor:focus-within {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgb(201 154 69 / 0.3);
+  }
+  .lab-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .lab-run {
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.74rem;
+  }
+  .lab-hint,
+  .lab-stat {
+    font-size: 0.7rem;
+    color: var(--color-muted);
+  }
+  .lab-stat {
+    margin-left: auto;
+  }
+  .lab-stat.is-error {
+    color: var(--color-accent-ink);
+  }
+  .lab-out {
+    margin-top: 0.75rem;
+    overflow-x: auto;
+    border: 1px solid var(--color-line);
+    background: var(--color-bg);
+    min-height: 4rem;
+  }
+  .lab-empty {
+    padding: 1.1rem 1rem;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+  }
+  .lab-out :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+  .lab-out :global(th),
+  .lab-out :global(td) {
+    padding: 0.5rem 0.9rem;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .lab-out :global(th) {
+    color: var(--color-muted);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    background: var(--color-surface);
+  }
+  .lab-out :global(td) {
+    color: var(--color-strong);
+  }
+  .lab-out :global(td.num) {
+    text-align: right;
+  }
+  .lab-out :global(tr.row-in) {
+    animation: lab-row 320ms ease-out both;
+  }
+  @keyframes lab-row {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lab-out :global(tr.row-in) {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  type Rows = Record<string, unknown>[];
+  const esc = (v: unknown) => String(v ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+
+  document.querySelectorAll<HTMLElement>('[data-lab]').forEach((lab) => {
+    const table = lab.dataset.table!;
+    const editor = lab.querySelector<HTMLTextAreaElement>('[data-editor]')!;
+    const out = lab.querySelector<HTMLElement>('[data-out]')!;
+    const stat = lab.querySelector<HTMLElement>('[data-stat]')!;
+    const runBtn = lab.querySelector<HTMLButtonElement>('[data-run]')!;
+    const chips = [...lab.querySelectorAll<HTMLButtonElement>('[data-sql]')];
+    let db: any = null;
+    let loading: Promise<any> | null = null;
+
+    const load = () =>
+      (loading ??= (async () => {
+        const [{ default: alasql }, rows] = await Promise.all([import('alasql'), fetch(`/data/${table}.json`).then((r) => r.json())]);
+        alasql(`CREATE TABLE ${table}`);
+        (alasql.tables as any)[table].data = rows;
+        db = alasql;
+        stat.textContent = `${rows.length.toLocaleString()} rows loaded`;
+        return db;
+      })());
+
+    const show = (rows: Rows, ms: number) => {
+      if (!rows.length) {
+        out.innerHTML = '<p class="lab-empty">The query ran but returned no rows.</p>';
+        stat.textContent = `0 rows in ${ms.toFixed(0)} ms`;
+        return;
+      }
+      const cols = Object.keys(rows[0]);
+      const shown = rows.slice(0, 10);
+      const head = cols.map((c) => `<th scope="col">${esc(c)}</th>`).join('');
+      const body = shown
+        .map((r, i) => `<tr class="row-in" style="animation-delay:${i * 35}ms">${cols.map((c) => `<td${typeof r[c] === 'number' ? ' class="num"' : ''}>${esc(typeof r[c] === 'number' ? (Number.isInteger(r[c]) ? (r[c] as number).toLocaleString() : r[c]) : r[c])}</td>`).join('')}</tr>`)
+        .join('');
+      out.innerHTML = `<table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+      stat.classList.remove('is-error');
+      stat.textContent = rows.length > 10 ? `Showing 10 of ${rows.length.toLocaleString()} rows, ${ms.toFixed(0)} ms` : `${rows.length} row${rows.length === 1 ? '' : 's'}, ${ms.toFixed(0)} ms`;
+    };
+
+    const run = async () => {
+      runBtn.disabled = true;
+      try {
+        const a = await load();
+        const sql = editor.value.trim();
+        if (!/^select\b/i.test(sql)) throw new Error('Only SELECT queries are allowed here.');
+        const t0 = performance.now();
+        const rows = a(sql) as Rows;
+        show(Array.isArray(rows) ? rows : [], performance.now() - t0);
+      } catch (e) {
+        stat.classList.add('is-error');
+        stat.textContent = String((e as Error).message ?? e).slice(0, 160);
+      } finally {
+        runBtn.disabled = false;
+      }
+    };
+
+    runBtn.addEventListener('click', run);
+    editor.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        run();
+      }
+    });
+    chips.forEach((chip) =>
+      chip.addEventListener('click', () => {
+        chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+        editor.value = chip.dataset.sql!;
+        run();
+      }),
+    );
+    new IntersectionObserver((es, io) => {
+      if (es.some((e) => e.isIntersecting)) {
+        io.disconnect();
+        run();
+      }
+    }, { threshold: 0.2 }).observe(lab);
+  });
+</script>
