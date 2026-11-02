@@ -13,7 +13,7 @@ const featured = featuredOrder.map((slug) => projects.find((p) => p.slug === slu
 const facts = [
   { label: 'Now', value: 'Data Analyst Fellow, EDC Lancaster County' },
   { label: 'Education', value: `${education.degree}, ${education.school}, ${education.honorsShort}` },
-  { label: 'Certified', value: 'Microsoft Fabric Data Engineer (DP-700)' },
+  { label: 'Certified', value: 'Fabric Data Engineer Associate (DP-700)' },
   { label: 'Based in', value: profile.location },
 ];
 ---
@@ -28,8 +28,8 @@ const facts = [
     <div class="frame hero">
       <p class="h-blurb rise" style="--d:0">
         <span class="sq mb-5 hidden lg:block"></span>
-        <span class="lg:hidden">Pipelines, warehouses, Power BI. Now at EDC Lancaster.</span>
-        <span class="hidden lg:inline">I build data pipelines, warehouses, and Power BI reports, and I test machine-learning models honestly. Currently at EDC Lancaster County.</span>
+        <span class="lg:hidden">Pipelines, warehouses, Power BI. Data Analyst Fellow at EDC Lancaster County.</span>
+        <span class="hidden lg:inline">Data engineer and analyst in Lancaster, PA. I build data pipelines, warehouses, and Power BI reports. At EDC Lancaster County I turn federal data (BLS, BEA) into star-schema dashboards that refresh daily. I also test machine-learning models against simple baselines; in one project, last year’s value matched or beat all eight models I compared.</span>
       </p>
       <h1 class="h-name display" aria-label="Thanh Vu">
         <span class="line"><span style="--d:1">Thanh</span></span>
@@ -62,10 +62,10 @@ const facts = [
             class="size-full object-cover object-[50%_22%]"
           />
         </div>
-        <figcaption class="mono mt-2.5">IMG_01 // Lancaster, PA</figcaption>
+        <figcaption class="mono mt-2.5">Lancaster, PA</figcaption>
       </figure>
       <p class="h-role display rise" style="--d:3">Data engineer<br /><span class="text-accent-ink">&amp; analyst</span></p>
-      <p class="h-lab2 mono rise" style="--d:4"><span class="sq mb-4 block"></span>131M+ rows<br />// Medallion</p>
+      <p class="h-lab2 mono rise" style="--d:4"><span class="sq mb-4 block"></span>131M-row warehouse<br />// SQL Server, synthetic retail data</p>
       <a href="#projects" class="h-go go">
         <span class="arr"><Icon name="arrow-right" size={24} /></span>
         <span class="lbl">See my work</span>
@@ -102,7 +102,10 @@ const facts = [
         </dl>
         <div class="about-txt" data-reveal>
           <p>
-            I turn federal data from <mark>BLS, BEA, Census, and USPS</mark> into Power BI reports that refresh every day, and I check the data before anyone has to trust it.
+            At EDC Lancaster County I turn federal data from <mark>BLS, BEA, Census, and USPS</mark> into Power BI reports that refresh every day, so staff can brief officials and investors without rebuilding a spreadsheet first.
+          </p>
+          <p>
+            In personal projects I build the same way: land raw data once, clean it, test it, model it. Projects include a <mark>131M-row SQL Server warehouse</mark> and a Fabric pipeline. USPS and Census vacancy rates correlate at 0.77 across six counties but at −0.01 in one, so I report results county by county.
           </p>
         </div>
       </div>
@@ -118,11 +121,12 @@ const facts = [
         <p class="idx"><span class="sq"></span><span class="mono">03 // Selected work<br />{projects.length} projects in total</span></p>
         <h2 class="ttl section-title" data-reveal>Selected work</h2>
       </div>
+      <p class="mono px-4 py-4 text-[0.78rem] leading-relaxed text-muted md:px-10">I choose the questions and the tests, and use AI tools the way a good engineer uses a code reviewer: to extend my skills and catch edge cases.</p>
       <div class="cells md:grid-cols-2 lg:grid-cols-3">
         {
-          featured.map((p) => (
+          featured.map((p, i) => (
             <div>
-              <ProjectCard project={p} />
+              <ProjectCard project={p} position={i + 1} />
             </div>
           ))
         }
@@ -198,7 +202,7 @@ const facts = [
           <p class="mono">Education</p>
           <h3 class="display-md mt-4 text-xl">{education.school}</h3>
           <p class="mt-2 text-muted">{education.degree}, {education.date}. {education.gpa.replace(' · ', ', ')}. {education.honorsShort}.</p>
-          <a href="/academics" class="text-link mt-4 inline-block text-[0.9375rem]">Coursework and research</a>
+          <a href="/academics" class="text-link mt-4 inline-block text-[0.9375rem]">Coursework and projects</a>
         </div>
         {
           credentials.map((c) => (
@@ -799,7 +803,8 @@ const facts = [
     }
     .about-txt {
       max-width: 58rem;
-      padding-block: 2.75rem 3.5rem;
+      padding-block: 1.25rem 1.25rem;
+      font-size: 1.2rem;
     }
   }
   /* ---------- Skills ---------- */
@@ -904,6 +909,13 @@ const facts = [
   const stage = document.querySelector<HTMLElement>('[data-stage]')!;
   const pin = stage.firstElementChild as HTMLElement;
   const hero = pin.querySelector<HTMLElement>('#home')!;
+  const about = pin.querySelector<HTMLElement>('#about')!;
+  const aboutTxt = about.querySelector<HTMLElement>('.about-txt')!;
+  // Height the About text needs (its cell may be stretched taller by the facts column).
+  const aboutNeed = () => {
+    const last = aboutTxt.lastElementChild as HTMLElement;
+    return last.offsetTop + last.offsetHeight + parseFloat(getComputedStyle(aboutTxt).paddingBottom);
+  };
   const strip = hero.querySelector<HTMLElement>('.h-band')!;
   const title = pin.querySelector<HTMLElement>('#about .section-title')!;
   const panIn = [...pin.querySelectorAll<HTMLElement>('#about .idx, #about .about-txt, #about .facts')];
@@ -964,10 +976,14 @@ const facts = [
   // The stage chases the scroll position with easing instead of tracking it
   // one-to-one, so a flick of the wheel glides rather than jumps.
   let cur = -1;
-  const update = () => {
+  let lastT = 0;
+  const update = (now = performance.now()) => {
     raf = 0;
+    const dt = Math.min(now - lastT || 16.7, 64);
+    lastT = now;
     const target = clamp((top - stage.getBoundingClientRect().top) / dist);
-    cur = cur < 0 ? target : cur + (target - cur) * 0.1;
+    // Time-based easing, so the glide feels the same at 60, 120, or 144 fps.
+    cur = cur < 0 ? target : cur + (target - cur) * (1 - Math.exp(-dt / 85));
     if (Math.abs(target - cur) < 0.0005) cur = target;
     const p = cur;
     if (cur !== target) raf = requestAnimationFrame(update);
@@ -989,7 +1005,12 @@ const facts = [
 
   const setup = () => {
     // Only pin when the whole hero fits the screen under the nav.
-    const want = wide.matches && hero.offsetHeight <= innerHeight - 72 + 2;
+    const room = innerHeight - 72 + 2;
+    // Measure in the pinned layout, where the About text sits in its own cell.
+    const was = stage.classList.contains('staged');
+    if (wide.matches) stage.classList.add('staged');
+    const want = wide.matches && hero.offsetHeight <= room && about.scrollHeight <= room && aboutNeed() <= strip.getBoundingClientRect().top - pin.getBoundingClientRect().top + 2;
+    stage.classList.toggle('staged', was);
     if (want === on) {
       if (on) {
         measure();
@@ -1029,4 +1050,119 @@ const facts = [
       scrollTo({ top: stage.getBoundingClientRect().top + scrollY - top + dist, behavior: 'smooth' });
     }),
   );
+  // One scroll, one section (laptops): a wheel flick glides to the next section
+  // with an eased curve instead of dribbling through it. Tall sections still
+  // scroll normally until their edge is reached. Keyboard, touch, phones and
+  // reduced motion keep native scrolling.
+  const navGap = 88;
+  const sectionIds = ['projects', 'skills', 'experience', 'contact'];
+  let animating = false;
+  let glideEnd = 0;
+  let lastWheel = 0;
+  let frame = 0;
+
+  const pages = () => {
+    const list: { a: number; z: number }[] = [];
+    const base = scrollY;
+    if (on) {
+      const s0 = stage.getBoundingClientRect().top + base - top;
+      list.push({ a: s0, z: s0 }, { a: s0 + dist, z: s0 + dist });
+    } else {
+      for (const id of ['home', 'about']) {
+        const el = document.getElementById(id);
+        if (el) {
+          const t = el.getBoundingClientRect().top + base - navGap;
+          list.push({ a: t, z: Math.max(t, el.getBoundingClientRect().bottom + base - innerHeight) });
+        }
+      }
+    }
+    for (const id of sectionIds) {
+      const el = document.getElementById(id);
+      if (!el) continue;
+      const r = el.getBoundingClientRect();
+      const t = r.top + base - navGap;
+      list.push({ a: t, z: Math.max(t, r.bottom + base - innerHeight) });
+    }
+    return list;
+  };
+
+  const canScrollInside = (node: EventTarget | null, dir: number) => {
+    let el = node instanceof Element ? node : null;
+    while (el && el !== document.body) {
+      const st = getComputedStyle(el);
+      if (/(auto|scroll)/.test(st.overflowY) && el.scrollHeight > el.clientHeight + 1) {
+        if (dir > 0 ? el.scrollTop + el.clientHeight < el.scrollHeight - 1 : el.scrollTop > 0) return true;
+      }
+      el = el.parentElement;
+    }
+    return false;
+  };
+
+  const glide = (to: number) => {
+    const from = scrollY;
+    const dist2 = Math.abs(to - from);
+    if (dist2 < 2) return;
+    const dur = Math.min(Math.max(520 + dist2 * 0.32, 680), 1150);
+    const root = document.documentElement;
+    root.style.scrollBehavior = 'auto';
+    animating = true;
+    const t0 = performance.now();
+    const step = (now: number) => {
+      const t = clamp((now - t0) / dur);
+      scrollTo(0, from + (to - from) * inOut(t));
+      if (t < 1 && animating) {
+        frame = requestAnimationFrame(step);
+      } else {
+        animating = false;
+        root.style.scrollBehavior = '';
+        glideEnd = performance.now();
+      }
+    };
+    frame = requestAnimationFrame(step);
+  };
+  const stopGlide = () => {
+    if (!animating) return;
+    animating = false;
+    cancelAnimationFrame(frame);
+    document.documentElement.style.scrollBehavior = '';
+  };
+
+  addEventListener(
+    'wheel',
+    (e: WheelEvent) => {
+      if (!wide.matches || e.ctrlKey || e.defaultPrevented || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      const now = performance.now();
+      const gap = now - lastWheel;
+      lastWheel = now;
+      if (animating) return void e.preventDefault();
+      // Swallow the trackpad's inertia tail: a continuous stream of wheel events
+      // right after a glide is the tail of the same flick, not a new one.
+      if (now - glideEnd < 1400 && gap < 90) return void e.preventDefault();
+      const dir = Math.sign(e.deltaY);
+      if (!dir || Math.abs(e.deltaY) < 6 || canScrollInside(e.target, dir)) return;
+      const list = pages();
+      const y = scrollY;
+      let i = 0;
+      list.forEach((pg, k) => {
+        if (y >= pg.a - 4) i = k;
+      });
+      const cur2 = list[i];
+      let target: number | null = null;
+      if (dir > 0) {
+        if (y < cur2.z - 3) return;
+        if (list[i + 1]) target = list[i + 1].a;
+      } else if (y > cur2.z + 3) {
+        target = cur2.z;
+      } else if (y > cur2.a + 3) {
+        return;
+      } else if (list[i - 1]) {
+        target = list[i - 1].z;
+      }
+      if (target === null) return;
+      e.preventDefault();
+      glide(target);
+    },
+    { passive: false },
+  );
+  ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => addEventListener(ev, stopGlide, { passive: true }));
 </script>

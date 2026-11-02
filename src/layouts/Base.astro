@@ -132,7 +132,7 @@ const personSchema = {
         function reveal() {
           root.classList.remove('wipe-cover');
           root.classList.add('wipe-out');
-          setTimeout(function () { root.classList.remove('wipe-out'); }, 800);
+          setTimeout(function () { root.classList.remove('wipe-out'); }, 560);
         }
 
         var arrived = null;
@@ -168,7 +168,7 @@ const personSchema = {
           setTimeout(function () {
             try { sessionStorage.setItem('wipe', url.pathname); } catch (err) {}
             location.href = url.href;
-          }, 400);
+          }, 280);
         });
       })();
     </script>

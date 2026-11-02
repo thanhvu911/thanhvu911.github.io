@@ -30,7 +30,7 @@ export const playgrounds: Record<string, Playground> = {
   },
   'can-mail-data-predict-housing-vacancy': {
     table: 'vacancy',
-    blurb: 'The county-year table behind this project (78 rows, Census and USPS vacancy rates in percent). Edit the SQL and run it.',
+    blurb: 'The county-year table behind this project (78 county-year rows: 2011–2024, because 2010 has no prior year to compare with, and without 2020, which has no Census release; Census and USPS vacancy rates in percent). Edit the SQL and run it.',
     columns: 'county, year, census_pct, usps_pct, usps_narrow_pct, post_2012',
     queries: [
       {

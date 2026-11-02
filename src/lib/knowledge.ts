@@ -82,7 +82,7 @@ export const quickAnswers: QuickAnswer[] = [
   },
   {
     keys: ['ai', 'artificial intelligence', 'llm', 'gemini', 'machine learning', 'ml', 'model', 'models'],
-    answer: `At EDC, Thanh built a Google Apps Script web app with a Gemini AI assistant that lets 6+ non-technical staff explore and maintain data. At KCC Capital Partners, Thanh gathered data on 100+ companies with Excel and Seamless.AI, screened it with the firm's built-in AI tools, and reviewed a shortlist of 100+ likely buyers. Coursework covers AI (search, constraint satisfaction, Bayesian networks) and machine learning.`,
+    answer: `At EDC, Thanh built a Google Apps Script web app with a Gemini AI assistant that lets 6+ non-technical staff explore and maintain data. At KCC Capital Partners, Thanh collected data on 100+ companies with Excel and Seamless.AI to enrich the firm's AI agent for investment, and reviewed a shortlist of 100+ likely buyers. Coursework covers AI (search, constraint satisfaction, Bayesian networks) and machine learning.`,
     link: { href: '/academics', label: 'Open Academics' },
   },
   {
@@ -95,8 +95,8 @@ export const quickAnswers: QuickAnswer[] = [
     answer: `${credentials.map((c) => `${c.title} (${c.detail.split(' · ').slice(-2).join(', ')})`).join('; ')}.`,
   },
   {
-    keys: ['available', 'open to', 'relocate', 'relocation', 'remote', 'new york', 'where', 'based', 'location', 'roles'],
-    answer: `Thanh is based in ${profile.location}. The fastest way to reach him is email: ${profile.email}.`,
+    keys: ['available', 'relocate', 'relocation', 'remote', 'where', 'based', 'location', 'roles'],
+    answer: `Thanh is based in ${profile.location} and is available for on-site roles anywhere in the U.S. The fastest way to reach Thanh is email: ${profile.email}.`,
     link: { href: '/#contact', label: 'Contact' },
   },
   {
@@ -123,7 +123,7 @@ export const quickAnswers: QuickAnswer[] = [
 export const suggestions = [
   'What does Thanh do at EDC?',
   'Which projects use Power BI?',
-  'Tell me about the housing vacancy research',
-  'What are Thanh’s research interests?',
+  'Which projects use SQL?',
+  'Tell me about the housing vacancy project',
   'How can I contact Thanh?',
 ];

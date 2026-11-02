@@ -28,8 +28,8 @@ export interface ProjectDetail {
 export const details: Record<string, ProjectDetail> = {
   'can-mail-data-predict-housing-vacancy': {
     overview: [
-      'The U.S. Postal Service quietly publishes a vacancy count for every ZIP code in the country, every quarter. This project asks whether that data is good enough to stand in for the Census Bureau\'s official, but slow and annual, vacancy rate, and answers it with a live Microsoft Fabric and Power BI pipeline instead of a guess.',
-      'It tests the idea against six real U.S. counties and fifteen years of government data (2010–2024, 84 county-year observations) and gives a three-part answer: do the sources move together, does USPS call the direction of change correctly, and how far off is it on average.',
+      'The U.S. Postal Service publishes a vacancy count for every ZIP code in the country, every quarter. This project asks whether that data is good enough to stand in for the Census Bureau\'s official, but slow and annual, vacancy rate, and answers it with a live Microsoft Fabric and Power BI pipeline instead of a guess.',
+      'It tests the idea against six real U.S. counties and 14 years of government data (2010–2024 without 2020, 84 county-year observations) and gives a three-part answer: do the sources move together, does USPS call the direction of change correctly, and how far off is it on average.',
       'Every headline number is reproducible from the 84-row comparison table in the repository with plain arithmetic, and the Power Query M and report definition are exported from the real Fabric workspace rather than described from memory.',
     ],
     tools: [
@@ -55,7 +55,7 @@ export const details: Record<string, ProjectDetail> = {
         title: 'Report overview: all six counties',
         summary: 'Nine visuals on one page: two slicers, three KPI cards, a small-multiples line chart, a scatter chart, a bar chart, and a county-year detail table.',
         points: [
-          'KPI cards show the three answers at once: correlation (0.77), directional match rate (0.58), and the average narrow gap.',
+          'KPI cards show the three answers at once: correlation (0.77), directional match rate (57.7%), and the average narrow gap.',
           'Small multiples plot Census against USPS over time for each county, because a Power BI chart cannot legend by measure and by category at the same time.',
           'The scatter chart with its trend line shows the counties sitting in different clusters, the first hint that one pooled number hides a lot.',
           'The detail table flags, year by year, whether USPS moved in the same direction as Census.',
@@ -68,8 +68,8 @@ export const details: Record<string, ProjectDetail> = {
         points: [
           'Montgomery, OH: r = 0.72 and Cook, IL: r = 0.70, where USPS tracks Census closely.',
           'King, WA: r = 0.52, Lancaster, PA: r = 0.34, and Onondaga, NY: r = 0.26, which are weaker.',
-          'Champaign, IL: r = −0.01, no relationship at all.',
-          'Conclusion: USPS is worth watching between Census releases in some counties and close to useless in others.',
+          'Champaign, IL: r = −0.01, no linear relationship visible in 14 county-years.',
+          'Conclusion: USPS tracks the Census level in some counties and not at all in others, and it called the direction right only 57.7% of the time, so it is a county-dependent signal at best (the follow-up nowcast project found no model beat last year’s number).',
         ],
       },
       {
@@ -108,7 +108,7 @@ export const details: Record<string, ProjectDetail> = {
     overview: [
       'An end-to-end data warehouse in SQL Server that turns raw grocery-transaction CSV extracts into a business-ready star schema. It is built on the public Supermarket Transactional Data dataset on Kaggle; the warehouse design, ETL, tests, and documentation are my own work.',
       'It follows the Medallion pattern: Bronze keeps an untouched copy of the six source files, Silver cleans and standardizes them, and Gold exposes a star schema of views that BI tools and analysts can query directly.',
-      'The whole load is automated with stored procedures that log their timing and catch errors, and 21 automated data-quality checks run after each layer: they filtered 10M raw transactions to 3.3M completed sales and flagged 1.58M orders whose header totals did not match their line items.',
+      'The whole load is automated with stored procedures that log their timing and catch errors, and 21 automated data-quality checks run after each layer: keeping completed orders cut 10M raw transactions to 3.3M and flagged 1.58M orders whose header totals did not match their line items.',
     ],
     tools: [
       { name: 'Microsoft SQL Server', use: 'Database engine for the whole warehouse: bronze, silver, and gold schemas in one database.' },
@@ -181,7 +181,7 @@ export const details: Record<string, ProjectDetail> = {
 
   'sales-planning-analysis': {
     overview: [
-      'A multi-page Power BI solution for the KPIM Mart retail chain that gives managers full visibility into sales performance, plan attainment, and growth trends.',
+      'A multi-page Power BI solution on a synthetic dataset for the KPIM Mart retail chain that gives managers full visibility into sales performance, plan attainment, and growth trends.',
       'Sales and monthly plan data from SQL Server are modeled as a galaxy schema: two fact tables, actual sales and plan targets, sharing conformed dimensions, so the two can be compared at any grain.',
       'DAX measures calculate plan completion, year-over-year growth, year-to-date comparisons, and rolling 12-month trends by store, product group, and region, and drill-through takes a manager from a summary number to the transactions behind it.',
     ],
@@ -223,7 +223,7 @@ export const details: Record<string, ProjectDetail> = {
         title: 'Page 2: Drill-through by manager',
         summary: 'Right-click any number to land here: the month and year-to-date against the prior year, by store manager.',
         points: [
-          'December 2022 sales of 1,858,396,200 are up 60% on December 2021.',
+          'In this drill-through view, December 2022 sales of 1,858,396,200 VND are up 60% on December 2021.',
           'Year to date is down 15% on the prior year, a nuance the monthly number alone would hide.',
           'Bars show each manager\'s YTD against last year, colored red for decline and blue for growth.',
         ],
@@ -307,7 +307,7 @@ export const details: Record<string, ProjectDetail> = {
         summary: 'Labor-force growth and unemployment rate, Lancaster against Pennsylvania.',
         points: [
           'Lancaster\'s unemployment rate ran below Pennsylvania\'s every year from 2015 to 2025, including during the 2020 spike.',
-          'This is the core message for EDC stakeholders: a resilient local labor market.',
+          'This is the core message for EDC stakeholders: Lancaster’s unemployment rate stays below the state’s.',
         ],
       },
       {
@@ -397,7 +397,7 @@ export const details: Record<string, ProjectDetail> = {
         title: 'Validate: can we trust the data?',
         summary: 'Before any analysis, every column is profiled.',
         points: [
-          '12.3% of raw transactions had at least one missing field: 60 with no transaction type, 60 with no amount, and 5 with no currency.',
+          '12.3% of raw transactions had at least one missing field: 60 with no transaction type, 60 with no amount, and 5 with no currency (some rows miss more than one).',
           '17 rows carried invalid currency codes such as -999 and *^$$, which would distort any currency-level report.',
           'Primary keys in both tables are unique, so joins will not double-count.',
         ],
@@ -469,7 +469,7 @@ export const details: Record<string, ProjectDetail> = {
   'medical-cost-regression': {
     overview: [
       'A two-part study of 1,338 U.S. health-insurance records. Part 1 (R, 2021) asked how much age and sex explain annual charges, and found they explain only 9% of the variance.',
-      'Part 2 (Python, 2026) explains the rest: a smoking × obesity interaction accounts for three distinct cost bands, nine models are compared with cross-validation, and the best model is tested for where it fails.',
+      'Part 2 (Python, 2026) looks at what else is associated with charges: a smoking × obesity interaction is associated with three distinct cost bands, nine models are compared with cross-validation, and the best model is tested for where it fails.',
     ],
     tools: [
       { name: 'Python (pandas, NumPy)', use: 'Feature analysis, the cost bands, and bootstrap confidence intervals.' },
@@ -485,7 +485,7 @@ export const details: Record<string, ProjectDetail> = {
         points: [
           '94% of people in the top band (over $30K) smoke, and 92% have a BMI of 30 or more.',
           'Obesity barely changes costs for non-smokers but doubles them for smokers: a median of $40,904 for obese smokers.',
-          'Adding a smoker × obesity term raises R² from 0.75 to 0.86 (nested F-test, p < 1e-170).',
+          'Adding a smoker × obesity term raises R² from 0.75 to 0.86 (nested F-test, p < 0.001 in-sample; the final model’s held-out R² is 0.88).',
         ],
       },
       {
@@ -495,7 +495,7 @@ export const details: Record<string, ProjectDetail> = {
         points: [
           'The interpretable linear model with the interaction matched ridge, lasso, and random forest (CV R² 0.86) and beat boosting.',
           'Held-out test: R² 0.88, RMSE $4,209.',
-          'A log transform hurt here, because back-transforming underestimates the high-cost smokers.',
+          'A log transform hurt here, likely because back-transforming underestimates the high-cost smokers.',
         ],
       },
       {
@@ -504,7 +504,7 @@ export const details: Record<string, ProjectDetail> = {
         summary: 'A strong overall R² hides uneven errors.',
         points: [
           'Relative error is 29% for non-smokers, 12% for smokers with BMI under 30, and 5% for obese smokers.',
-          'Once smoking is in the model, the earlier sex effect flips from +$1,539 to −$494: it was standing in for smoking.',
+          'Once smoking is in the model, the earlier sex effect flips from +$1,539 to −$494: consistent with it standing in for smoking.',
         ],
       },
       {
@@ -513,7 +513,7 @@ export const details: Record<string, ProjectDetail> = {
         summary: 'What the models say about age, sex, and charges.',
         points: [
           'Age is a moderate, significant predictor: about +$258 in charges per year of age.',
-          'Sex has minimal effect once age is accounted for.',
+          'In Part 1, sex added little once age was accounted for.',
           'Most variation comes from factors outside these two variables.',
         ],
       },

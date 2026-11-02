@@ -9,8 +9,10 @@ interface Props {
   project: Project;
   /** Show the one-line summary and the tool tags (the full projects list). */
   detailed?: boolean;
+  /** On the home page the cards are not numbered (the full list keeps the project numbers). */
+  position?: number;
 }
-const { project, detailed = false } = Astro.props;
+const { project, detailed = false, position } = Astro.props;
 const hasDashboard = dashboardSlugs.includes(project.slug);
 const lead = project.metrics[0];
 ---
@@ -21,7 +23,7 @@ const lead = project.metrics[0];
     {project.animation && hasDashboard && <PbiBadge class="absolute right-3 top-3" />}
   </a>
   <div class="flex flex-1 flex-col px-4 pb-6 pt-5 md:px-7 md:pb-7">
-    <p class="mono">{project.number} // {project.kind.split(' · ')[0]} · {project.year}</p>
+    <p class="mono">{position ? '' : `${project.number} // `}{project.kind.split(' · ')[0]} · {project.year}</p>
     <h3 class="display-md mt-3 text-[1.375rem] md:text-[1.5rem]">
       <a href={`/projects/${project.slug}`} class="title-link">{project.title}</a>
     </h3>
