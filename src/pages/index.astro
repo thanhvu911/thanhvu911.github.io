@@ -2,10 +2,10 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import MotionGraphic from '../components/MotionGraphic.astro';
 import ContactSection from '../components/ContactSection.astro';
 import portrait from '../assets/photo/thanh-portrait.jpg';
-import { credentials, education, experience, profile, projects, skills } from '../data/portfolio';
+import { credentials, dashboardSlugs, education, experience, profile, projects, skills } from '../data/portfolio';
 
 // Six projects, one strength each: pipelines, warehousing, ML evaluation, BI, statistics, reporting.
 const featuredOrder = ['can-mail-data-predict-housing-vacancy', 'grocery-transaction-data-warehouse', 'vacancy-nowcast-ml', 'sales-planning-analysis', 'medical-cost-regression', 'lancaster-economic-indicators-dashboard'];
@@ -29,7 +29,7 @@ const facts = [
       <p class="h-blurb rise" style="--d:0">
         <span class="sq mb-5 hidden lg:block"></span>
         <span class="lg:hidden">Pipelines, warehouses, Power BI. Data Analyst Fellow at EDC Lancaster County.</span>
-        <span class="hidden lg:inline">Data engineer and analyst in Lancaster, PA. I build data pipelines, warehouses, and Power BI reports. At EDC Lancaster County I turn federal data (BLS, BEA) into star-schema dashboards that refresh daily. I also test machine-learning models against simple baselines; in one project, last year’s value matched or beat all eight models I compared.</span>
+        <span class="hidden lg:inline">Data engineer and analyst in Lancaster, PA. I build data pipelines, warehouses, and Power BI reports. At EDC Lancaster County I turn federal data (BLS, BEA) into star-schema dashboards that refresh daily.</span>
       </p>
       <h1 class="h-name display" aria-label="Thanh Vu">
         <span class="line"><span style="--d:1">Thanh</span></span>
@@ -105,7 +105,7 @@ const facts = [
             At EDC Lancaster County I turn federal data from <mark>BLS, BEA, Census, and USPS</mark> into Power BI reports that refresh every day, so staff can brief officials and investors without rebuilding a spreadsheet first.
           </p>
           <p>
-            In personal projects I build the same way: land raw data once, clean it, test it, model it. Projects include a <mark>131M-row SQL Server warehouse</mark> and a Fabric pipeline. USPS and Census vacancy rates correlate at 0.77 across six counties but at −0.01 in one, so I report results county by county.
+            In personal projects I build the same way: land raw data once, clean it, test it, model it. Projects include a <mark>131M-row SQL Server warehouse</mark> and a Fabric pipeline.
           </p>
         </div>
       </div>
@@ -121,15 +121,45 @@ const facts = [
         <p class="idx"><span class="sq"></span><span class="mono">03 // Selected work<br />{projects.length} projects in total</span></p>
         <h2 class="ttl section-title" data-reveal>Selected work</h2>
       </div>
-      <p class="mono px-4 py-4 text-[0.78rem] leading-relaxed text-muted md:px-10">I choose the questions and the tests, and use AI tools the way a good engineer uses a code reviewer: to extend my skills and catch edge cases.</p>
-      <div class="cells md:grid-cols-2 lg:grid-cols-3">
-        {
-          featured.map((p, i) => (
-            <div>
-              <ProjectCard project={p} position={i + 1} />
-            </div>
-          ))
-        }
+      <div class="work" data-showcase>
+        <div class="sc-stage">
+          <span class="sc-cursor" aria-hidden="true">View</span>
+          {
+            featured.map((p, i) => (
+              <article class="sc-panel" data-panel={i} hidden={i !== 0}>
+                <a href={`/projects/${p.slug}`} class="sc-vis" tabindex="-1" aria-hidden="true">
+                  {p.animation ? <MotionGraphic slug={p.slug} alt={p.animation} /> : null}
+                </a>
+                <div class="sc-cap">
+                  <p class="sc-stat">
+                    <span class="display" data-count={p.metrics[0].value}>{p.metrics[0].value}</span>
+                    <span>{p.metrics[0].label}</span>
+                  </p>
+                  <a href={dashboardSlugs.includes(p.slug) ? `/projects/${p.slug}#dashboard` : `/projects/${p.slug}`} class="sc-open">
+                    {dashboardSlugs.includes(p.slug) ? 'Open dashboard' : 'Read case study'}
+                    <Icon name="arrow-right" size={18} />
+                  </a>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+        <ol class="work-list" aria-label="Projects">
+          {
+            featured.map((p, i) => (
+              <li>
+                <button type="button" class="work-row" data-pick={i} aria-pressed={i === 0 ? 'true' : 'false'}>
+                  <span class="work-no" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="work-body">
+                    <span class="work-ttl">{p.title}</span>
+                    <span class="mono">{p.kind.split(' · ')[0]} · {p.year}</span>
+                  </span>
+                  <span class="work-arr" aria-hidden="true"><Icon name="arrow-right" size={20} /></span>
+                </button>
+              </li>
+            ))
+          }
+        </ol>
       </div>
       <a href="/projects" class="go border-t border-line">
         <span class="arr"><Icon name="arrow-right" size={24} /></span>
@@ -228,6 +258,193 @@ const facts = [
 </Base>
 
 <style>
+  .work {
+    display: grid;
+    gap: 1.5rem;
+    padding: 0 1rem 1rem;
+  }
+  .sc-stage {
+    position: relative;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+  }
+  .sc-panel:not([hidden]) {
+    animation: sc-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes sc-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+  .sc-vis {
+    display: block;
+  }
+  .sc-cap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .sc-stat {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+  .sc-stat .display {
+    font-size: 2rem;
+    color: var(--color-strong);
+  }
+  .sc-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    font-weight: 600;
+    color: var(--color-strong);
+    border-bottom: 1px solid var(--color-accent);
+    transition: gap 300ms cubic-bezier(0.22, 1, 0.36, 1), color 200ms;
+  }
+  .sc-open:hover {
+    gap: 0.9rem;
+    color: var(--color-accent);
+  }
+  .work-list {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .work-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2.5rem 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1.1rem 0.25rem;
+    text-align: left;
+    background: none;
+    border: 0;
+    border-top: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent);
+    cursor: pointer;
+    opacity: 0.55;
+    transition: opacity 300ms, padding-left 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .work-list li:first-child .work-row {
+    border-top: 0;
+  }
+  .work-row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 2px;
+    width: 100%;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .work-row[aria-pressed='true'] {
+    opacity: 1;
+    padding-left: 0.9rem;
+  }
+  .work-row[aria-pressed='true']::before {
+    transform: scaleX(var(--p, 1));
+  }
+  .work.auto .work-row[aria-pressed='true']::before {
+    transition: none;
+  }
+  .sc-cursor {
+    display: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .sc-cursor {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 3;
+      display: grid;
+      place-items: center;
+      width: 4.5rem;
+      height: 4.5rem;
+      margin: -2.25rem 0 0 -2.25rem;
+      border-radius: 50%;
+      background: var(--color-accent);
+      color: var(--color-strong-on-accent, #0b1b33);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      pointer-events: none;
+      opacity: 0;
+      scale: 0.4;
+      transition: opacity 200ms, scale 300ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .sc-cursor.on {
+      opacity: 1;
+      scale: 1;
+    }
+  }
+  .work-row:hover,
+  .work-row:focus-visible {
+    opacity: 1;
+  }
+  .work-no {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+  .work-row[aria-pressed='true'] .work-no {
+    color: var(--color-accent);
+  }
+  .work-body {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .work-ttl {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 1rem + 0.55vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    color: var(--color-strong);
+  }
+  .work-arr {
+    color: var(--color-muted);
+    transform: translateX(-6px);
+    opacity: 0;
+    transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), opacity 300ms, color 300ms;
+  }
+  .work-row[aria-pressed='true'] .work-arr {
+    opacity: 1;
+    transform: none;
+    color: var(--color-accent);
+  }
+  @media (min-width: 1024px) {
+    .work {
+      align-items: center;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 0 clamp(2rem, 4vw, 4.5rem);
+      padding: 0 clamp(1rem, 3vw, 3rem) 1rem;
+    }
+    .work-row {
+      padding: 1.15rem 0.5rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sc-panel:not([hidden]) {
+      animation: none;
+    }
+  }
+
   /* ---------- Hero ---------- */
   .hero {
     display: grid;
@@ -1165,4 +1382,70 @@ const facts = [
     { passive: false },
   );
   ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => addEventListener(ev, stopGlide, { passive: true }));
+
+  // Selected work showcase: one live graphic at a time (hidden panels never intersect,
+  // so only the shown graphic animates). Auto-advances while in view; the active row's
+  // top line fills as a timer. Pauses on hover/focus and under reduced motion.
+  document.querySelectorAll<HTMLElement>('[data-showcase]').forEach((box) => {
+    const panels = [...box.querySelectorAll<HTMLElement>('[data-panel]')];
+    const rows = [...box.querySelectorAll<HTMLButtonElement>('[data-pick]')];
+    const stage = box.querySelector<HTMLElement>('.sc-stage')!;
+    const cur = box.querySelector<HTMLElement>('.sc-cursor')!;
+    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const DWELL = 9000;
+    let n = 0, t0 = 0, held = false, seen = false, raf = 0;
+    const show = (i: number) => {
+      n = i;
+      panels.forEach((p, j) => (p.hidden = j !== i));
+      rows.forEach((r, j) => {
+        r.setAttribute('aria-pressed', String(j === i));
+        r.style.removeProperty('--p');
+      });
+      t0 = performance.now();
+      if (!calm) rows[i].style.setProperty('--p', '0');
+    };
+    const tick = (now: number) => {
+      raf = 0;
+      if (!seen || held) return;
+      const p = Math.min((now - t0) / DWELL, 1);
+      rows[n].style.setProperty('--p', String(p));
+      if (p >= 1) show((n + 1) % panels.length);
+      raf = requestAnimationFrame(tick);
+    };
+    const run = () => {
+      if (calm || raf || !seen || held) return;
+      t0 = performance.now() - (parseFloat(rows[n].style.getPropertyValue('--p') || '0') * DWELL);
+      raf = requestAnimationFrame(tick);
+    };
+    const hold = (v: boolean) => {
+      held = v;
+      if (!v) run();
+    };
+    if (!calm) {
+      box.classList.add('auto');
+      rows[0].style.setProperty('--p', '0');
+      new IntersectionObserver((es) => {
+        seen = es[0].isIntersecting;
+        if (seen) run();
+      }, { threshold: 0.4 }).observe(box);
+    }
+    rows.forEach((r, i) => {
+      r.addEventListener('click', () => show(i));
+      r.addEventListener('focus', () => show(i));
+      r.addEventListener('pointerenter', (e) => {
+        if ((e as PointerEvent).pointerType === 'mouse') show(i);
+      });
+    });
+    box.addEventListener('pointerenter', () => hold(true));
+    box.addEventListener('pointerleave', () => hold(false));
+    box.addEventListener('focusin', () => hold(true));
+    box.addEventListener('focusout', () => hold(false));
+    stage.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      const r = stage.getBoundingClientRect();
+      cur.style.transform = `translate(${e.clientX - r.left}px, ${e.clientY - r.top}px)`;
+      cur.classList.toggle('on', !!(e.target as HTMLElement).closest('.sc-vis'));
+    });
+    stage.addEventListener('pointerleave', () => cur.classList.remove('on'));
+  });
 </script>

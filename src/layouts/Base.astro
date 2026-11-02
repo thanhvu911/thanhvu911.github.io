@@ -47,7 +47,7 @@ const personSchema = {
     <meta name="theme-color" content="#efe6d6" data-theme-color />
     <script is:inline>
       // Apply the theme before first paint: the visitor's saved choice,
-      // otherwise their device setting.
+      // otherwise light.
       (function () {
         var root = document.documentElement;
         root.classList.add('js');
@@ -55,7 +55,6 @@ const personSchema = {
         if (!t) {
           try { t = localStorage.getItem('theme'); } catch (e) {}
         }
-        if (!t && window.matchMedia('(prefers-color-scheme: dark)').matches) t = 'dark';
         if (t === 'dark') {
           root.dataset.theme = 'dark';
           document.querySelector('[data-theme-color]').setAttribute('content', '#0e1424');

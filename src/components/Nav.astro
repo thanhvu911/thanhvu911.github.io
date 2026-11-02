@@ -238,7 +238,7 @@ const path = Astro.url.pathname.replace(/\/$/, '');
     if (e.key === 'Escape') setOpen(false);
   });
 
-  // Light/dark: the device setting until the visitor picks one, then that choice is remembered.
+  // Light by default; once the visitor picks dark (or light), that choice is remembered.
   const root = document.documentElement;
   const themeBtn = navEl.querySelector<HTMLButtonElement>('[data-theme-toggle]')!;
   const applyTheme = (dark: boolean) => {
@@ -255,14 +255,6 @@ const path = Astro.url.pathname.replace(/\/$/, '');
     try {
       localStorage.setItem('theme', dark ? 'dark' : 'light');
     } catch {}
-  });
-  const media = matchMedia('(prefers-color-scheme: dark)');
-  media.addEventListener('change', (e) => {
-    let saved: string | null = null;
-    try {
-      saved = localStorage.getItem('theme');
-    } catch {}
-    if (!saved) applyTheme(e.matches);
   });
 
   // Search button opens the command palette; show ⌘K on Apple devices.
