@@ -70,7 +70,7 @@ const chart = isReport ? undefined : cardCharts[project.slug];
         </ul>
       </div>
     ) : (
-      <Image src={projectImage(project.slug, project.cover)} alt="" widths={[480, 720]} sizes={sizes} class="size-full object-cover object-left-top" />
+      <Image src={projectImage(project.slug, project.cover)} alt="" widths={[720, 1080, 1440]} sizes={sizes} class="size-full object-contain object-center" />
     )
   }
 </div>
