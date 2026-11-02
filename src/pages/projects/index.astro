@@ -1,22 +1,236 @@
 ---
 import Base from '../../layouts/Base.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
+import Icon from '../../components/Icon.astro';
+import MotionGraphic from '../../components/MotionGraphic.astro';
+import ProjectVisual from '../../components/ProjectVisual.astro';
 import { dashboardSlugs, projects } from '../../data/portfolio';
+
+const cats = ['Data engineering', 'Analytics', 'Machine learning'];
+const catOf = (kind: string) => {
+  const k = kind.split(' · ')[0];
+  return cats.find((c) => k.startsWith(c.split(' ')[0])) ?? k;
+};
+const counts = Object.fromEntries(cats.map((c) => [c, projects.filter((p) => catOf(p.kind) === c).length]));
 ---
 
 <Base title="Projects" description="Data engineering, analytics, and machine learning projects by Thanh Vu: Microsoft Fabric, SQL Server warehouses, Power BI, and Python.">
   <div class="frame">
-    <div class="shead">
-      <p class="idx"><span class="sq"></span><span class="mono">Index // {projects.length} projects<br />{dashboardSlugs.length} with a Power BI report</span></p>
-      <div class="ttl">
-        <h1 class="section-title">All projects</h1>
-        <p class="section-lede">
-          Data engineering, Power BI, and machine learning. Tap any project for a short visual case study.
-        </p>
+    <header class="px">
+      <p class="idx"><span class="sq"></span><span class="mono">Index // {projects.length} projects</span></p>
+      <h1 class="section-title px-title">All projects</h1>
+      <p class="px-lede">Pipelines, warehouses, dashboards and models. Open any project for a short visual case study.</p>
+      <div class="px-filter" role="group" aria-label="Filter projects" data-filter>
+        <button type="button" aria-pressed="true" data-cat="all">All <span>{projects.length}</span></button>
+        {cats.map((c) => <button type="button" aria-pressed="false" data-cat={c}>{c} <span>{counts[c]}</span></button>)}
       </div>
-    </div>
-    <div class="cells border-b border-line sm:grid-cols-2 lg:grid-cols-3">
-      {projects.map((p) => <ProjectCard project={p} detailed />)}
-    </div>
+    </header>
+
+    <ol class="pgrid" data-grid>
+      {
+        projects.map((p, i) => (
+          <li class="pj" data-cat={catOf(p.kind)}>
+            <a href={`/projects/${p.slug}`} class="pj-vis" tabindex="-1" aria-hidden="true">
+              {p.animation ? <MotionGraphic slug={p.slug} alt={p.animation} /> : <ProjectVisual project={p} />}
+            </a>
+            <div class="pj-meta">
+              <p class="mono">{p.number} // {p.kind.split(' · ')[0]} · {p.year}{dashboardSlugs.includes(p.slug) ? ' · Power BI' : ''}</p>
+              <h2 class="pj-title"><a href={`/projects/${p.slug}`}>{p.title}</a></h2>
+              <p class="pj-line">{p.headline}</p>
+              <a href={`/projects/${p.slug}`} class="pj-go" aria-label={`Open ${p.title}`}>
+                <span>Open case study</span>
+                <Icon name="arrow-right" size={18} />
+              </a>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
   </div>
 </Base>
+
+<style>
+  .px {
+    padding: 2.5rem 1rem 3rem;
+  }
+  .px-title {
+    margin-top: 1.5rem;
+  }
+  .px-lede {
+    max-width: 34rem;
+    margin-top: 1.25rem;
+    font-size: 1.125rem;
+    line-height: 1.55;
+    color: var(--color-muted);
+  }
+  .px-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.75rem;
+    margin-top: 2.25rem;
+  }
+  .px-filter button {
+    position: relative;
+    min-height: 2.75rem;
+    padding: 0 0.1rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: color 200ms;
+  }
+  .px-filter button span {
+    margin-left: 0.3rem;
+    opacity: 0.6;
+  }
+  .px-filter button::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.35rem;
+    height: 2px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .px-filter button:hover {
+    color: var(--color-strong);
+  }
+  .px-filter button[aria-pressed='true'] {
+    color: var(--color-strong);
+  }
+  .px-filter button[aria-pressed='true']::after {
+    transform: scaleX(1);
+  }
+
+  .pgrid {
+    display: grid;
+    gap: 4rem;
+    margin: 0;
+    padding: 1rem 1rem 6rem;
+    list-style: none;
+    border-top: 1px solid var(--color-line);
+  }
+  .pj {
+    display: grid;
+    gap: 1.5rem;
+    align-content: start;
+    padding-top: 2rem;
+  }
+  .pj[hidden] {
+    display: none;
+  }
+  .pj-vis {
+    display: block;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    box-shadow: 0 24px 50px -34px rgb(8 18 36 / 0.55);
+    transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 600ms;
+  }
+  .pj:hover .pj-vis {
+    transform: translateY(-6px);
+    box-shadow: 0 34px 60px -32px rgb(8 18 36 / 0.6);
+  }
+  .pj-vis :global(.mg-replay) {
+    display: none;
+  }
+  .pj-meta {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 34rem;
+  }
+  .pj-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2.1rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--color-strong);
+    text-wrap: balance;
+  }
+  .pj-line {
+    color: var(--color-muted);
+    line-height: 1.55;
+  }
+  .pj-go {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: fit-content;
+    min-height: 2.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-strong);
+    border-bottom: 1px solid var(--color-accent);
+    transition: gap 300ms cubic-bezier(0.22, 1, 0.36, 1), color 200ms;
+  }
+  .pj:hover .pj-go,
+  .pj-go:hover {
+    gap: 1rem;
+    color: var(--color-accent);
+  }
+  .pj-reveal {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  @media (min-width: 768px) {
+    .px {
+      padding: 4rem 2.5rem 4rem;
+    }
+    .pgrid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: clamp(2rem, 4vw, 4.5rem);
+      row-gap: 5.5rem;
+      padding: 1rem 2.5rem 8rem;
+    }
+    /* A calm stagger: the second column sits a little lower. */
+    .pj.odd {
+      margin-top: 4rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pj-vis {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-grid]');
+  const bar = document.querySelector<HTMLElement>('[data-filter]');
+  if (root && bar) {
+    const items = [...root.querySelectorAll<HTMLElement>('.pj')];
+    const btns = [...bar.querySelectorAll<HTMLButtonElement>('[data-cat]')];
+    const stagger = () => items.filter((li) => !li.hidden).forEach((li, i) => li.classList.toggle('odd', i % 2 === 1));
+    stagger();
+    btns.forEach((b) =>
+      b.addEventListener('click', () => {
+        btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        const cat = b.dataset.cat!;
+        items.forEach((li) => (li.hidden = cat !== 'all' && li.dataset.cat !== cat));
+        stagger();
+      }),
+    );
+    // Quiet reveal as each project scrolls in.
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      items.forEach((li) => li.classList.add('pj-reveal'));
+      const io = new IntersectionObserver(
+        (es) =>
+          es.forEach((e) => {
+            if (!e.isIntersecting) return;
+            const el = e.target as HTMLElement;
+            el.style.transition = 'opacity 800ms cubic-bezier(0.22,1,0.36,1), transform 800ms cubic-bezier(0.22,1,0.36,1)';
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+            io.unobserve(el);
+          }),
+        { threshold: 0.12 },
+      );
+      items.forEach((li) => io.observe(li));
+    }
+  }
+</script>

@@ -711,7 +711,7 @@ export const skills = [
   {
     group: 'Platforms',
     icon: 'layers',
-    items: ['Microsoft Fabric (Lakehouse, Warehouse, Dataflow Gen2, Notebooks)', 'SQL Server', 'MySQL (Netflix titles ETL)', 'SQLite', 'Power Automate', 'Google Sheets / Apps Script'],
+    items: ['Microsoft Fabric', 'Lakehouse', 'Warehouse', 'Dataflow Gen2', 'Notebooks', 'SQL Server', 'MySQL (Netflix titles ETL)', 'SQLite', 'Power Automate', 'Google Sheets / Apps Script'],
     proof: { label: 'Can mail data predict housing vacancy?', href: '/projects/can-mail-data-predict-housing-vacancy' },
   },
 ];
