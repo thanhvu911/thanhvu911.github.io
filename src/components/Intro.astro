@@ -252,16 +252,21 @@ import { profile } from '../data/portfolio';
             var cell = low ? 11 : mob ? 6 : 7, cols = Math.max(6, Math.round(rc2.width / cell)), rows = Math.max(6, Math.round(rc2.height / cell));
             var oc = document.createElement('canvas'); oc.width = cols; oc.height = rows;
             var ox = oc.getContext('2d'), sc = Math.max(rc2.width / im.naturalWidth, rc2.height / im.naturalHeight), sw = rc2.width / sc, sh = rc2.height / sc;
-            ox.drawImage(im, (im.naturalWidth - sw) / 2, (im.naturalHeight - sh) / 2, sw, sh, 0, 0, cols, rows);
+            // Crop exactly like the real photo does (object-position), so the pixel portrait lines up with it.
+            var opos = (getComputedStyle(im).objectPosition || '50% 50%').split(' '), opx = parseFloat(opos[0]), opy = parseFloat(opos[1]);
+            opx = isNaN(opx) ? 0.5 : opx / 100; opy = isNaN(opy) ? 0.5 : opy / 100;
+            ox.drawImage(im, (im.naturalWidth - sw) * opx, (im.naturalHeight - sh) * opy, sw, sh, 0, 0, cols, rows);
             var px2 = ox.getImageData(0, 0, cols, rows).data;
             photoRc = rc2;
+            // Four tones from the stage palette, split by quartile so the face, hair and suit stay distinct whatever the photo's lighting.
+            var lums = [];
+            for (var li = 0; li < cols * rows; li++) lums.push((0.299 * px2[li * 4] + 0.587 * px2[li * 4 + 1] + 0.114 * px2[li * 4 + 2]) / 255);
+            var sorted = lums.slice().sort(function (a, b) { return a - b; }), qa = sorted[Math.floor(sorted.length * 0.3)], qb = sorted[Math.floor(sorted.length * 0.55)], qc = sorted[Math.floor(sorted.length * 0.8)];
             for (var rr = 0; rr < rows; rr++) for (var cc2 = 0; cc2 < cols; cc2++) {
-              var pi3 = (rr * cols + cc2) * 4;
+              var lum = lums[rr * cols + cc2];
               mosaic.push({ x: rc2.left + (cc2 + 0.5) * rc2.width / cols, y: rc2.top + (rr + 0.5) * rc2.height / rows, w: rc2.width / cols + 0.6, h: rc2.height / rows + 0.6,
-                col: (function () { // four tones from the stage palette
-                  var lum = (0.299 * px2[pi3] + 0.587 * px2[pi3 + 1] + 0.114 * px2[pi3 + 2]) / 255;
-                  return lum < 0.28 ? C.strong : lum < 0.5 ? C.muted : lum < 0.72 ? C.accent : C.surface;
-                })(), d: rnd(rr * cols + cc2) * 420, o: (rr / rows) * 260 });
+                col: lum < qa ? C.strong : lum < qb ? C.muted : lum < qc ? C.accent : C.surface,
+                d: rnd(rr * cols + cc2) * 420, o: (rr / rows) * 260 });
             }
           }
         } catch (e) {}
@@ -414,7 +419,8 @@ import { profile } from '../data/portfolio';
         var fp = smooth(clamp((t - BURST - 120) / 750));
         flyers.forEach(function (f, fi) {
           var q = smooth(clamp(fp * 1.15 - fi * 0.04)), sz3 = f.s + (f.ts - f.s) * smooth(q * 1.8), x3 = f.x + (f.tx - f.x) * q, y3 = f.y + (f.ty - f.y) * q - Math.sin(q * 3.1416) * 40;
-          ctx.save(); ctx.translate(x3, y3); ctx.fillStyle = C.bg; ctx.fillRect(-sz3 / 2, -sz3 / 2, sz3, sz3); shape(fi, sz3); ctx.restore();
+          // fade out once landed, so the real nodes underneath take over with no pop
+          ctx.save(); ctx.globalAlpha = 1 - smooth((t - BURST - 1500) / 600); ctx.translate(x3, y3); ctx.fillStyle = C.bg; ctx.fillRect(-sz3 / 2, -sz3 / 2, sz3, sz3); shape(fi, sz3); ctx.restore();
         });
       }
       ctx.globalAlpha = 1;
