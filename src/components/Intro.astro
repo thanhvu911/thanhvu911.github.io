@@ -1,0 +1,314 @@
+---
+import { profile } from '../data/portfolio';
+---
+
+<div class="intro" data-intro role="dialog" aria-label="Introduction to Thanh Vu">
+  <i class="intro-half intro-top"></i>
+  <i class="intro-half intro-bot"></i>
+  <canvas class="intro-canvas" data-intro-canvas aria-hidden="true"></canvas>
+
+  <button type="button" class="intro-skip" data-intro-skip>Skip <span aria-hidden="true">»</span></button>
+
+  <div class="intro-top-txt">
+    <p class="intro-eyebrow" data-eyebrow>// run: portfolio.pipeline</p>
+    <p class="intro-name" data-name aria-label={profile.name}>{profile.name}</p>
+    <p class="intro-role" data-role>{profile.role}</p>
+  </div>
+
+  <div class="intro-bottom-txt" aria-hidden="true">
+    <p class="intro-count" data-count>0</p>
+    <p class="intro-countlabel">rows modeled in a Medallion warehouse</p>
+    <p class="intro-ticker" data-ticker>&nbsp;</p>
+  </div>
+
+  <div class="intro-flash" data-flash aria-hidden="true"></div>
+</div>
+
+<style is:global>
+  .intro { display: none; }
+  html.intro-on { overflow: hidden; }
+  html.intro-on .intro { position: fixed; inset: 0; z-index: 1000; display: block; overflow: hidden; color: var(--color-ink); }
+  .intro-half { position: absolute; left: 0; right: 0; height: 50.5%; background: var(--color-bg); transition: transform 0.8s cubic-bezier(0.7, 0, 0.2, 1); }
+  .intro-top { top: 0; border-bottom: 3px solid transparent; }
+  .intro-bot { bottom: 0; border-top: 3px solid transparent; }
+  .intro.is-open .intro-top { transform: translateY(-101%); }
+  .intro.is-open .intro-bot { transform: translateY(101%); }
+  .intro-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .intro-top-txt { position: absolute; left: 0; right: 0; top: 11%; text-align: center; padding: 0 1rem; transition: opacity 0.25s; pointer-events: none; }
+  .intro-eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent-ink); margin: 0 0 0.8rem; opacity: 0; transition: opacity 0.5s; }
+  .intro-eyebrow.is-on { opacity: 1; }
+  .intro-name { font-family: var(--font-display); font-size: clamp(2.6rem, 11vw, 6.6rem); line-height: 0.95; letter-spacing: 0.01em; color: var(--color-strong); margin: 0; text-transform: uppercase; overflow: hidden; padding-bottom: 0.08em; }
+  .intro-name span { display: inline-block; transform: translateY(105%); transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc(var(--i) * 45ms); }
+  .intro-name.is-on span { transform: none; }
+  .intro-role { font-family: var(--font-sans); font-weight: 600; font-size: clamp(0.95rem, 2.6vw, 1.4rem); color: var(--color-accent-ink); margin: 0.7rem 0 0; opacity: 0; transform: translateY(10px); transition: opacity 0.6s, transform 0.6s; }
+  .intro-role.is-on { opacity: 1; transform: none; }
+  .intro-bottom-txt { position: absolute; left: 0; right: 0; bottom: 7%; text-align: center; padding: 0 1rem; transition: opacity 0.25s; pointer-events: none; }
+  .intro-count { font-family: var(--font-mono); font-weight: 700; font-size: clamp(1.8rem, 7vw, 3.4rem); letter-spacing: -0.02em; margin: 0; color: var(--color-strong); font-variant-numeric: tabular-nums; }
+  .intro-countlabel { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); margin: 0.2rem 0 0.9rem; }
+  .intro-ticker { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-ink); margin: 0; min-height: 1.3em; }
+  .intro-ticker b { color: var(--color-accent-ink); font-weight: 600; }
+  .intro.is-burst .intro-top-txt, .intro.is-burst .intro-bottom-txt { opacity: 0; }
+  .intro-skip {
+    position: absolute; top: 1rem; right: 1rem; z-index: 3; min-height: 44px; padding: 0 1rem; cursor: pointer;
+    font: 600 0.75rem var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--color-strong); background: var(--color-surface); border: 1px solid var(--color-line);
+  }
+  .intro-skip:hover, .intro-skip:focus-visible { border-color: var(--color-accent); outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .intro.is-burst .intro-skip { opacity: 0; pointer-events: none; }
+  .intro-flash { position: absolute; inset: 0; background: var(--color-accent-bright); opacity: 0; pointer-events: none; }
+</style>
+
+<script is:inline>
+  (function () {
+    var root = document.documentElement;
+    var el = document.querySelector('[data-intro]');
+    if (!el || !root.classList.contains('intro-on')) return;
+    var $ = function (s) { return el.querySelector(s); };
+    var canvas = $('[data-intro-canvas]');
+    var ctx = canvas.getContext('2d');
+    var cs = getComputedStyle(root);
+    var v = function (n) { return cs.getPropertyValue(n).trim() || '#888'; };
+    var C = {
+      bg: v('--color-bg'), surface: v('--color-surface'), strong: v('--color-strong'), ink: v('--color-ink'), muted: v('--color-muted'),
+      line: v('--color-line'), accent: v('--color-accent'), accentInk: v('--color-accent-ink'), blue: v('--color-blue'),
+    };
+    var mono = v('--font-mono');
+    var nameEl = $('[data-name]'), roleEl = $('[data-role]'), eyebrow = $('[data-eyebrow]');
+    var countEl = $('[data-count]'), tickEl = $('[data-ticker]'), flash = $('[data-flash]');
+
+    // split the name into letters that slide up
+    var nm = nameEl.textContent;
+    nameEl.textContent = '';
+    nm.split('').forEach(function (ch, i) {
+      var s = document.createElement('span');
+      s.setAttribute('aria-hidden', 'true');
+      s.style.setProperty('--i', i);
+      s.textContent = ch === ' ' ? ' ' : ch;
+      nameEl.appendChild(s);
+    });
+
+    var ROWS = 131000000, BURST = 4000, END = 5500;
+    var STAGES = ['RAW', 'BRONZE', 'SILVER', 'GOLD', 'POWER BI'];
+    var TICK = [
+      [250, '<b>ingest</b>  CSV files, APIs, Google Sheets'],
+      [1000, '<b>land</b>  as-is, nothing lost'],
+      [1700, '<b>clean</b>  conform types, fix keys'],
+      [2400, '<b>model</b>  facts and dimensions'],
+      [3100, '<b>report</b>  Power BI, ready to read'],
+    ];
+
+    var W = 0, H = 0, dpr = 1, x0 = 0, x1 = 0, py = 0, S = 34, mob = false, diag = 0;
+    function size() {
+      dpr = Math.min(devicePixelRatio || 1, 2);
+      W = innerWidth; H = innerHeight; mob = W < 700;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      x0 = W * (mob ? 0.12 : 0.1); x1 = W * (mob ? 0.86 : 0.88);
+      py = H * 0.62; S = mob ? 36 : 54; diag = Math.hypot(W, H);
+    }
+    size();
+    addEventListener('resize', size);
+
+    var rnd = function (i) { var s = Math.sin(i * 127.1 + 3.7) * 43758.5453; return s - Math.floor(s); };
+    var clamp = function (x, a, b) { return Math.min(b === undefined ? 1 : b, Math.max(a === undefined ? 0 : a, x)); };
+    var smooth = function (x) { x = clamp(x); return x * x * (3 - 2 * x); };
+
+    var N = mob ? 36 : 60;
+    var chaosCols = [C.ink, C.muted, C.accent, C.blue];
+    var ps = [];
+    for (var i = 0; i < N; i++) {
+      ps.push({ spawn: 300 + rnd(i) * 1500, travel: 1500 + rnd(i + 11) * 400, lane: Math.floor(rnd(i + 5) * 5) - 2, ph: rnd(i + 2) * 6.28, f: 2 + rnd(i + 8) * 3,
+        s0: 3 + rnd(i + 4) * 4, c0: chaosCols[Math.floor(rnd(i + 6) * 4)], vx: 0, vy: 0, x: 0, y: 0, a: 0 });
+    }
+    var act = STAGES.map(function (_, k) { return 300 + 1900 * 0 + Math.min.apply(null, ps.map(function (p) { return p.spawn + p.travel * (k / 4); })); });
+    var profile = [0.45, 0.62, 0.5, 0.78, 0.92, 0.7, 1, 0.85];
+
+    function nodeX(k) { return x0 + (x1 - x0) * (k / 4); }
+    function pos(p, t) {
+      var q = clamp((t - p.spawn) / p.travel);
+      var A0 = Math.min(H * 0.1, 56);
+      var chaos = (Math.sin(t / 1000 * p.f + p.ph) + Math.sin(t / 1000 * p.f * 1.7 + p.ph * 2) * 0.5) / 1.5;
+      var y = py + chaos * A0 * (1 - smooth(q / 0.3)) + p.lane * (mob ? 7 : 10) * (1 - smooth((q - 0.5) / 0.25));
+      return { q: q, x: x0 + (x1 - x0) * q, y: y };
+    }
+
+    var t0 = performance.now(), offset = 0;
+    var burst = false, finished = false, tickI = -1, nameOn = false;
+    var bursts = [], rings = [];
+
+    function frame(now) {
+      if (finished) return;
+      var t = now - t0 + offset;
+
+      // ---- DOM text ----
+      if (t > 80) eyebrow.classList.add('is-on');
+      if (t > 150 && !nameOn) { nameOn = true; nameEl.classList.add('is-on'); }
+      if (t > 900) roleEl.classList.add('is-on');
+      var cp = clamp((t - 300) / 3100);
+      countEl.textContent = cp < 1 ? Math.floor(ROWS * cp * cp * (3 - 2 * cp)).toLocaleString('en-US') : '131M+';
+      for (var k = TICK.length - 1; k >= 0; k--) {
+        if (t >= TICK[k][0]) { if (tickI !== k) { tickI = k; tickEl.innerHTML = TICK[k][1]; } break; }
+      }
+
+      // ---- burst trigger ----
+      if (t >= BURST && !burst) {
+        burst = true;
+        el.classList.add('is-burst');
+        flash.animate([{ opacity: 0.8 }, { opacity: 0 }], { duration: 480, easing: 'ease-out' });
+        var by = py;
+        ps.forEach(function (p, pi) {
+          if (pi % 2) return;
+          p.c0 = pi % 4 ? C.accent : C.strong;
+          var o = pos(p, BURST), ang = Math.atan2(o.y - by, o.x - W / 2) + (Math.random() - 0.5) * 1.2, sp = 250 + Math.random() * 1300;
+          bursts.push({ x: o.x, y: o.y, vx: Math.cos(ang) * sp * 1.2, vy: Math.sin(ang) * sp * 0.35, s: p.s0 + 1, c: p.c0, r: Math.random() * 6, t: BURST });
+        });
+        for (var k2 = 0; k2 < 5; k2++) {
+          var ang2 = (k2 - 2) * 0.5 + (Math.random() - 0.5) * 0.4 - Math.PI / 2;
+          bursts.push({ x: nodeX(k2), y: py, vx: Math.cos(ang2) * 500 * (k2 - 2 || 1) * 0.4, vy: -400 - Math.random() * 300, s: S, c: k2 === 3 ? C.accent : C.strong, r: 0, t: BURST, big: true });
+        }
+        rings.push({ t: BURST, c: C.accent, w: 5 }, { t: BURST + 90, c: C.strong, w: 2 });
+        setTimeout(function () { el.classList.add('is-open'); }, 150);
+      }
+
+      // ---- canvas ----
+      ctx.clearRect(0, 0, W, H);
+      if (!burst) {
+        // faint grid
+        ctx.strokeStyle = C.line; ctx.globalAlpha = 0.35; ctx.lineWidth = 1; ctx.beginPath();
+        for (var gx = 0; gx < W; gx += 56) { ctx.moveTo(gx, 0); ctx.lineTo(gx, H); }
+        for (var gy = 0; gy < H; gy += 56) { ctx.moveTo(0, gy); ctx.lineTo(W, gy); }
+        ctx.stroke(); ctx.globalAlpha = 1;
+
+        // rail + progress
+        ctx.strokeStyle = C.line; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x0, py); ctx.lineTo(x1, py); ctx.stroke();
+        var lead = clamp((t - 500) / 1900);
+        ctx.strokeStyle = C.strong; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x0, py); ctx.lineTo(x0 + (x1 - x0) * lead, py); ctx.stroke();
+
+        // nodes
+        for (var n = 0; n < 5; n++) {
+          var nx = nodeX(n), on = t >= act[n], since = t - act[n];
+          var sc = on ? 1 + 0.22 * Math.max(0, 1 - since / 380) : 1, sz = S * sc, h2 = sz / 2;
+          ctx.save(); ctx.translate(nx, py);
+          ctx.fillStyle = C.bg; ctx.fillRect(-h2, -h2, sz, sz);
+          if (!on) { ctx.setLineDash([4, 4]); ctx.strokeStyle = C.line; ctx.lineWidth = 2; ctx.strokeRect(-h2, -h2, sz, sz); ctx.setLineDash([]); }
+          else {
+            if (n === 0) { ctx.strokeStyle = C.muted; ctx.lineWidth = 2; ctx.strokeRect(-h2, -h2, sz, sz); }
+            if (n === 1) { ctx.strokeStyle = C.accentInk; ctx.lineWidth = 2; ctx.strokeRect(-h2, -h2, sz, sz);
+              ctx.beginPath(); ctx.rect(-h2, -h2, sz, sz); ctx.clip(); ctx.lineWidth = 1.5; ctx.beginPath();
+              for (var hh = -sz; hh < sz; hh += 7) { ctx.moveTo(hh, h2); ctx.lineTo(hh + sz, -h2); } ctx.stroke(); }
+            if (n === 2) { ctx.fillStyle = C.muted; ctx.fillRect(-h2, -h2, sz, sz); }
+            if (n === 3) { ctx.fillStyle = C.accent; ctx.fillRect(-h2, -h2, sz, sz); }
+            if (n === 4) { ctx.strokeStyle = C.strong; ctx.lineWidth = 2; ctx.strokeRect(-h2, -h2, sz, sz);
+              ctx.fillStyle = C.accent; [0.35, 0.6, 0.85].forEach(function (b, bi) { ctx.fillRect(-h2 + 5 + bi * (sz - 10) / 3, h2 - 5 - (sz - 10) * b, (sz - 10) / 3 - 3, (sz - 10) * b); }); }
+          }
+          ctx.restore();
+          if (on && since < 650) { // pulse ring
+            ctx.strokeStyle = C.accent; ctx.globalAlpha = 1 - since / 650; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(nx, py, S * 0.6 + since * 0.08, 0, 6.2832); ctx.stroke(); ctx.globalAlpha = 1;
+          }
+          ctx.fillStyle = on ? C.strong : C.muted; ctx.font = '600 ' + (mob ? 10 : 13) + 'px ' + mono; ctx.textAlign = 'center';
+          ctx.fillText(STAGES[n] + (on ? ' ✓' : ''), nx, py + S * 0.5 + (mob ? 20 : 26));
+          if (on && n < 4) { // a tiny picture of what happens at this stage
+            var ga = clamp(since / 450), top = py - S * 0.5 - 14, fs = mob ? 9 : 12;
+            ctx.globalAlpha = ga; ctx.font = '600 ' + fs + 'px ' + mono;
+            var chips = [['CSV', 'API', 'SHEETS'], ['AS-IS'], ['TYPES ✓', 'KEYS ✓'], null][n];
+            if (chips) chips.forEach(function (label, ci) {
+              var cw = label.length * (fs * 0.62) + 12, cy = top - ci * (fs + 12) - (1 - ga) * 8;
+              ctx.fillStyle = C.surface; ctx.fillRect(nx - cw / 2, cy - fs - 3, cw, fs + 8);
+              ctx.strokeStyle = n === 0 ? C.muted : n === 1 ? C.accentInk : C.strong; ctx.lineWidth = 1; ctx.strokeRect(nx - cw / 2, cy - fs - 3, cw, fs + 8);
+              ctx.fillStyle = C.strong; ctx.fillText(label, nx, cy);
+            });
+            if (n === 3) { // star schema: one fact table, four dimensions
+              var sy = top - (mob ? 46 : 70), r = mob ? 30 : 46;
+              ctx.fillStyle = C.accentInk; ctx.fillText('FACT + DIM', nx, sy - r - (mob ? 10 : 14));
+              ctx.strokeStyle = C.accentInk; ctx.lineWidth = 1.5; ctx.beginPath();
+              [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (d) { ctx.moveTo(nx, sy); ctx.lineTo(nx + d[0] * r, sy + d[1] * r); });
+              ctx.stroke();
+              var fb = mob ? 16 : 24, db = mob ? 11 : 16;
+              ctx.fillStyle = C.accent; ctx.fillRect(nx - fb / 2, sy - fb / 2, fb, fb);
+              ctx.fillStyle = C.surface; ctx.strokeStyle = C.strong; ctx.lineWidth = 1.5;
+              [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (d) { ctx.fillRect(nx + d[0] * r - db / 2, sy + d[1] * r - db / 2, db, db); ctx.strokeRect(nx + d[0] * r - db / 2, sy + d[1] * r - db / 2, db, db); });
+            }
+            ctx.globalAlpha = 1;
+          }
+        }
+
+        // rows
+        var arrived = 0;
+        ps.forEach(function (p) {
+          var o = pos(p, t);
+          if (t < p.spawn) return;
+          if (o.q >= 1) arrived++;
+          var q = o.q, col = q < 0.25 ? p.c0 : q < 0.5 ? C.accentInk : q < 0.75 ? C.muted : C.accent;
+          var sz2 = q < 0.25 ? p.s0 : q < 0.75 ? 5 : 5 + 3 * smooth((q - 0.75) / 0.25);
+          if (q >= 1) return;
+          if (q > 0.25) { ctx.strokeStyle = col; ctx.globalAlpha = 0.3; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(o.x - 14, o.y); ctx.lineTo(o.x, o.y); ctx.stroke(); }
+          ctx.globalAlpha = 1; ctx.fillStyle = col; ctx.fillRect(o.x - sz2 / 2, o.y - sz2 / 2, sz2, sz2);
+        });
+
+        // chart rising from the Power BI node
+        var a = arrived / N, mh = Math.min(H * 0.2, 150), bw = mob ? 7 : 10, bx0 = x1 - (profile.length * (bw + 4)) / 2, base = py - S * 0.5 - 14;
+        var tops = [];
+        if (a > 0.03) { // the report card the bars sit in
+          var cw2 = profile.length * (bw + 4) + 20, ch2 = mh + 34;
+          ctx.fillStyle = C.surface; ctx.fillRect(bx0 - 10, base - ch2 + 10, cw2, ch2);
+          ctx.strokeStyle = C.strong; ctx.lineWidth = 2; ctx.strokeRect(bx0 - 10, base - ch2 + 10, cw2, ch2);
+          ctx.fillStyle = C.strong; ctx.fillRect(bx0 - 10, base - ch2 + 10, cw2, 16);
+          ctx.fillStyle = C.accent; ctx.fillRect(bx0 - 4, base - ch2 + 15, 18, 6);
+        }
+        if (t > 3150 && t < 3950) { // one gold pulse closes the pipeline
+          var pp = (t - 3150) / 800, px = x0 + (x1 - x0) * pp;
+          ctx.fillStyle = C.accent; ctx.fillRect(Math.max(x0, px - 150), py - 5, Math.min(150, px - x0), 10);
+          ctx.fillRect(px - 7, py - 12, 14, 24);
+        }
+        profile.forEach(function (pf, bi) {
+          var hgt = pf * mh * smooth(a * 1.2 - bi * 0.05);
+          ctx.fillStyle = bi % 2 ? C.strong : C.accent; ctx.fillRect(bx0 + bi * (bw + 3), base - hgt, bw, hgt);
+          tops.push([bx0 + bi * (bw + 3) + bw / 2, base - hgt]);
+        });
+        if (a > 0.85) {
+          var lp = clamp((a - 0.85) / 0.15);
+          ctx.strokeStyle = C.accentInk; ctx.lineWidth = 2; ctx.beginPath();
+          tops.forEach(function (tp, ti) { if (ti / 7 <= lp) { ti ? ctx.lineTo(tp[0], tp[1] - 6) : ctx.moveTo(tp[0], tp[1] - 6); } });
+          ctx.stroke();
+        }
+      } else {
+        var bt = (t - BURST) / 1000;
+        bursts.forEach(function (b) {
+          var dt = (t - b.t) / 1000, drag = Math.exp(-dt * 2.2);
+          var x = b.x + b.vx * (1 - drag) / 2.2, y = b.y + b.vy * (1 - drag) / 2.2 + (b.big ? 200 * dt * dt : 0);
+          ctx.globalAlpha = clamp(1 - dt / 1.3); ctx.fillStyle = b.c;
+          ctx.save(); ctx.translate(x, y); ctx.rotate(b.r + dt * (b.big ? 3 : 6)); ctx.fillRect(-b.s / 2, -b.s / 2, b.s, b.s); ctx.restore();
+        });
+        rings.forEach(function (r) {
+          var rt = (t - r.t) / 1000; if (rt <= 0) return;
+          ctx.globalAlpha = clamp(1 - rt / 0.9); ctx.strokeStyle = r.c; ctx.lineWidth = r.w;
+          ctx.beginPath(); ctx.arc(W / 2, py, rt * diag * 0.8, 0, 6.2832); ctx.stroke();
+        });
+        ctx.globalAlpha = 1;
+      }
+      ctx.globalAlpha = 1;
+
+      if (t >= END) return finish();
+      requestAnimationFrame(frame);
+    }
+
+    function finish() {
+      if (finished) return;
+      finished = true;
+      removeEventListener('resize', size);
+      document.removeEventListener('keydown', onKey);
+      root.classList.remove('intro-on');
+    }
+    function skip() {
+      if (finished) return;
+      if (burst) return finish();
+      offset += Math.max(0, BURST - (performance.now() - t0 + offset));
+    }
+    function onKey(e) { if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); skip(); } }
+    $('[data-intro-skip]').addEventListener('click', skip);
+    document.addEventListener('keydown', onKey);
+    $('[data-intro-skip]').focus({ preventScroll: true });
+    requestAnimationFrame(frame);
+  })();
+</script>

@@ -4,6 +4,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import CommandPalette from '../components/CommandPalette.astro';
 import Assistant from '../components/Assistant.astro';
+import Intro from '../components/Intro.astro';
 import { profile } from '../data/portfolio';
 
 interface Props {
@@ -67,6 +68,17 @@ const personSchema = {
         }
         addEventListener('pageswap', quiet);
         addEventListener('pagereveal', quiet);
+        // Intro: home page only, once per browser session, never for
+        // reduced-motion visitors. Add ?intro to replay it.
+        try {
+          var home = location.pathname.replace(/\/+$/, '') === '';
+          var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+          var again = new URLSearchParams(location.search).has('intro');
+          if (home && !calm && (again || !sessionStorage.getItem('intro'))) {
+            root.classList.add('intro-on');
+            sessionStorage.setItem('intro', '1');
+          }
+        } catch (e) {}
         // Arriving through the page wipe: start covered, then the wipe
         // script at the end of the body slides the cover away.
         try {
@@ -107,6 +119,7 @@ const personSchema = {
     <Footer />
     <CommandPalette />
     <Assistant />
+    {Astro.url.pathname === '/' && <Intro />}
     <div class="pwipe" aria-hidden="true">
       <span class="band"><span class="band-run"><i></i><i></i><i></i><i></i><i></i></span></span>
       <div class="pwipe-txt">
