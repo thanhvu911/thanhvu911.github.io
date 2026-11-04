@@ -32,6 +32,8 @@ import { profile } from '../data/portfolio';
 <style is:global>
   .intro { display: none; }
   html.intro-on { overflow: hidden; }
+  .assistant-launch { transition: opacity 0.5s ease; }
+  html.intro-on .assistant-launch { opacity: 0; pointer-events: none; }
   html.intro-on .intro { position: fixed; inset: 0; z-index: 1000; display: block; overflow: hidden; color: var(--color-ink); }
   .intro-half { position: absolute; left: 0; right: 0; height: 50.5%; background: var(--color-bg); transition: transform 0.8s cubic-bezier(0.7, 0, 0.2, 1); }
   .intro-top { top: 0; border-bottom: 3px solid transparent; }
@@ -99,7 +101,8 @@ import { profile } from '../data/portfolio';
       nameEl.appendChild(s);
     });
 
-    var BURST = 6700, END = 8700;
+    var BURST = 6700, END = 9000;
+    var low = false, lastNow = 0, slowSum = 0, slowN = 0, perfChecked = false;
     var ST = [500, 1650, 2800, 3950, 5100];   // when the data reaches each stage
     var GLOSS = ['RAW = THE ORIGINAL FILES', 'BRONZE = SAVED AS-IS', 'SILVER = CLEANED UP', 'GOLD = READY TO USE', 'POWER BI = THE REPORT TOOL'];
     var CARDS = [
@@ -135,7 +138,7 @@ import { profile } from '../data/portfolio';
         s0: 3 + rnd(i + 4) * 4, c0: chaosCols[Math.floor(rnd(i + 6) * 4)], vx: 0, vy: 0, x: 0, y: 0, a: 0 });
     }
     // Keep the words to a minimum: a big number and a two-word label per step.
-    var SHORT = ['Messy files', 'Records loaded', 'Mistakes caught', 'Rows organized', 'One clear report'];
+    var SHORT = ['Messy files', 'Records loaded', 'Bad totals found', 'Rows organized', 'One clear report'];
     CARDS.forEach(function (c, i) { c.title = SHORT[i]; c.label = ''; c.text = ''; });
     CARDS[4].fmt = function (v) { return v + ' counties'; };
     var act = ST.slice();
@@ -183,6 +186,18 @@ import { profile } from '../data/portfolio';
     function frame(now) {
       if (finished) return;
       var t = now - t0 + offset;
+
+      // ---- slow-phone fallback: measure early frame times ----
+      if (!perfChecked) {
+        if (lastNow && t > 300) { slowSum += Math.min(now - lastNow, 200); slowN++; }
+        lastNow = now;
+        if (t > 1500 && slowN > 8) {
+          perfChecked = true;
+          var avg = slowSum / slowN;
+          if (avg > 90) return finish();   // far too slow: skip the intro
+          if (avg > 38) low = true;        // slow: fewer particles, bigger pixels
+        }
+      }
 
       // ---- DOM text ----
       if (t > 80) eyebrow.classList.add('is-on');
@@ -234,7 +249,7 @@ import { profile } from '../data/portfolio';
           var im = document.querySelector('.h-photo img');
           var rc2 = im && im.getBoundingClientRect();
           if (im && im.complete && im.naturalWidth && rc2.width > 40 && rc2.top < H && rc2.bottom > 0) {
-            var cell = mob ? 6 : 7, cols = Math.max(6, Math.round(rc2.width / cell)), rows = Math.max(6, Math.round(rc2.height / cell));
+            var cell = low ? 11 : mob ? 6 : 7, cols = Math.max(6, Math.round(rc2.width / cell)), rows = Math.max(6, Math.round(rc2.height / cell));
             var oc = document.createElement('canvas'); oc.width = cols; oc.height = rows;
             var ox = oc.getContext('2d'), sc = Math.max(rc2.width / im.naturalWidth, rc2.height / im.naturalHeight), sw = rc2.width / sc, sh = rc2.height / sc;
             ox.drawImage(im, (im.naturalWidth - sw) / 2, (im.naturalHeight - sh) / 2, sw, sh, 0, 0, cols, rows);
@@ -251,7 +266,7 @@ import { profile } from '../data/portfolio';
           }
         } catch (e) {}
         rings.push({ t: BURST, c: C.accent, w: 3 }, { t: BURST + 90, c: C.strong, w: 1.5 });
-        setTimeout(function () { el.classList.add('is-open'); }, 560);
+        setTimeout(function () { el.classList.add('is-open'); }, 760);
       }
 
       // ---- canvas ----
@@ -319,7 +334,8 @@ import { profile } from '../data/portfolio';
 
         // rows
         var arrived = 0;
-        ps.forEach(function (p) {
+        ps.forEach(function (p, pIdx) {
+          if (low && pIdx % 2) return;
           var o = pos(p, t);
           if (t < 200 + p.d * 0.5) return;
           if (o.q >= 1) arrived++;
@@ -331,7 +347,8 @@ import { profile } from '../data/portfolio';
         });
 
         // chart rising from the Power BI node
-        var a = arrived / N, mh = Math.min(H * 0.2, 150), cardW = mob ? 132 : 210, bx0 = Math.min(x1 - cardW / 2 + 10, W - cardW - 4), base = py - S * 0.5 - 14;
+        var a = arrived / (low ? Math.ceil(N / 2) : N), mh = Math.min(H * 0.2, 150), cardW = mob ? 132 : 210,
+          bx0 = mob ? W / 2 - cardW / 2 + 10 : Math.min(x1 - cardW / 2 + 10, W - cardW - 4), base = py - S * 0.5 - 14;
         var tops = [];
         if (a > 0.03) { // the report card the bars sit in
           var cw2 = cardW, ch2 = mh + 34;
@@ -381,16 +398,17 @@ import { profile } from '../data/portfolio';
         });
         ctx.globalAlpha = 1;
         mosaic.forEach(function (m) {
-          var u = (t - BURST - 80 - m.d) / 240, out = (t - BURST - 1050 - m.o) / 400;
+          var u = (t - BURST - 80 - m.d) / 240, out = (t - BURST - 1300 - m.o) / 550;
           if (u <= 0 || out >= 1) return;
           var s = smooth(u) * (1 - smooth(out));
           ctx.fillStyle = m.col; ctx.fillRect(m.x - m.w * s / 2, m.y - m.h * s / 2, m.w * s, m.h * s);
         });
         if (photoRc) { // a friendly label under the portrait
-          var ca = smooth((t - BURST - 450) / 300) * (1 - smooth((t - BURST - 1400) / 350));
+          var ca = smooth((t - BURST - 450) / 300) * (1 - smooth((t - BURST - 1650) / 350));
           if (ca > 0) {
             ctx.globalAlpha = ca; ctx.fillStyle = C.strong; ctx.font = '700 ' + (mob ? 14 : 19) + 'px ' + mono; ctx.textAlign = 'center';
-            ctx.fillText("HI, THAT'S ME", photoRc.left + photoRc.width / 2, photoRc.bottom + (mob ? 20 : 26)); ctx.globalAlpha = 1;
+            var capW = ctx.measureText("HI, THAT'S ME").width, capX = Math.min(W - capW / 2 - 12, Math.max(capW / 2 + 12, photoRc.left + photoRc.width / 2));
+            ctx.fillText("HI, THAT'S ME", capX, photoRc.bottom + (mob ? 20 : 26)); ctx.globalAlpha = 1;
           }
         }
         var fp = smooth(clamp((t - BURST - 120) / 750));
