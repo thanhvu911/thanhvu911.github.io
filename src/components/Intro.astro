@@ -10,15 +10,20 @@ import { profile } from '../data/portfolio';
   <button type="button" class="intro-skip" data-intro-skip>Skip <span aria-hidden="true">»</span></button>
 
   <div class="intro-top-txt">
-    <p class="intro-eyebrow" data-eyebrow>// run: portfolio.pipeline</p>
+    <p class="intro-eyebrow" data-eyebrow>Hi, I'm</p>
     <p class="intro-name" data-name aria-label={profile.name}>{profile.name}</p>
     <p class="intro-role" data-role>{profile.role}</p>
+    <p class="intro-pitch" data-pitch>I turn messy data into clear answers. Here's how.</p>
   </div>
 
   <div class="intro-bottom-txt" aria-hidden="true">
-    <p class="intro-count" data-count>0</p>
-    <p class="intro-countlabel">rows modeled in a Medallion warehouse</p>
-    <p class="intro-ticker" data-ticker>&nbsp;</p>
+    <div class="intro-card" data-card>
+      <p class="intro-step" data-step>01 / RAW</p>
+      <p class="intro-count" data-count>0</p>
+      <p class="intro-countlabel" data-countlabel>&nbsp;</p>
+      <p class="intro-ctitle" data-ctitle>&nbsp;</p>
+      <p class="intro-ticker" data-ticker>&nbsp;</p>
+    </div>
   </div>
 
   <div class="intro-flash" data-flash aria-hidden="true"></div>
@@ -33,20 +38,26 @@ import { profile } from '../data/portfolio';
   .intro-bot { bottom: 0; border-top: 3px solid transparent; }
   .intro.is-open .intro-top { transform: translateY(-101%); }
   .intro.is-open .intro-bot { transform: translateY(101%); }
-  .intro-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .intro-top-txt { position: absolute; left: 0; right: 0; top: 11%; text-align: center; padding: 0 1rem; transition: opacity 0.25s; pointer-events: none; }
-  .intro-eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent-ink); margin: 0 0 0.8rem; opacity: 0; transition: opacity 0.5s; }
+  .intro-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
+  .intro-top-txt { position: absolute; left: 0; right: 0; top: 7%; text-align: center; padding: 0 1rem; transition: opacity 0.25s; pointer-events: none; }
+  .intro-eyebrow { font-family: var(--font-mono); font-size: 1rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent-ink); margin: 0 0 0.8rem; opacity: 0; transition: opacity 0.5s; }
   .intro-eyebrow.is-on { opacity: 1; }
   .intro-name { font-family: var(--font-display); font-size: clamp(2.6rem, 11vw, 6.6rem); line-height: 0.95; letter-spacing: 0.01em; color: var(--color-strong); margin: 0; text-transform: uppercase; overflow: hidden; padding-bottom: 0.08em; }
   .intro-name span { display: inline-block; transform: translateY(105%); transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: calc(var(--i) * 45ms); }
   .intro-name.is-on span { transform: none; }
   .intro-role { font-family: var(--font-sans); font-weight: 600; font-size: clamp(0.95rem, 2.6vw, 1.4rem); color: var(--color-accent-ink); margin: 0.7rem 0 0; opacity: 0; transform: translateY(10px); transition: opacity 0.6s, transform 0.6s; }
   .intro-role.is-on { opacity: 1; transform: none; }
-  .intro-bottom-txt { position: absolute; left: 0; right: 0; bottom: 7%; text-align: center; padding: 0 1rem; transition: opacity 0.25s; pointer-events: none; }
-  .intro-count { font-family: var(--font-mono); font-weight: 700; font-size: clamp(1.8rem, 7vw, 3.4rem); letter-spacing: -0.02em; margin: 0; color: var(--color-strong); font-variant-numeric: tabular-nums; }
-  .intro-countlabel { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); margin: 0.2rem 0 0.9rem; }
-  .intro-ticker { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-ink); margin: 0; min-height: 1.3em; }
-  .intro-ticker b { color: var(--color-accent-ink); font-weight: 600; }
+  .intro-pitch, .intro-step, .intro-countlabel, .intro-ticker { display: none; }
+  .intro-pitch { font-family: var(--font-sans); font-size: clamp(0.95rem, 2.4vw, 1.15rem); color: var(--color-ink); margin: 0.45rem 0 0; opacity: 0; transition: opacity 0.6s; }
+  .intro-pitch.is-on { opacity: 1; }
+  .intro-bottom-txt { position: absolute; left: 0; right: 0; bottom: 3%; text-align: center; padding: 0 1rem; transition: opacity 0.25s; pointer-events: none; }
+  .intro-count { font-family: var(--font-mono); font-weight: 700; font-size: clamp(1.7rem, 5.5vw, 2.9rem); letter-spacing: -0.02em; margin: 0; color: var(--color-strong); font-variant-numeric: tabular-nums; }
+  .intro-countlabel { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-ink); margin: 0.2rem 0 0.8rem; }
+  .intro-card { max-width: 40rem; margin: 0 auto; transition: opacity 0.22s, transform 0.22s; }
+  .intro-card.is-swap { opacity: 0; transform: translateY(8px); }
+  .intro-step { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.2em; color: var(--color-accent-ink); margin: 0 0 0.2rem; font-weight: 600; }
+  .intro-ctitle { font-family: var(--font-display); font-size: clamp(0.95rem, 2.6vw, 1.2rem); color: var(--color-strong); margin: 0 0 0.35rem; text-transform: uppercase; letter-spacing: 0.02em; }
+  .intro-ticker { font-family: var(--font-sans); font-size: clamp(0.95rem, 2.4vw, 1.1rem); line-height: 1.45; color: var(--color-ink); margin: 0; min-height: 2.9em; }
   .intro.is-burst .intro-top-txt, .intro.is-burst .intro-bottom-txt { opacity: 0; }
   .intro-skip {
     position: absolute; top: 1rem; right: 1rem; z-index: 3; min-height: 44px; padding: 0 1rem; cursor: pointer;
@@ -55,7 +66,7 @@ import { profile } from '../data/portfolio';
   }
   .intro-skip:hover, .intro-skip:focus-visible { border-color: var(--color-accent); outline: 2px solid var(--color-accent); outline-offset: 2px; }
   .intro.is-burst .intro-skip { opacity: 0; pointer-events: none; }
-  .intro-flash { position: absolute; inset: 0; background: var(--color-accent-bright); opacity: 0; pointer-events: none; }
+  .intro-flash { position: absolute; inset: 0; background: var(--color-surface); opacity: 0; pointer-events: none; z-index: 1; }
 </style>
 
 <script is:inline>
@@ -75,6 +86,7 @@ import { profile } from '../data/portfolio';
     var mono = v('--font-mono');
     var nameEl = $('[data-name]'), roleEl = $('[data-role]'), eyebrow = $('[data-eyebrow]');
     var countEl = $('[data-count]'), tickEl = $('[data-ticker]'), flash = $('[data-flash]');
+    var pitchEl = $('[data-pitch]'), cardEl = $('[data-card]'), stepEl = $('[data-step]'), labelEl = $('[data-countlabel]'), ctitleEl = $('[data-ctitle]');
 
     // split the name into letters that slide up
     var nm = nameEl.textContent;
@@ -87,15 +99,17 @@ import { profile } from '../data/portfolio';
       nameEl.appendChild(s);
     });
 
-    var ROWS = 131000000, BURST = 4000, END = 5500;
-    var STAGES = ['RAW', 'BRONZE', 'SILVER', 'GOLD', 'POWER BI'];
-    var TICK = [
-      [250, '<b>ingest</b>  CSV files, APIs, Google Sheets'],
-      [1000, '<b>land</b>  as-is, nothing lost'],
-      [1700, '<b>clean</b>  conform types, fix keys'],
-      [2400, '<b>model</b>  facts and dimensions'],
-      [3100, '<b>report</b>  Power BI, ready to read'],
+    var BURST = 6700, END = 8700;
+    var ST = [500, 1650, 2800, 3950, 5100];   // when the data reaches each stage
+    var GLOSS = ['RAW = THE ORIGINAL FILES', 'BRONZE = SAVED AS-IS', 'SILVER = CLEANED UP', 'GOLD = READY TO USE', 'POWER BI = THE REPORT TOOL'];
+    var CARDS = [
+      { n: 12, fmt: function (v) { return v + ' GB'; }, label: 'of messy files to start with', title: 'Start with the raw mess', text: 'Files from many different sources. I keep an untouched copy, so nothing is ever lost.' },
+      { n: 131, fmt: function (v) { return v + 'M+'; }, label: 'records collected', title: 'Collect it all, safely', text: 'More than 131 million records loaded at once, with an automatic record of anything that goes wrong.' },
+      { n: 1.58, fmt: function (v) { return v.toFixed(2) + 'M'; }, label: 'orders with totals that did not add up', title: 'Catch mistakes early', text: '21 automatic checks found them, so the final numbers can be trusted.' },
+      { n: 43.8, fmt: function (v) { return v.toFixed(1) + 'M'; }, label: 'records organized for answers', title: 'Organize it so questions get answers', text: 'Clean data arranged into simple, tested tables that anyone can ask questions of.' },
+      { n: 6, fmt: function (v) { return v + ' counties tested'; }, label: 'did mailed-letter data track housing vacancy?', title: 'Turn it into a clear report', text: 'It depends on the county. The dashboard shows where it works and where it does not.' },
     ];
+    var STAGES = ['RAW', 'BRONZE', 'SILVER', 'GOLD', 'POWER BI'];
 
     var W = 0, H = 0, dpr = 1, x0 = 0, x1 = 0, py = 0, S = 34, mob = false, diag = 0;
     function size() {
@@ -104,7 +118,7 @@ import { profile } from '../data/portfolio';
       canvas.width = W * dpr; canvas.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       x0 = W * (mob ? 0.12 : 0.1); x1 = W * (mob ? 0.86 : 0.88);
-      py = H * 0.62; S = mob ? 36 : 54; diag = Math.hypot(W, H);
+      py = H * 0.575; S = mob ? 36 : 54; diag = Math.hypot(W, H);
     }
     size();
     addEventListener('resize', size);
@@ -117,15 +131,27 @@ import { profile } from '../data/portfolio';
     var chaosCols = [C.ink, C.muted, C.accent, C.blue];
     var ps = [];
     for (var i = 0; i < N; i++) {
-      ps.push({ spawn: 300 + rnd(i) * 1500, travel: 1500 + rnd(i + 11) * 400, lane: Math.floor(rnd(i + 5) * 5) - 2, ph: rnd(i + 2) * 6.28, f: 2 + rnd(i + 8) * 3,
+      ps.push({ d: rnd(i) * 650, lane: Math.floor(rnd(i + 5) * 5) - 2, ph: rnd(i + 2) * 6.28, f: 2 + rnd(i + 8) * 3,
         s0: 3 + rnd(i + 4) * 4, c0: chaosCols[Math.floor(rnd(i + 6) * 4)], vx: 0, vy: 0, x: 0, y: 0, a: 0 });
     }
-    var act = STAGES.map(function (_, k) { return 300 + 1900 * 0 + Math.min.apply(null, ps.map(function (p) { return p.spawn + p.travel * (k / 4); })); });
+    // Keep the words to a minimum: a big number and a two-word label per step.
+    var SHORT = ['Messy files', 'Records loaded', 'Mistakes caught', 'Rows organized', 'One clear report'];
+    CARDS.forEach(function (c, i) { c.title = SHORT[i]; c.label = ''; c.text = ''; });
+    CARDS[4].fmt = function (v) { return v + ' counties'; };
+    var act = ST.slice();
+    // 0..1 along the rail: the data reaches stage k at time ST[k]
+    function prog(u) {
+      if (u <= ST[0]) return 0;
+      if (u >= ST[4]) return 1;
+      for (var k = 0; k < 4; k++) if (u < ST[k + 1]) return (k + (u - ST[k]) / (ST[k + 1] - ST[k])) / 4;
+      return 1;
+    }
+    var cardStart = 0, shown = -1;
     var profile = [0.45, 0.62, 0.5, 0.78, 0.92, 0.7, 1, 0.85];
 
     function nodeX(k) { return x0 + (x1 - x0) * (k / 4); }
     function pos(p, t) {
-      var q = clamp((t - p.spawn) / p.travel);
+      var q = prog(t - p.d);
       var A0 = Math.min(H * 0.1, 56);
       var chaos = (Math.sin(t / 1000 * p.f + p.ph) + Math.sin(t / 1000 * p.f * 1.7 + p.ph * 2) * 0.5) / 1.5;
       var y = py + chaos * A0 * (1 - smooth(q / 0.3)) + p.lane * (mob ? 7 : 10) * (1 - smooth((q - 0.5) / 0.25));
@@ -136,6 +162,24 @@ import { profile } from '../data/portfolio';
     var burst = false, finished = false, tickI = -1, nameOn = false;
     var bursts = [], rings = [];
 
+    var flyers = [], mosaic = [], photoRc = null;
+    function shape(n, sz) {
+      var h = sz / 2;
+      if (n === 0) { ctx.strokeStyle = C.muted; ctx.lineWidth = 2; ctx.strokeRect(-h, -h, sz, sz); }
+      if (n === 1) {
+        ctx.strokeStyle = C.accentInk; ctx.lineWidth = 2; ctx.strokeRect(-h, -h, sz, sz);
+        ctx.save(); ctx.beginPath(); ctx.rect(-h, -h, sz, sz); ctx.clip(); ctx.lineWidth = 1.5; ctx.beginPath();
+        for (var hh = -sz; hh < sz; hh += Math.max(4, sz / 7)) { ctx.moveTo(hh, h); ctx.lineTo(hh + sz, -h); } ctx.stroke(); ctx.restore();
+      }
+      if (n === 2) { ctx.fillStyle = C.muted; ctx.fillRect(-h, -h, sz, sz); }
+      if (n === 3) { ctx.fillStyle = C.accent; ctx.fillRect(-h, -h, sz, sz); }
+      if (n === 4) {
+        ctx.strokeStyle = C.strong; ctx.lineWidth = 2; ctx.strokeRect(-h, -h, sz, sz);
+        ctx.fillStyle = C.accent; var m = sz * 0.14;
+        [0.35, 0.6, 0.85].forEach(function (b, bi) { ctx.fillRect(-h + m + bi * (sz - 2 * m) / 3, h - m - (sz - 2 * m) * b, (sz - 2 * m) / 3 - 2, (sz - 2 * m) * b); });
+      }
+    }
+
     function frame(now) {
       if (finished) return;
       var t = now - t0 + offset;
@@ -143,11 +187,27 @@ import { profile } from '../data/portfolio';
       // ---- DOM text ----
       if (t > 80) eyebrow.classList.add('is-on');
       if (t > 150 && !nameOn) { nameOn = true; nameEl.classList.add('is-on'); }
-      if (t > 900) roleEl.classList.add('is-on');
-      var cp = clamp((t - 300) / 3100);
-      countEl.textContent = cp < 1 ? Math.floor(ROWS * cp * cp * (3 - 2 * cp)).toLocaleString('en-US') : '131M+';
-      for (var k = TICK.length - 1; k >= 0; k--) {
-        if (t >= TICK[k][0]) { if (tickI !== k) { tickI = k; tickEl.innerHTML = TICK[k][1]; } break; }
+      if (t > 1100) roleEl.classList.add('is-on');
+      var si = -1;
+      for (var k = ST.length - 1; k >= 0; k--) if (t >= ST[k]) { si = k; break; }
+      if (si !== tickI) {
+        tickI = si;
+        if (si >= 0) {
+          cardEl.classList.add('is-swap');
+          var cc = CARDS[si];
+          setTimeout(function () {
+            stepEl.textContent = 'STEP ' + (si + 1) + ' OF 5  ·  ' + GLOSS[si];
+            labelEl.textContent = cc.label; ctitleEl.textContent = cc.title; tickEl.textContent = cc.text;
+            cardEl.classList.remove('is-swap');
+            shown = si; cardStart = performance.now() - t0 + offset;
+          }, tickI === 0 ? 0 : 180);
+          cardStart = t;
+        } else cardEl.classList.add('is-swap');
+      }
+      if (shown >= 0) {
+        var cd = CARDS[shown], ce = 1 - Math.pow(1 - clamp((t - cardStart - 150) / 650), 3), cv = cd.n * (0.3 + 0.7 * ce);
+        if (cd.n % 1 === 0) cv = Math.round(cv);
+        countEl.textContent = cd.fmt(cv);
       }
 
       // ---- burst trigger ----
@@ -162,12 +222,36 @@ import { profile } from '../data/portfolio';
           var o = pos(p, BURST), ang = Math.atan2(o.y - by, o.x - W / 2) + (Math.random() - 0.5) * 1.2, sp = 250 + Math.random() * 1300;
           bursts.push({ x: o.x, y: o.y, vx: Math.cos(ang) * sp * 1.2, vy: Math.sin(ang) * sp * 0.35, s: p.s0 + 1, c: p.c0, r: Math.random() * 6, t: BURST });
         });
+        // The five stage nodes fly to the real strip in the hero underneath.
+        var targets = el.ownerDocument.querySelectorAll('.pipe-nodes .pn');
         for (var k2 = 0; k2 < 5; k2++) {
-          var ang2 = (k2 - 2) * 0.5 + (Math.random() - 0.5) * 0.4 - Math.PI / 2;
-          bursts.push({ x: nodeX(k2), y: py, vx: Math.cos(ang2) * 500 * (k2 - 2 || 1) * 0.4, vy: -400 - Math.random() * 300, s: S, c: k2 === 3 ? C.accent : C.strong, r: 0, t: BURST, big: true });
+          var rc = targets[k2] && targets[k2].getBoundingClientRect();
+          var ok = rc && rc.width > 2 && rc.top > -50 && rc.top < H;
+          flyers.push({ x: nodeX(k2), y: py, s: S, tx: ok ? rc.left + rc.width / 2 : nodeX(k2), ty: ok ? rc.top + rc.height / 2 : py - 160, ts: ok ? rc.width : S * 0.5 });
         }
-        rings.push({ t: BURST, c: C.accent, w: 5 }, { t: BURST + 90, c: C.strong, w: 2 });
-        setTimeout(function () { el.classList.add('is-open'); }, 150);
+        // The data turns into a face: a pixel portrait builds where the hero photo is, then dissolves into the real photo.
+        try {
+          var im = document.querySelector('.h-photo img');
+          var rc2 = im && im.getBoundingClientRect();
+          if (im && im.complete && im.naturalWidth && rc2.width > 40 && rc2.top < H && rc2.bottom > 0) {
+            var cell = mob ? 6 : 7, cols = Math.max(6, Math.round(rc2.width / cell)), rows = Math.max(6, Math.round(rc2.height / cell));
+            var oc = document.createElement('canvas'); oc.width = cols; oc.height = rows;
+            var ox = oc.getContext('2d'), sc = Math.max(rc2.width / im.naturalWidth, rc2.height / im.naturalHeight), sw = rc2.width / sc, sh = rc2.height / sc;
+            ox.drawImage(im, (im.naturalWidth - sw) / 2, (im.naturalHeight - sh) / 2, sw, sh, 0, 0, cols, rows);
+            var px2 = ox.getImageData(0, 0, cols, rows).data;
+            photoRc = rc2;
+            for (var rr = 0; rr < rows; rr++) for (var cc2 = 0; cc2 < cols; cc2++) {
+              var pi3 = (rr * cols + cc2) * 4;
+              mosaic.push({ x: rc2.left + (cc2 + 0.5) * rc2.width / cols, y: rc2.top + (rr + 0.5) * rc2.height / rows, w: rc2.width / cols + 0.6, h: rc2.height / rows + 0.6,
+                col: (function () { // four tones from the stage palette
+                  var lum = (0.299 * px2[pi3] + 0.587 * px2[pi3 + 1] + 0.114 * px2[pi3 + 2]) / 255;
+                  return lum < 0.28 ? C.strong : lum < 0.5 ? C.muted : lum < 0.72 ? C.accent : C.surface;
+                })(), d: rnd(rr * cols + cc2) * 420, o: (rr / rows) * 260 });
+            }
+          }
+        } catch (e) {}
+        rings.push({ t: BURST, c: C.accent, w: 3 }, { t: BURST + 90, c: C.strong, w: 1.5 });
+        setTimeout(function () { el.classList.add('is-open'); }, 560);
       }
 
       // ---- canvas ----
@@ -181,7 +265,7 @@ import { profile } from '../data/portfolio';
 
         // rail + progress
         ctx.strokeStyle = C.line; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x0, py); ctx.lineTo(x1, py); ctx.stroke();
-        var lead = clamp((t - 500) / 1900);
+        var lead = prog(t);
         ctx.strokeStyle = C.strong; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x0, py); ctx.lineTo(x0 + (x1 - x0) * lead, py); ctx.stroke();
 
         // nodes
@@ -206,12 +290,12 @@ import { profile } from '../data/portfolio';
             ctx.strokeStyle = C.accent; ctx.globalAlpha = 1 - since / 650; ctx.lineWidth = 2;
             ctx.beginPath(); ctx.arc(nx, py, S * 0.6 + since * 0.08, 0, 6.2832); ctx.stroke(); ctx.globalAlpha = 1;
           }
-          ctx.fillStyle = on ? C.strong : C.muted; ctx.font = '600 ' + (mob ? 10 : 13) + 'px ' + mono; ctx.textAlign = 'center';
+          ctx.fillStyle = on ? C.strong : C.muted; ctx.font = '700 ' + (mob ? 12 : 17) + 'px ' + mono; ctx.textAlign = 'center';
           ctx.fillText(STAGES[n] + (on ? ' ✓' : ''), nx, py + S * 0.5 + (mob ? 20 : 26));
           if (on && n < 4) { // a tiny picture of what happens at this stage
-            var ga = clamp(since / 450), top = py - S * 0.5 - 14, fs = mob ? 9 : 12;
+            var ga = clamp(since / 450), top = py - S * 0.5 - 14, fs = mob ? 10 : 13;
             ctx.globalAlpha = ga; ctx.font = '600 ' + fs + 'px ' + mono;
-            var chips = [['CSV', 'API', 'SHEETS'], ['AS-IS'], ['TYPES ✓', 'KEYS ✓'], null][n];
+            var chips = null;
             if (chips) chips.forEach(function (label, ci) {
               var cw = label.length * (fs * 0.62) + 12, cy = top - ci * (fs + 12) - (1 - ga) * 8;
               ctx.fillStyle = C.surface; ctx.fillRect(nx - cw / 2, cy - fs - 3, cw, fs + 8);
@@ -220,7 +304,7 @@ import { profile } from '../data/portfolio';
             });
             if (n === 3) { // star schema: one fact table, four dimensions
               var sy = top - (mob ? 46 : 70), r = mob ? 30 : 46;
-              ctx.fillStyle = C.accentInk; ctx.fillText('FACT + DIM', nx, sy - r - (mob ? 10 : 14));
+              ctx.fillStyle = C.accentInk; ctx.fillText('', nx, sy - r - (mob ? 10 : 14));
               ctx.strokeStyle = C.accentInk; ctx.lineWidth = 1.5; ctx.beginPath();
               [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (d) { ctx.moveTo(nx, sy); ctx.lineTo(nx + d[0] * r, sy + d[1] * r); });
               ctx.stroke();
@@ -237,7 +321,7 @@ import { profile } from '../data/portfolio';
         var arrived = 0;
         ps.forEach(function (p) {
           var o = pos(p, t);
-          if (t < p.spawn) return;
+          if (t < 200 + p.d * 0.5) return;
           if (o.q >= 1) arrived++;
           var q = o.q, col = q < 0.25 ? p.c0 : q < 0.5 ? C.accentInk : q < 0.75 ? C.muted : C.accent;
           var sz2 = q < 0.25 ? p.s0 : q < 0.75 ? 5 : 5 + 3 * smooth((q - 0.75) / 0.25);
@@ -247,30 +331,40 @@ import { profile } from '../data/portfolio';
         });
 
         // chart rising from the Power BI node
-        var a = arrived / N, mh = Math.min(H * 0.2, 150), bw = mob ? 7 : 10, bx0 = x1 - (profile.length * (bw + 4)) / 2, base = py - S * 0.5 - 14;
+        var a = arrived / N, mh = Math.min(H * 0.2, 150), cardW = mob ? 132 : 210, bx0 = Math.min(x1 - cardW / 2 + 10, W - cardW - 4), base = py - S * 0.5 - 14;
         var tops = [];
         if (a > 0.03) { // the report card the bars sit in
-          var cw2 = profile.length * (bw + 4) + 20, ch2 = mh + 34;
+          var cw2 = cardW, ch2 = mh + 34;
           ctx.fillStyle = C.surface; ctx.fillRect(bx0 - 10, base - ch2 + 10, cw2, ch2);
           ctx.strokeStyle = C.strong; ctx.lineWidth = 2; ctx.strokeRect(bx0 - 10, base - ch2 + 10, cw2, ch2);
           ctx.fillStyle = C.strong; ctx.fillRect(bx0 - 10, base - ch2 + 10, cw2, 16);
-          ctx.fillStyle = C.accent; ctx.fillRect(bx0 - 4, base - ch2 + 15, 18, 6);
         }
-        if (t > 3150 && t < 3950) { // one gold pulse closes the pipeline
-          var pp = (t - 3150) / 800, px = x0 + (x1 - x0) * pp;
+        if (false) { // one gold pulse closes the pipeline
+          var pp = (t - 4350) / 700, px = x0 + (x1 - x0) * pp;
           ctx.fillStyle = C.accent; ctx.fillRect(Math.max(x0, px - 150), py - 5, Math.min(150, px - x0), 10);
           ctx.fillRect(px - 7, py - 12, 14, 24);
         }
-        profile.forEach(function (pf, bi) {
-          var hgt = pf * mh * smooth(a * 1.2 - bi * 0.05);
-          ctx.fillStyle = bi % 2 ? C.strong : C.accent; ctx.fillRect(bx0 + bi * (bw + 3), base - hgt, bw, hgt);
-          tops.push([bx0 + bi * (bw + 3) + bw / 2, base - hgt]);
-        });
-        if (a > 0.85) {
-          var lp = clamp((a - 0.85) / 0.15);
-          ctx.strokeStyle = C.accentInk; ctx.lineWidth = 2; ctx.beginPath();
-          tops.forEach(function (tp, ti) { if (ti / 7 <= lp) { ti ? ctx.lineTo(tp[0], tp[1] - 6) : ctx.moveTo(tp[0], tp[1] - 6); } });
-          ctx.stroke();
+        if (a > 0.03) { // the real question from the vacancy project: do two sources track each other?
+          var gw = cardW - 20, gl = bx0, gt = base - ch2 + 44, gh = ch2 - 74, gp = clamp((t - 5200) / 1300);
+          ctx.fillStyle = C.surface; ctx.font = '600 ' + (mob ? 8 : 10) + 'px ' + mono; ctx.textAlign = 'left';
+          ctx.font = '600 ' + (mob ? 10 : 12) + 'px ' + mono;
+          [].forEach(function (lg) {
+            var lx = gl + (mob ? lg[2] * 56 : lg[2] * 90), ly = base + 1;
+            ctx.strokeStyle = lg[1]; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(lx, ly - 3); ctx.lineTo(lx + 12, ly - 3); ctx.stroke();
+            ctx.fillStyle = C.ink; ctx.fillText(lg[0], lx + 16, ly);
+          });
+          ctx.strokeStyle = C.line; ctx.lineWidth = 1; ctx.beginPath();
+          for (var gi = 0; gi < 4; gi++) { ctx.moveTo(gl, gt + gh * gi / 3); ctx.lineTo(gl + gw, gt + gh * gi / 3); } ctx.stroke();
+          [[C.strong, 0], [C.accent, 1]].forEach(function (ln) {
+            ctx.strokeStyle = ln[0]; ctx.lineWidth = 2.5; ctx.beginPath();
+            for (var pi2 = 0; pi2 < 15; pi2++) {
+              if (pi2 / 14 > gp) break;
+              var base2 = 0.55 + 0.22 * Math.sin(pi2 / 2.6) + pi2 * 0.012, v2 = base2 + (ln[1] ? (rnd(pi2 + 40) - 0.5) * 0.12 : 0);
+              var gx = gl + gw * pi2 / 14, gy = gt + gh * (1 - clamp(v2));
+              pi2 ? ctx.lineTo(gx, gy) : ctx.moveTo(gx, gy);
+            }
+            ctx.stroke();
+          });
         }
       } else {
         var bt = (t - BURST) / 1000;
@@ -283,9 +377,27 @@ import { profile } from '../data/portfolio';
         rings.forEach(function (r) {
           var rt = (t - r.t) / 1000; if (rt <= 0) return;
           ctx.globalAlpha = clamp(1 - rt / 0.9); ctx.strokeStyle = r.c; ctx.lineWidth = r.w;
-          ctx.beginPath(); ctx.arc(W / 2, py, rt * diag * 0.8, 0, 6.2832); ctx.stroke();
+          ctx.beginPath(); ctx.arc(W / 2, py, rt * diag * 0.55, 0, 6.2832); ctx.stroke();
         });
         ctx.globalAlpha = 1;
+        mosaic.forEach(function (m) {
+          var u = (t - BURST - 80 - m.d) / 240, out = (t - BURST - 1050 - m.o) / 400;
+          if (u <= 0 || out >= 1) return;
+          var s = smooth(u) * (1 - smooth(out));
+          ctx.fillStyle = m.col; ctx.fillRect(m.x - m.w * s / 2, m.y - m.h * s / 2, m.w * s, m.h * s);
+        });
+        if (photoRc) { // a friendly label under the portrait
+          var ca = smooth((t - BURST - 450) / 300) * (1 - smooth((t - BURST - 1400) / 350));
+          if (ca > 0) {
+            ctx.globalAlpha = ca; ctx.fillStyle = C.strong; ctx.font = '700 ' + (mob ? 14 : 19) + 'px ' + mono; ctx.textAlign = 'center';
+            ctx.fillText("HI, THAT'S ME", photoRc.left + photoRc.width / 2, photoRc.bottom + (mob ? 20 : 26)); ctx.globalAlpha = 1;
+          }
+        }
+        var fp = smooth(clamp((t - BURST - 120) / 750));
+        flyers.forEach(function (f, fi) {
+          var q = smooth(clamp(fp * 1.15 - fi * 0.04)), sz3 = f.s + (f.ts - f.s) * smooth(q * 1.8), x3 = f.x + (f.tx - f.x) * q, y3 = f.y + (f.ty - f.y) * q - Math.sin(q * 3.1416) * 40;
+          ctx.save(); ctx.translate(x3, y3); ctx.fillStyle = C.bg; ctx.fillRect(-sz3 / 2, -sz3 / 2, sz3, sz3); shape(fi, sz3); ctx.restore();
+        });
       }
       ctx.globalAlpha = 1;
 
