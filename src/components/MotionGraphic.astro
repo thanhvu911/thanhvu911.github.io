@@ -9,16 +9,20 @@ interface Props {
   /** Always use the tall layout (cards). */
   compact?: boolean;
   class?: string;
+  /** Show the Replay button (off where the graphic sits inside a link). */
+  replay?: boolean;
 }
-const { slug, alt, compact = false, class: cls } = Astro.props;
+const { slug, alt, compact = false, class: cls, replay = true } = Astro.props;
 ---
 
 <div class:list={['mg', compact && 'mg-compact', cls]} data-motion={slug} data-alt={alt} data-compact={compact ? '' : undefined}>
   <span class="sr-only">{alt}</span>
-  <button type="button" data-replay class="mg-replay" aria-label="Replay animation">
+  {replay && (
+    <button type="button" data-replay class="mg-replay" aria-label="Replay animation">
     <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8a5 5 0 1 0 1.8-3.8M3 2.5V5.2h2.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     Replay
   </button>
+  )}
 </div>
 
 <style>
@@ -47,7 +51,7 @@ const { slug, alt, compact = false, class: cls } = Astro.props;
     min-height: 2.75rem;
     padding: 0.3rem 0.75rem;
     font-family: var(--font-mono);
-    font-size: 0.66rem;
+    font-size: 0.75rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-strong);

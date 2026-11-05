@@ -128,7 +128,7 @@ const facts = [
             featured.map((p, i) => (
               <article class="sc-panel" data-panel={i} hidden={i !== 0}>
                 <a href={`/projects/${p.slug}`} class="sc-vis" tabindex="-1" aria-hidden="true">
-                  {p.animation ? <MotionGraphic slug={p.slug} alt={p.animation} /> : null}
+                  {p.animation ? <MotionGraphic slug={p.slug} alt={p.animation} replay={false} /> : null}
                 </a>
                 <div class="sc-cap">
                   <p class="sc-stat">
@@ -419,7 +419,7 @@ const facts = [
       background: var(--color-accent);
       color: var(--color-strong-on-accent, #0b1b33);
       font-family: var(--font-mono);
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       pointer-events: none;
@@ -885,7 +885,7 @@ const facts = [
     top: calc(100% + 0.375rem);
     padding-inline: 0.25rem;
     background: var(--color-bg);
-    font-size: 0.625rem;
+    font-size: 0.75rem;
     white-space: nowrap;
   }
   @keyframes flow {
