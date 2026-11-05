@@ -649,8 +649,9 @@
     color: var(--color-muted);
   }
   .field:focus {
-    outline: none;
-    border-color: var(--color-accent);
+    outline: 2px solid var(--color-accent-ink);
+    outline-offset: 2px;
+    border-color: var(--color-accent-ink);
     box-shadow: 0 0 0 3px rgb(201 154 69 / 0.3);
   }
 

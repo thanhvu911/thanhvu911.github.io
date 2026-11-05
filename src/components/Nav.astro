@@ -30,9 +30,10 @@ const path = Astro.url.pathname.replace(/\/$/, '');
         <span class="ts-opt ts-dark"><Icon name="moon" size={14} /><span class="hidden xl:inline">Dark</span></span>
       </button>
 
-      <button type="button" class="search-btn" aria-label="Search the site" data-palette-open>
+      <button type="button" class="search-btn" data-palette-open>
         <Icon name="search" size={16} />
-        <kbd class="hidden lg:inline" data-shortcut aria-hidden="true">Ctrl K</kbd>
+        <span class="sr-only">Search the site</span>
+        <kbd class="hidden lg:inline" data-shortcut>Ctrl K</kbd>
       </button>
 
       <a href="/resume" class="btn btn-primary hidden min-h-11 sm:inline-flex">Resume</a>

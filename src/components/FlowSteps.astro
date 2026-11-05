@@ -21,7 +21,7 @@ const { steps, notes, skills } = Astro.props;
           {notes?.[i] && <span class="fs-note">{notes[i]}</span>}
           {skills?.[i]?.length ? (
             <ul class="fs-skills" aria-label="Skills used in this step">
-              {skills[i].map((k) => <li class="fs-skill" tabindex="0">{k}</li>)}
+              {skills[i].map((k) => <li class="fs-skill">{k}</li>)}
             </ul>
           ) : null}
         </div>
