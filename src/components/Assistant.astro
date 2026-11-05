@@ -27,7 +27,7 @@ const subtitle = endpoint
           <p class="text-xs text-muted">{subtitle}</p>
         </div>
       </div>
-      <button type="button" class="grid size-11 place-items-center rounded-md text-muted hover:bg-soft hover:text-strong" aria-label="Close assistant" data-assistant-close>
+      <button type="button" class="grid size-11 shrink-0 place-items-center rounded-md text-muted hover:bg-soft hover:text-strong" aria-label="Close assistant" data-assistant-close>
         <Icon name="x" size={18} />
       </button>
     </header>
@@ -146,6 +146,9 @@ const subtitle = endpoint
     font-size: 0.75rem;
   }
   .assistant-log :global(.msg a) {
+    display: inline-block;
+    padding-block: 0.7rem;
+    margin-block: -0.7rem;
     color: var(--color-accent-ink);
     font-weight: 600;
     text-decoration: underline;

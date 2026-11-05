@@ -82,10 +82,7 @@
   --grid-line: rgb(255 255 255 / 0.05);
 }
 
-/* Cross-page fade using the browser's native View Transitions. */
-@view-transition {
-  navigation: auto;
-}
+/* Cross-page fade using the browser's native View Transitions (enabled further down, only without reduced motion). */
 ::view-transition-old(root) {
   animation: 160ms ease-in both vt-out;
 }

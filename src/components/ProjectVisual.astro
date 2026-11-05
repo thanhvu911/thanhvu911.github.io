@@ -209,8 +209,10 @@ const chart = isReport ? undefined : cardCharts[project.slug];
     if (still || slides.length < 2 || timers.has(pv)) return;
     const pageEl = pv.querySelector('[data-page]');
     let n = slides.findIndex((s) => s.classList.contains('is-on'));
+    let turns = 0;
     const id = window.setInterval(() => {
-      if (pv.matches(':hover')) return; // hold the page while someone looks at it
+      if (pv.matches(':hover') || pv.matches(':focus-within')) return; // hold the page while someone looks at it
+      if (++turns > slides.length * 2) { window.clearInterval(id); return; } // rotates twice around, then stays put
       slides[n].classList.remove('is-on');
       n = (n + 1) % slides.length;
       slides[n].classList.add('is-on');

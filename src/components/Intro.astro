@@ -78,7 +78,7 @@ import { profile } from '../data/portfolio';
     if (!el || !root.classList.contains('intro-on')) return;
     var $ = function (s) { return el.querySelector(s); };
     // keep the page behind the intro out of the tab order until it ends
-    var behind = Array.prototype.slice.call(document.querySelectorAll('main, nav.site-nav, footer'));
+    var behind = Array.prototype.slice.call(document.querySelectorAll('main, nav.site-nav, footer, .assistant-launch, a[href="#main"]'));
     behind.forEach(function (n) { n.setAttribute('inert', ''); });
     var canvas = $('[data-intro-canvas]');
     var ctx = canvas.getContext('2d');
