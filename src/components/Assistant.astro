@@ -208,7 +208,7 @@ const subtitle = endpoint
     if (e.key === 'Escape') setOpen(false);
   });
 
-  const scrollDown = () => log.scrollTo({ top: log.scrollHeight, behavior: 'smooth' });
+  const scrollDown = () => log.scrollTo({ top: log.scrollHeight, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 
   // Render text safely: plain text, with whitelisted URLs turned into links.
   const addMessage = (who: 'user' | 'bot', text: string, extra?: { link?: QuickAnswer['link']; note?: string }) => {

@@ -411,7 +411,7 @@ const tabs = [
     const show = (id: string, scroll: boolean) => {
       activate(id);
       history.replaceState(null, '', `#${id}`);
-      if (scroll) bar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (scroll) bar.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
     };
 
     tabs.forEach((t, i) => {

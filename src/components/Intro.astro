@@ -2,7 +2,7 @@
 import { profile } from '../data/portfolio';
 ---
 
-<div class="intro" data-intro role="dialog" aria-label="Introduction to Thanh Vu">
+<div class="intro" data-intro role="dialog" aria-modal="true" aria-label="Introduction to Thanh Vu">
   <i class="intro-half intro-top"></i>
   <i class="intro-half intro-bot"></i>
   <canvas class="intro-canvas" data-intro-canvas aria-hidden="true"></canvas>
@@ -77,6 +77,9 @@ import { profile } from '../data/portfolio';
     var el = document.querySelector('[data-intro]');
     if (!el || !root.classList.contains('intro-on')) return;
     var $ = function (s) { return el.querySelector(s); };
+    // keep the page behind the intro out of the tab order until it ends
+    var behind = Array.prototype.slice.call(document.querySelectorAll('main, nav.site-nav, footer'));
+    behind.forEach(function (n) { n.setAttribute('inert', ''); });
     var canvas = $('[data-intro-canvas]');
     var ctx = canvas.getContext('2d');
     var cs = getComputedStyle(root);
@@ -435,6 +438,7 @@ import { profile } from '../data/portfolio';
       removeEventListener('resize', size);
       document.removeEventListener('keydown', onKey);
       root.classList.remove('intro-on');
+      behind.forEach(function (n) { n.removeAttribute('inert'); });
     }
     function skip() {
       if (finished) return;

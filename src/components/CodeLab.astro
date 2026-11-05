@@ -266,6 +266,10 @@ const { slug, pg } = Astro.props;
     color: #0d1829;
     border-color: #e8c27a;
   }
+  .lab-bar :global(button:focus-visible),
+  .lab-bar :global(a:focus-visible) {
+    outline-color: #fff;
+  }
   .lab-run {
     gap: 0.4rem;
     padding: 0.5rem 1rem;
