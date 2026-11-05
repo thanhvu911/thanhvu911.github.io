@@ -86,17 +86,17 @@
 @view-transition {
   navigation: auto;
 }
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none;
-  }
-}
 ::view-transition-old(root) {
   animation: 160ms ease-in both vt-out;
 }
 ::view-transition-new(root) {
   animation: 260ms ease-out both vt-in;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
 }
 @keyframes vt-out {
   to {
@@ -672,6 +672,8 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    min-width: 2.75rem;
+    justify-content: center;
     min-height: 2.75rem;
     padding: 0 0.75rem;
     border: 1px solid #c8c6c4;
