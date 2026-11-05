@@ -601,6 +601,7 @@ export const projects: Project[] = [
       'An early data-engineering project: the public Netflix titles CSV split into dimension, fact, and link tables in MySQL with a Python script, then reported in Power BI. The repo is honest about its state: only the genre link-table step is wired up.',
     repo: 'https://github.com/thanhvu911/netflix-etl-mysql',
     cover: 'dataflow.png',
+    animation: 'Data flows from netflix_titles.csv through extract.py into MySQL dimension, fact, and link tables, then into a Power BI report.',
     metrics: [
       { value: 'MySQL', label: 'Normalized dimension, fact, and link tables' },
       { value: 'Python', label: 'PyMySQL load script (extract.py)' },

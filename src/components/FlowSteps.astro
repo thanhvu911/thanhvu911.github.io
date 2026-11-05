@@ -1,0 +1,165 @@
+---
+// "What I built" as a small animated pipeline: the steps light up one after the
+// other as a gold line runs down the rail, each with a short note of what it
+// holds. Starts when it scrolls into view; reduced motion shows the finished state.
+interface Props {
+  steps: string[];
+  notes?: string[];
+  /** Skill tags that light up with their step. */
+  skills?: string[][];
+}
+const { steps, notes, skills } = Astro.props;
+---
+
+<ol class="fs" data-inview aria-label="Pipeline">
+  {
+    steps.map((s, i) => (
+      <li class:list={['fs-step', { last: i === steps.length - 1 }]} style={`--i:${i}`}>
+        <span class="fs-num">{String(i + 1).padStart(2, '0')}</span>
+        <div class="fs-body">
+          <span class="fs-chip">{s}</span>
+          {notes?.[i] && <span class="fs-note">{notes[i]}</span>}
+          {skills?.[i]?.length ? (
+            <ul class="fs-skills" aria-label="Skills used in this step">
+              {skills[i].map((k) => <li class="fs-skill">{k}</li>)}
+            </ul>
+          ) : null}
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .fs {
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .fs-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    padding-bottom: 1.15rem;
+  }
+  .fs-step.last {
+    padding-bottom: 0;
+  }
+  /* the rail between two steps, filled in gold as the data passes */
+  .fs-step:not(.last)::before,
+  .fs-step:not(.last)::after {
+    content: '';
+    position: absolute;
+    left: 0.82rem;
+    top: 2rem;
+    bottom: 0.15rem;
+    width: 2px;
+  }
+  .fs-step:not(.last)::before {
+    background: var(--color-line);
+  }
+  .fs-step:not(.last)::after {
+    background: var(--color-accent);
+    transform-origin: top;
+    transform: scaleY(0);
+    transition: transform 420ms cubic-bezier(0.65, 0, 0.35, 1) calc(var(--i) * 480ms + 260ms);
+  }
+  .fs-num {
+    width: 1.75rem;
+    padding-top: 0.5rem;
+    color: var(--color-accent-ink);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .fs-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+  .fs-chip {
+    display: inline-block;
+    padding: 0.4375rem 0.75rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.4;
+    text-transform: uppercase;
+    transition:
+      border-color 300ms calc(var(--i) * 480ms),
+      background-color 300ms calc(var(--i) * 480ms),
+      color 300ms calc(var(--i) * 480ms);
+  }
+  .fs-note {
+    color: var(--color-muted);
+    font-size: 0.875rem;
+    line-height: 1.45;
+    transition:
+      opacity 400ms calc(var(--i) * 480ms + 120ms),
+      transform 400ms calc(var(--i) * 480ms + 120ms);
+  }
+  .fs-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin: 0.1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .fs-skill {
+    padding: 0.18rem 0.5rem;
+    border: 1px solid var(--color-line);
+    color: var(--color-muted);
+    font-size: 0.75rem;
+    line-height: 1.4;
+    transition:
+      border-color 350ms calc(var(--i) * 480ms + 300ms),
+      background-color 350ms calc(var(--i) * 480ms + 300ms),
+      color 350ms calc(var(--i) * 480ms + 300ms);
+  }
+  .fs.is-in .fs-skill {
+    border-color: var(--color-accent);
+    background: var(--color-accent-wash);
+    color: var(--color-strong);
+  }
+  /* before it scrolls into view (JavaScript only) */
+  :global(.js) .fs:not(.is-in) .fs-step::after {
+    transform: scaleY(0);
+  }
+  :global(.js) .fs:not(.is-in) .fs-note {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  .fs.is-in .fs-step:not(.last)::after {
+    transform: scaleY(1);
+  }
+  .fs.is-in .fs-chip {
+    border-color: var(--color-strong);
+    color: var(--color-strong);
+  }
+  .fs.is-in .fs-step.last .fs-chip {
+    border-color: var(--color-accent);
+    background: var(--color-accent-wash);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fs-step::after,
+    .fs-chip,
+    .fs-skill,
+    .fs-note {
+      transition: none !important;
+    }
+  }
+  /* without JavaScript, show the finished state */
+  :global(html:not(.js)) .fs-step:not(.last)::after {
+    transform: scaleY(1);
+  }
+</style>
+
+<script>
+  import { watchInView } from '../lib/inview';
+  watchInView();
+</script>

@@ -107,6 +107,12 @@ const META: Record<string, { label: string; title: string; source: string; capti
     source: 'Gradient boosting on 13,580 Melbourne sales, Jan 2016 to Sep 2017 (MAPE, lower is better)',
     caption: 'Random and time splits both said 13.1%; an unseen region pushed it to 18-38%',
   },
+  'netflix-titles-etl-mysql': {
+    label: 'Project 10 // Netflix titles ETL',
+    title: 'From one flat file to linked tables',
+    source: 'netflix-titles-etl-mysql repository: netflix_titles.csv, extract.py (PyMySQL), MySQL Workbench model, Power BI file',
+    caption: 'Modeled so each genre, country and rating is stored once; the full load is unfinished',
+  },
   'vacancy-nowcast-ml': {
     label: 'Project 09 // Vacancy nowcast',
     title: "Nothing beat carrying last year's Census value forward",
@@ -598,7 +604,64 @@ const nowcast: Scene = (s) => {
   };
 };
 
+// ---------- 10 Netflix: flat file to linked tables ----------
+const netflix: Scene = (s) => {
+  const names = [
+    ['netflix_titles.csv', 'one flat file'],
+    ['extract.py', 'Python + PyMySQL'],
+    ['MySQL tables', 'dimension, fact, link'],
+    ['Power BI', 'report on the tables'],
+  ];
+  const aw = s.x1 - s.x0, ah = s.bottom - s.top;
+  const gap = s.phone ? 28 : 56;
+  const bw = s.phone ? aw : (aw - 3 * gap) / 4;
+  const bh = s.phone ? Math.min(78, (ah - 3 * gap) / 4) : 132;
+  const y0 = s.phone ? s.top + (ah - (4 * bh + 3 * gap)) / 2 : s.top + (ah - bh) / 2;
+  const pos = names.map((_, i) => (s.phone ? { x: s.x0, y: y0 + i * (bh + gap) } : { x: s.x0 + i * (bw + gap), y: y0 }));
+  const lf = s.phone ? 14 : 17, sf = s.phone ? 11 : 13;
+  const boxes = names.map(([a, b], i) => {
+    const { x, y } = pos[i];
+    const r = s.mk('rect', { x, y, width: bw, height: bh, fill: C.surf, stroke: C.line, 'stroke-width': 1.5 });
+    font(s.mk('text', { x: x + 16, y: y + bh / 2 - 2, 'font-size': lf, 'font-weight': 700, fill: C.ink }, s.svg, a), MONO);
+    font(s.mk('text', { x: x + 16, y: y + bh / 2 + sf + 6, 'font-size': sf, fill: C.mute }, s.svg, b), MONO);
+    font(s.mk('text', { x: x + bw - 14, y: y + 22, 'font-size': sf, 'text-anchor': 'end', fill: C.deep }, s.svg, String(i + 1).padStart(2, '0')), MONO);
+    return r;
+  });
+  const links = [0, 1, 2].map((i) => {
+    const a = pos[i], b = pos[i + 1];
+    const p1 = s.phone ? { x: a.x + bw / 2, y: a.y + bh } : { x: a.x + bw, y: a.y + bh / 2 };
+    const p2 = s.phone ? { x: b.x + bw / 2, y: b.y } : { x: b.x, y: b.y + bh / 2 };
+    s.mk('line', { x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y, stroke: C.line, 'stroke-width': 2 });
+    const fill = s.mk('line', { x1: p1.x, y1: p1.y, x2: p1.x, y2: p1.y, stroke: C.acc, 'stroke-width': 3 });
+    const pk = [0, 1, 2].map(() => s.mk('rect', { width: 8, height: 8, fill: C.deep, opacity: 0 }));
+    return { p1, p2, fill, pk };
+  });
+  return {
+    dur: 7,
+    frame(t) {
+      boxes[0].style.setProperty('stroke', C.ink);
+      links.forEach((l, i) => {
+        const st = 0.5 + i * 1.6;
+        const g = seg(t, st, st + 0.8);
+        set(l.fill, { x2: lerp(l.p1.x, l.p2.x, g), y2: lerp(l.p1.y, l.p2.y, g) });
+        const on = seg(t, st + 0.7, st + 1.0);
+        boxes[i + 1].style.setProperty('stroke', on > 0.5 ? C.ink : C.line);
+        boxes[i + 1].style.setProperty('fill', on > 0.5 ? 'var(--color-accent-wash)' : C.surf);
+        l.pk.forEach((p, k) => {
+          const q = (((t - st - 0.8) * 0.7 + k / 3) % 1 + 1) % 1;
+          set(p, {
+            x: lerp(l.p1.x, l.p2.x, q) - 4,
+            y: lerp(l.p1.y, l.p2.y, q) - 4,
+            opacity: t > st + 0.8 ? 1 : 0,
+          });
+        });
+      });
+    },
+  };
+};
+
 const SCENES: Record<string, Scene> = {
+  'netflix-titles-etl-mysql': netflix,
   'can-mail-data-predict-housing-vacancy': housing,
   'grocery-transaction-data-warehouse': grocery,
   'sales-planning-analysis': sales,

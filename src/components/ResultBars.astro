@@ -1,0 +1,166 @@
+---
+// "What it found" as animated bars drawn from the project's own results.
+// Bars fill when they scroll into view; the highlighted row is the finding.
+import type { BarGroup } from '../data/sectionMotion';
+interface Props {
+  groups: BarGroup[];
+}
+const { groups } = Astro.props;
+---
+
+<div class="rb" data-inview>
+  {
+    groups.map((g, gi) => (
+      <figure class="rb-group" style={`--g:${gi}`}>
+        <figcaption class="rb-title">{g.title}</figcaption>
+        <ul class="rb-rows">
+          {g.rows.map((r, ri) => (
+            <li class:list={['rb-row', { hi: r.hi }]} style={`--r:${ri}`}>
+              <span class="rb-label">{r.label}</span>
+              <span class="rb-track">
+                <span class="rb-fill" style={`--p:${Math.min(1, r.value / g.max)}`}></span>
+                {g.mark && <span class="rb-mark" style={`left:${(g.mark.value / g.max) * 100}%`} title={g.mark.label}></span>}
+              </span>
+              <span class="rb-val">{r.display}</span>
+            </li>
+          ))}
+        </ul>
+        {g.mark && <p class="rb-key"><span class="rb-keyline"></span>{g.mark.label}</p>}
+        {g.note && <p class="rb-note">{g.note}</p>}
+      </figure>
+    ))
+  }
+</div>
+
+<style>
+  .rb {
+    display: grid;
+    gap: 1.75rem;
+    margin: 1rem 0 2rem;
+    padding: 1.25rem 1rem 1.5rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+  }
+  .rb-group {
+    margin: 0;
+    min-width: 0;
+  }
+  .rb-title {
+    margin-bottom: 0.7rem;
+    color: var(--color-strong);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .rb-rows {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .rb-row {
+    display: grid;
+    grid-template-columns: minmax(0, 8.5rem) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+  }
+  .rb-label {
+    color: var(--color-ink);
+    line-height: 1.25;
+  }
+  .rb-track {
+    position: relative;
+    display: block;
+    height: 0.9rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-line);
+  }
+  .rb-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--color-muted);
+    opacity: 0.55;
+    transform-origin: left;
+    transform: scaleX(var(--p));
+    transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--g) * 260ms + var(--r) * 120ms + 100ms);
+  }
+  .rb-row.hi .rb-fill {
+    background: var(--color-accent);
+    opacity: 1;
+  }
+  .rb-mark {
+    position: absolute;
+    top: -0.25rem;
+    bottom: -0.25rem;
+    width: 2px;
+    margin-left: -1px;
+    background: var(--color-strong);
+  }
+  .rb-val {
+    min-width: 4.2rem;
+    color: var(--color-strong);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-align: right;
+    transition: opacity 500ms calc(var(--g) * 260ms + var(--r) * 120ms + 500ms);
+  }
+  .rb-row.hi .rb-val {
+    color: var(--color-accent-ink);
+  }
+  .rb-key,
+  .rb-note {
+    margin: 0.5rem 0 0;
+    color: var(--color-muted);
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+  .rb-key {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+  }
+  .rb-keyline {
+    width: 2px;
+    height: 0.8rem;
+    background: var(--color-strong);
+  }
+  :global(.js) .rb:not(.is-in) .rb-fill {
+    transform: scaleX(0);
+  }
+  :global(.js) .rb:not(.is-in) .rb-val {
+    opacity: 0;
+  }
+  @media (max-width: 520px) {
+    .rb-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      row-gap: 0.25rem;
+    }
+    .rb-track {
+      grid-column: 1 / -1;
+      order: 3;
+    }
+  }
+  @media (min-width: 768px) {
+    .rb {
+      padding: 1.5rem 1.5rem 1.75rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rb-fill,
+    .rb-val {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  import { watchInView } from '../lib/inview';
+  watchInView();
+</script>
