@@ -1,3 +1,17 @@
+/** Cards with [data-glow] get a faint gold highlight that follows the cursor (mouse only, not with reduced motion). */
+export function glowCards(root: ParentNode = document) {
+  if (matchMedia('(hover: none), (prefers-reduced-motion: reduce)').matches) return;
+  root.querySelectorAll<HTMLElement>('[data-glow]').forEach((el) => {
+    if (el.dataset.glowOn) return;
+    el.dataset.glowOn = '1';
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      el.style.setProperty('--my', `${e.clientY - r.top}px`);
+    });
+  });
+}
+
 // Adds "is-in" to every [data-inview] element the first time it is scrolled into
 // view. Components use it to start a one-time CSS animation.
 export function watchInView(root: ParentNode = document) {

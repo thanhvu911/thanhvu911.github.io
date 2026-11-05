@@ -21,7 +21,7 @@ const { steps, notes, skills } = Astro.props;
           {notes?.[i] && <span class="fs-note">{notes[i]}</span>}
           {skills?.[i]?.length ? (
             <ul class="fs-skills" aria-label="Skills used in this step">
-              {skills[i].map((k) => <li class="fs-skill">{k}</li>)}
+              {skills[i].map((k) => <li class="fs-skill" tabindex="0">{k}</li>)}
             </ul>
           ) : null}
         </div>
@@ -125,6 +125,21 @@ const { steps, notes, skills } = Astro.props;
     border-color: var(--color-accent);
     background: var(--color-accent-wash);
     color: var(--color-strong);
+  }
+  /* hover or focus a skill to see the step it was used in, and the other way round */
+  .fs.is-in .fs-body:has(.fs-skill:hover, .fs-skill:focus-visible) .fs-chip {
+    border-color: var(--color-accent);
+    background: var(--color-accent-wash);
+  }
+  .fs.is-in .fs-step:hover .fs-skill {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-bg);
+    transition-delay: 0s;
+  }
+  .fs-skill:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
   }
   /* before it scrolls into view (JavaScript only) */
   :global(.js) .fs:not(.is-in) .fs-step::after {

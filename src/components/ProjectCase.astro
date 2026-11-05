@@ -97,10 +97,10 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
     <summary><span class="mono">02</span>My role &amp; approach<Icon name="chevron-down" size={18} class="chev" /></summary>
     <div class="body">
       <p class="font-medium text-strong">{project.role}</p>
-      <ol class="mt-6 space-y-4">
+      <ol class="rv tl mt-6" data-inview>
         {
           project.approach.map((step, i) => (
-            <li class="flex gap-4">
+            <li class="rv-i tl-i flex gap-4" style={`--k:${i}`}>
               <span class="num pt-0.5">{String(i + 1).padStart(2, '0')}</span>
               <p class="max-w-[46rem] leading-relaxed text-ink">{step}</p>
             </li>
@@ -108,8 +108,8 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
         }
       </ol>
       <h3 class="mono mt-10">Problems I hit and how I handled them</h3>
-      <ul class="dot-list mt-4 max-w-[46rem] space-y-3 leading-relaxed text-ink">
-        {project.challenges.map((c) => <li>{c}</li>)}
+      <ul class="rv dot-list mt-4 max-w-[46rem] space-y-3 leading-relaxed text-ink" data-inview>
+        {project.challenges.map((c, i) => <li class="rv-i" style={`--k:${i}`}>{c}</li>)}
       </ul>
     </div>
   </details>
@@ -119,9 +119,9 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
     <div class="body">
       {
         detail ? (
-          <ul class="cells sm:grid-cols-2">
-            {detail.tools.map((t) => (
-              <li class="tool">
+          <ul class="rv cells sm:grid-cols-2" data-inview>
+            {detail.tools.map((t, i) => (
+              <li class="tool rv-i glow" data-glow style={`--k:${i}`}>
                 <h3 class="font-semibold text-strong">{t.name}</h3>
                 <p class="mt-1.5 text-sm leading-relaxed text-muted">{t.use}</p>
               </li>
@@ -140,9 +140,9 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
           <>
             <h3 class="mono mt-10">Data model</h3>
             <p class="mt-3 max-w-[46rem] leading-relaxed text-ink">{detail.model.note}</p>
-            <ul class="cells mt-5 sm:grid-cols-2">
-              {detail.model.tables.map((t) => (
-                <li class:list={['tool', { fact: t.kind === 'fact' }]}>
+            <ul class="rv cells mt-5 sm:grid-cols-2" data-inview>
+              {detail.model.tables.map((t, i) => (
+                <li class:list={['tool rv-i glow', { fact: t.kind === 'fact' }]} data-glow style={`--k:${i}`}>
                   <p class="mono">{kindLabel[t.kind]}</p>
                   <h4 class="mt-1 font-mono text-sm font-semibold text-strong">{t.name}</h4>
                   <p class="mt-1.5 text-sm leading-relaxed text-muted">{t.desc}</p>
@@ -162,10 +162,10 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
   <details class="acc">
     <summary><span class="mono">04</span>Results &amp; impact<Icon name="chevron-down" size={18} class="chev" /></summary>
     <div class="body">
-      <ul class="space-y-4">
+      <ul class="rv space-y-4" data-inview>
         {
-          project.results.map((r) => (
-            <li class="result">
+          project.results.map((r, i) => (
+            <li class="result rv-i" style={`--k:${i}`}>
               <Icon name="check" size={16} class="mt-1 shrink-0 text-accent-ink" />
               <span>{r}</span>
             </li>
@@ -186,9 +186,9 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
           {project.learned && (
             <div>
               <h3 class="mono">Lessons</h3>
-              <ul class="dot-list mt-4 space-y-3 leading-relaxed text-ink">
-                {project.learned.map((l) => (
-                  <li>{l}</li>
+              <ul class="rv dot-list mt-4 space-y-3 leading-relaxed text-ink" data-inview>
+                {project.learned.map((l, i) => (
+                  <li class="rv-i" style={`--k:${i}`}>{l}</li>
                 ))}
               </ul>
             </div>
@@ -196,9 +196,9 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
           {project.improve && (
             <div>
               <h3 class="mono">What I would do next</h3>
-              <ul class="mt-4 space-y-3 leading-relaxed text-ink">
-                {project.improve.map((l) => (
-                  <li class="flex gap-3">
+              <ul class="rv mt-4 space-y-3 leading-relaxed text-ink" data-inview>
+                {project.improve.map((l, i) => (
+                  <li class="rv-i flex gap-3" style={`--k:${i}`}>
                     <Icon name="arrow-right" size={15} class="mt-1.5 shrink-0 text-accent-ink" />
                     <span>{l}</span>
                   </li>
@@ -346,6 +346,65 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
   .tool {
     padding: 1.125rem 1.25rem;
   }
+  /* Folded sections: items rise in one after another when the section is opened or scrolled to. */
+  .rv-i {
+    transition:
+      opacity 520ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--k) * 80ms),
+      transform 520ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--k) * 80ms);
+  }
+  :global(.js) .rv:not(.is-in) .rv-i {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  /* the approach as a timeline: a gold line draws from step to step */
+  .tl-i {
+    position: relative;
+    padding-bottom: 1.1rem;
+  }
+  .tl-i:not(:last-child)::before,
+  .tl-i:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 0.8rem;
+    top: 1.75rem;
+    bottom: 0.2rem;
+    width: 2px;
+  }
+  .tl-i:not(:last-child)::before {
+    background: var(--color-line);
+  }
+  .tl-i:not(:last-child)::after {
+    background: var(--color-accent);
+    transform-origin: top;
+    transform: scaleY(1);
+    transition: transform 460ms cubic-bezier(0.65, 0, 0.35, 1) calc(var(--k) * 80ms + 240ms);
+  }
+  :global(.js) .tl:not(.is-in) .tl-i::after {
+    transform: scaleY(0);
+  }
+  /* cards: a faint gold highlight follows the cursor */
+  .glow {
+    position: relative;
+  }
+  .glow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(180px circle at var(--mx, 50%) var(--my, 50%), var(--color-accent-wash), transparent 70%);
+    opacity: 0;
+    transition: opacity 300ms;
+    pointer-events: none;
+  }
+  .glow:hover::before {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rv-i,
+    .tl-i::after,
+    .glow::before {
+      transition: none !important;
+    }
+  }
   .tool.fact {
     box-shadow: inset 3px 0 0 var(--color-accent);
   }
@@ -358,3 +417,9 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
     line-height: 1.6;
   }
 </style>
+
+<script>
+  import { watchInView, glowCards } from '../lib/inview';
+  watchInView();
+  glowCards();
+</script>
