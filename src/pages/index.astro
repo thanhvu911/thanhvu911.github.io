@@ -374,8 +374,7 @@ const facts = [
     border: 0;
     border-top: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent);
     cursor: pointer;
-    opacity: 0.55;
-    transition: opacity 300ms, padding-left 300ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: padding-left 300ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .work-list li:first-child .work-row {
     border-top: 0;
@@ -455,6 +454,10 @@ const facts = [
     font-weight: 700;
     line-height: 1.12;
     letter-spacing: -0.01em;
+    color: var(--color-muted);
+    transition: color 300ms;
+  }
+  .work-row[data-on='true'] .work-ttl {
     color: var(--color-strong);
   }
   .work-arr {
@@ -736,6 +739,15 @@ const facts = [
   .rise {
     animation: rise 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
     animation-delay: calc(var(--d) * 110ms);
+  }
+  /* The opening paragraph slides in without fading, so it is on screen from the first frame. */
+  .h-blurb.rise {
+    animation-name: rise-slide;
+  }
+  @keyframes rise-slide {
+    from {
+      transform: translateY(14px);
+    }
   }
   @keyframes up {
     from {

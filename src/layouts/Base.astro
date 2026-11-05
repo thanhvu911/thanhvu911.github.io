@@ -45,6 +45,18 @@ const personSchema = {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Web fonts load without blocking the first paint; system fonts show until they arrive. -->
+    <script is:inline>
+      addEventListener('load', function () {
+        setTimeout(function () {
+          var l = document.createElement('link');
+          l.rel = 'stylesheet';
+          l.href = '/fonts/fonts.css';
+          document.head.appendChild(l);
+        }, 250);
+      });
+    </script>
+    <noscript><link rel="stylesheet" href="/fonts/fonts.css" /></noscript>
     <meta name="theme-color" content="#efe6d6" data-theme-color />
     <script is:inline>
       // Apply the theme before first paint: the visitor's saved choice,

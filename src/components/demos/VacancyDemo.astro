@@ -38,12 +38,14 @@
 
 <script>
   import rows from '../../data/demos/vacancy-comparison.json';
-  import { Chart, palette, axisTitle } from '../../lib/charts';
+  import { onVisible } from '../../lib/inview';
   import { pearson, directionMatchRate, meanGapPoints, linearFit, type VacancyRow } from '../../lib/stats';
 
   const data = rows as VacancyRow[];
   const root = document.querySelector<HTMLElement>('[data-vacancy-demo]');
-  if (root) {
+  const run = async () => {
+    if (!root) return;
+    const { Chart, palette, axisTitle } = await import('../../lib/charts');
     const counties = [...new Set(data.map((r) => r.county))];
     const label = (c: string) => `${c}, ${data.find((r) => r.county === c)!.state}`;
     const color = (c: string) => palette.series[counties.indexOf(c) % palette.series.length];
@@ -153,5 +155,6 @@
       scatter.update();
     }
     update();
-  }
+  };
+  onVisible(root, run);
 </script>

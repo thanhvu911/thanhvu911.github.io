@@ -34,3 +34,19 @@ export function watchInView(root: ParentNode = document) {
   );
   els.forEach((e) => io.observe(e));
 }
+
+/** Runs `fn` once, when `el` is within 400px of the screen (or at once without IntersectionObserver). */
+export function onVisible(el: Element | null, fn: () => void) {
+  if (!el) return;
+  if (!('IntersectionObserver' in window)) return void fn();
+  const io = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        io.disconnect();
+        fn();
+      }
+    },
+    { rootMargin: '400px' },
+  );
+  io.observe(el);
+}

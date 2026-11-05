@@ -27,10 +27,12 @@
 
 <script>
   import econ from '../../data/demos/lancaster-economy.json';
-  import { Chart, palette, axisTitle } from '../../lib/charts';
+  import { onVisible } from '../../lib/inview';
 
   const root = document.querySelector<HTMLElement>('[data-lancaster-demo]');
-  if (root) {
+  const run = async () => {
+    if (!root) return;
+    const { Chart, palette, axisTitle } = await import('../../lib/charts');
     const u = econ.unemploymentRate;
     const w = econ.wages;
     root.querySelector('[data-notes]')!.textContent = econ.notes;
@@ -89,5 +91,6 @@
     const growth = ((last.avgAnnualPay / first.avgAnnualPay - 1) * 100).toFixed(0);
     root.querySelector('[data-wage-takeaway]')!.textContent =
       `Pay rose from $${first.avgAnnualPay.toLocaleString('en-US')} in ${first.year} to $${last.avgAnnualPay.toLocaleString('en-US')} in ${last.year}, up ${growth}%.`;
-  }
+  };
+  onVisible(root, run);
 </script>

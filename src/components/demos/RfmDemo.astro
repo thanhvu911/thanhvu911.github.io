@@ -148,10 +148,12 @@ const arc = (v: number) => {
 
 <script>
   import rfm from '../../data/demos/rfm-segments.json';
-  import { Chart, palette, axisTitle } from '../../lib/charts';
+  import { onVisible } from '../../lib/inview';
 
   const root = document.querySelector<HTMLElement>('[data-rfm-demo]');
-  if (root) {
+  const run = async () => {
+    if (!root) return;
+    const { Chart, palette, axisTitle } = await import('../../lib/charts');
     const { groups, ageGroups } = rfm.report;
     const $ = (s: string) => root.querySelector<HTMLElement>(s)!;
 
@@ -204,5 +206,6 @@ const arc = (v: number) => {
         },
       },
     });
-  }
+  };
+  onVisible(root, run);
 </script>

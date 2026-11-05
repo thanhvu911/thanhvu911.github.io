@@ -11,7 +11,7 @@ import { profile } from '../data/portfolio';
 
   <div class="intro-top-txt">
     <p class="intro-eyebrow" data-eyebrow>Hi, I'm</p>
-    <p class="intro-name" data-name aria-label={profile.name}>{profile.name}</p>
+    <p class="intro-name" data-name role="img" aria-label={profile.name}>{profile.name}</p>
     <p class="intro-role" data-role>{profile.role}</p>
     <p class="intro-pitch" data-pitch>I turn messy data into clear answers. Here's how.</p>
   </div>
@@ -445,6 +445,9 @@ import { profile } from '../data/portfolio';
     $('[data-intro-skip]').addEventListener('click', skip);
     document.addEventListener('keydown', onKey);
     $('[data-intro-skip]').focus({ preventScroll: true });
-    requestAnimationFrame(frame);
+    // Start once the page has loaded, so the first paint is not competing with the canvas.
+    function go() { t0 = performance.now(); requestAnimationFrame(frame); }
+    if (document.readyState === 'complete') go();
+    else addEventListener('load', function () { setTimeout(go, 60); });
   })();
 </script>

@@ -19,7 +19,7 @@ guide?.steps.forEach((step, i) => {
 
 <div class="pv" data-pbi-video>
   <figure class="card overflow-hidden">
-    <video class="block aspect-[1280/728] w-full bg-soft" src={`/videos/${name}.mp4`} poster={`/videos/${name}.jpg`} controls muted playsinline preload="none">
+    <video class="block aspect-[1280/728] w-full bg-soft" src={`/videos/${name}.mp4`} poster={`/videos/${name}.webp`} controls muted playsinline preload="none">
       {guide && <track kind="captions" srclang="en" label="English" src={`/videos/${name}.vtt`} default />}
       <a href={`/videos/${name}.mp4`}>Download the recording</a>
     </video>

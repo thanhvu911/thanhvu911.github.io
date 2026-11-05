@@ -44,7 +44,8 @@ const { slug, alt, compact = false, class: cls } = Astro.props;
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    padding: 0.3rem 0.55rem;
+    min-height: 2.75rem;
+    padding: 0.3rem 0.75rem;
     font-family: var(--font-mono);
     font-size: 0.66rem;
     letter-spacing: 0.06em;
@@ -72,5 +73,8 @@ const { slug, alt, compact = false, class: cls } = Astro.props;
 
 <script>
   import { initMotion } from '../lib/motion';
-  initMotion();
+  // Start after the page has painted, so the text shows first.
+  const start = () => setTimeout(() => initMotion(), 150);
+  if (document.readyState === 'complete') start();
+  else addEventListener('load', start, { once: true });
 </script>

@@ -76,7 +76,7 @@ export interface Project {
   powerbiEmbed?: string;
   /** Alt text for the live motion graphic (src/lib/motion.ts, drawn from the project's own results). */
   animation?: string;
-  /** Screen recording of the original report in Power BI Desktop: base name of /videos/<name>.mp4 and its .jpg poster. */
+  /** Screen recording of the original report in Power BI Desktop: base name of /videos/<name>.mp4 and its .webp poster. */
   powerbiVideo?: string;
   /** Power BI Desktop files in the project repo, for reviewers who want the real report. */
   pbix?: { label: string; file: string }[];

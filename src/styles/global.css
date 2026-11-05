@@ -1,7 +1,4 @@
 @import "tailwindcss";
-@import "@fontsource-variable/archivo/wdth.css";
-@import "@fontsource-variable/space-grotesk";
-@import "@fontsource-variable/jetbrains-mono";
 
 /* "Data lab": a measured grid, wide uppercase headings, monospace labels,
    and one signal-orange accent. Light is warm off-white paper; dark is a
@@ -127,7 +124,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-accent-ink);
     outline-offset: 3px;
   }
 
@@ -379,6 +376,9 @@
     text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
     text-underline-offset: 0.22em;
     transition: text-decoration-color 150ms;
+    /* 44px tap target without moving the text */
+    padding-block: 0.8rem;
+    margin-block: -0.8rem;
   }
   .text-link:hover {
     text-decoration-color: currentColor;
