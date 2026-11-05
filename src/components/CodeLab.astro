@@ -249,6 +249,8 @@ const { slug, pg } = Astro.props;
     color: #8fb8ff;
   }
   .lab-editor:focus-within {
+    outline: 2px solid #e8c27a;
+    outline-offset: 2px;
     border-color: #e8c27a;
     box-shadow: 0 0 0 3px rgb(201 154 69 / 0.28), 0 18px 40px -22px rgb(8 18 36 / 0.65);
   }
@@ -569,10 +571,6 @@ def _run(code):
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
         run();
-      }
-      if (e.key === 'Tab' && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
-        e.preventDefault();
-        editor.setRangeText('    ', editor.selectionStart, editor.selectionEnd, 'end');
       }
     });
     lab.querySelectorAll<HTMLButtonElement>('[data-code]').forEach((chip) =>
