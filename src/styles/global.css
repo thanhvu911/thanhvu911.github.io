@@ -286,6 +286,14 @@
       --tpb: 1.75rem;
       padding-block: 2rem 1.75rem;
     }
+    /* Page headers wrap their h1 in .ttl: the hatch marks and the spacing
+       belong to the h1's own box, so they stay clear of the first letter. */
+    .shead > .ttl:not(.section-title) {
+      --tpl: 0px;
+      --tpt: 0px;
+      --tpb: 0px;
+      padding-block: 3rem 2.25rem;
+    }
   }
 
   .text-gradient {
@@ -318,10 +326,13 @@
     background: var(--card-bg);
   }
   .card-hover {
-    transition: border-color 250ms;
+    transition: border-color 250ms, transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .card-hover:hover {
     border-color: var(--card-hover-border);
+  }
+  .card-hover:active {
+    transform: scale(0.99);
   }
 
   /* Cells that share hairlines: a 1px gap over a line-colored background. */
@@ -359,6 +370,7 @@
   }
 
   .dot-list > li {
+    max-width: 60ch;
     position: relative;
     padding-left: 1.25rem;
   }
@@ -400,7 +412,14 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     cursor: pointer;
-    transition: background 200ms, border-color 200ms, color 200ms;
+    transition: background 200ms, border-color 200ms, color 200ms, transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .btn:active {
+    transform: scale(0.97);
+  }
+  a, button, [role="button"], summary {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
   .btn-primary {
     border-left: 4px solid var(--color-accent);
@@ -460,8 +479,8 @@
     opacity: 0;
     transform: translateY(18px);
     transition:
-      opacity 800ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
     transition-delay: var(--reveal-delay, 0ms);
   }
   .js [data-reveal].is-visible {

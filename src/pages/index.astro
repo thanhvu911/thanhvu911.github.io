@@ -86,7 +86,7 @@ const facts = [
   <section id="about" class="border-b border-line">
     <div class="frame">
       <div class="shead">
-        <p class="idx"><span class="sq"></span><span class="mono">02 // About</span></p>
+        <p class="idx"><span class="sq"></span><span class="mono">About</span></p>
         <h2 class="ttl section-title" data-reveal>About me</h2>
       </div>
       <div class="about">
@@ -118,7 +118,7 @@ const facts = [
   <section id="projects" class="border-b border-line">
     <div class="frame">
       <div class="shead">
-        <p class="idx"><span class="sq"></span><span class="mono">03 // Selected work<br />{projects.length} projects in total</span></p>
+        <p class="idx"><span class="sq"></span><span class="mono">Selected work<br />{projects.length} projects in total</span></p>
         <h2 class="ttl section-title" data-reveal>Selected work</h2>
       </div>
       <div class="work" data-showcase>
@@ -175,7 +175,7 @@ const facts = [
   <section id="skills" class="border-b border-line">
     <div class="frame">
       <div class="shead">
-        <p class="idx"><span class="sq"></span><span class="mono">04 // Skills<br />Each group links to proof</span></p>
+        <p class="idx"><span class="sq"></span><span class="mono">Skills<br />Each group links to proof</span></p>
         <h2 class="ttl section-title" data-reveal>Skills</h2>
       </div>
       <ul class="cells sm:grid-cols-2 lg:grid-cols-5">
@@ -204,7 +204,7 @@ const facts = [
   <section id="experience" class="border-b border-line">
     <div class="frame">
       <div class="shead">
-        <p class="idx"><span class="sq"></span><span class="mono">05 // Experience</span></p>
+        <p class="idx"><span class="sq"></span><span class="mono">Experience</span></p>
         <h2 class="ttl section-title" data-reveal>Experience</h2>
       </div>
       <ol>
@@ -232,17 +232,15 @@ const facts = [
       </ol>
       <div id="education" class="cells md:grid-cols-3">
         <div class="edu" data-reveal>
-          <p class="mono">Education</p>
-          <h3 class="display-md mt-4 text-xl">{education.school}</h3>
-          <p class="mt-2 text-muted">{education.degree}, {education.date}. {education.gpa.replace(' · ', ', ')}. {education.honorsShort}.</p>
+          <h3 class="display-md text-xl">{education.school}</h3>
+          <p class="mt-2 text-muted">Education · {education.degree}, {education.date}. {education.gpa.replace(' · ', ', ')}. {education.honorsShort}.</p>
           <a href="/academics" class="text-link mt-4 inline-block text-[0.9375rem]">Coursework and projects</a>
         </div>
         {
           credentials.map((c) => (
             <div class="edu" data-reveal>
-              <p class="mono">Certification</p>
-              <h3 class="display-md mt-4 text-xl">{c.title.replace('Microsoft Certified: ', '')}</h3>
-              <p class="mt-2 text-muted">{c.detail.split(' · ').reverse().slice(0, 2).reverse().join(', ')}</p>
+              <h3 class="display-md text-xl">{c.title.replace('Microsoft Certified: ', '')}</h3>
+              <p class="mt-2 text-muted">Certification · {c.detail.split(' · ').reverse().slice(0, 2).reverse().join(', ')}</p>
               {'note' in c && <p class="mono mt-3">{c.note}</p>}
             </div>
           ))
@@ -454,7 +452,7 @@ const facts = [
     font-weight: 700;
     line-height: 1.12;
     letter-spacing: -0.01em;
-    color: var(--color-muted);
+    color: var(--color-ink);
     transition: color 300ms;
   }
   .work-row[data-on='true'] .work-ttl {
@@ -496,13 +494,13 @@ const facts = [
   }
   .h-blurb {
     grid-area: blurb;
+    text-wrap: balance;
     max-width: 22rem;
     padding: 2rem 1rem 0;
     color: var(--color-strong);
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-weight: 500;
     line-height: 1.5;
-    text-transform: uppercase;
   }
   .h-name {
     grid-area: name;
@@ -661,6 +659,7 @@ const facts = [
     }
     .h-blurb {
       max-width: none;
+      font-size: 1.125rem;
       padding: clamp(2.5rem, 7svh, 5rem) 2.5rem 2rem;
       border-right: 1px solid var(--color-line);
       border-bottom: 1px solid var(--color-line);
@@ -947,11 +946,11 @@ const facts = [
   }
 
   /* ---------- Scroll stage (laptops, set by the script below) ----------
-     The pin holds for 135vh of scrolling. About sits on top of the hero:
+     The pin holds for 90vh of scrolling. About sits on top of the hero:
      its text above the band row, its title in the band row (lined up with
      the hero's pipeline strip), and its facts below. */
   .stage.staged {
-    height: calc(100svh - 4.5rem + 135vh);
+    height: calc(100svh - 4.5rem + 90vh);
   }
   .staged .stage-pin {
     position: sticky;
@@ -1003,7 +1002,7 @@ const facts = [
   .staged #about .facts {
     grid-area: 3 / 1 / 4 / 3;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    align-content: start;
+    align-content: center;
     padding: 2rem 2.5rem;
     border: 0;
     border-top: 1px solid var(--color-line);
@@ -1030,6 +1029,7 @@ const facts = [
     border-bottom: 1px solid var(--color-line);
   }
   .facts dd {
+    text-wrap: balance;
     margin-top: 0.125rem;
     color: var(--color-strong);
     font-size: 1.0625rem;
@@ -1146,6 +1146,9 @@ const facts = [
       grid-column: auto;
       padding-left: 0;
     }
+  }
+  .edu h3 {
+    text-wrap: balance;
   }
   .edu {
     padding: 1.75rem 1rem 2rem;

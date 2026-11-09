@@ -150,8 +150,8 @@ const path = Astro.url.pathname.replace(/\/$/, '');
   }
   .ts-light,
   :global([data-theme='dark']) .ts-dark {
-    background: var(--color-strong);
-    color: var(--color-bg);
+    background: color-mix(in srgb, var(--color-strong) 12%, transparent);
+    color: var(--color-strong);
   }
   :global([data-theme='dark']) .ts-light {
     background: none;
@@ -159,10 +159,6 @@ const path = Astro.url.pathname.replace(/\/$/, '');
   }
   .theme-switch:hover .ts-opt {
     color: var(--color-strong);
-  }
-  .theme-switch:hover .ts-light,
-  :global([data-theme='dark']) .theme-switch:hover .ts-dark {
-    color: var(--color-bg);
   }
 
   .search-btn,

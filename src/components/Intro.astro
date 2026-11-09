@@ -105,6 +105,8 @@ import { profile } from '../data/portfolio';
     });
 
     var BURST = 6700, END = 9000;
+    // The story runs at 1.8x: about 5s from start to finish instead of 9s.
+    var SPEED = 1.8;
     var low = false, lastNow = 0, slowSum = 0, slowN = 0, perfChecked = false;
     var ST = [500, 1650, 2800, 3950, 5100];   // when the data reaches each stage
     var GLOSS = ['RAW = THE ORIGINAL FILES', 'BRONZE = SAVED AS-IS', 'SILVER = CLEANED UP', 'GOLD = READY TO USE', 'POWER BI = THE REPORT TOOL'];
@@ -188,7 +190,7 @@ import { profile } from '../data/portfolio';
 
     function frame(now) {
       if (finished) return;
-      var t = now - t0 + offset;
+      var t = (now - t0) * SPEED + offset;
 
       // ---- slow-phone fallback: measure early frame times ----
       if (!perfChecked) {
@@ -217,7 +219,7 @@ import { profile } from '../data/portfolio';
             stepEl.textContent = 'STEP ' + (si + 1) + ' OF 5  ·  ' + GLOSS[si];
             labelEl.textContent = cc.label; ctitleEl.textContent = cc.title; tickEl.textContent = cc.text;
             cardEl.classList.remove('is-swap');
-            shown = si; cardStart = performance.now() - t0 + offset;
+            shown = si; cardStart = (performance.now() - t0) * SPEED + offset;
           }, tickI === 0 ? 0 : 180);
           cardStart = t;
         } else cardEl.classList.add('is-swap');
@@ -443,7 +445,7 @@ import { profile } from '../data/portfolio';
     function skip() {
       if (finished) return;
       if (burst) return finish();
-      offset += Math.max(0, BURST - (performance.now() - t0 + offset));
+      offset += Math.max(0, BURST - ((performance.now() - t0) * SPEED + offset));
     }
     function onKey(e) { if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); skip(); } }
     $('[data-intro-skip]').addEventListener('click', skip);

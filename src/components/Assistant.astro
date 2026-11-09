@@ -13,9 +13,9 @@ const subtitle = endpoint
 ---
 
 <div data-assistant data-endpoint={endpoint} data-answers={JSON.stringify(quickAnswers)}>
-  <button type="button" class="assistant-launch" aria-expanded="false" aria-controls="assistant-panel" data-assistant-toggle>
+  <button type="button" class="assistant-launch" aria-expanded="false" aria-controls="assistant-panel" title="Ask about my work" data-assistant-toggle>
     <Icon name="message" size={18} />
-    <span class="max-sm:sr-only">Ask about my work</span>
+    <span class="sr-only">Ask about my work</span>
   </button>
 
   <section id="assistant-panel" class="assistant-panel card" role="dialog" aria-modal="false" aria-labelledby="assistant-title" hidden data-assistant-panel>
@@ -53,16 +53,20 @@ const subtitle = endpoint
   .assistant-launch {
     position: fixed;
     right: 1rem;
-    bottom: 1rem;
+    bottom: max(1rem, env(safe-area-inset-bottom));
     z-index: 40;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    min-height: 2.875rem;
-    padding: 0 1.125rem;
+    justify-content: center;
+    width: 3rem;
+    min-height: 3rem;
+    padding: 0;
     border-left: 4px solid var(--color-accent);
-    background: var(--btn-primary-bg);
-    color: var(--btn-primary-fg);
+    border: 1px solid var(--color-line);
+    border-left: 4px solid var(--color-accent);
+    background: var(--panel-bg);
+    color: var(--color-strong);
     font-size: 0.8125rem;
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -72,11 +76,12 @@ const subtitle = endpoint
     transition: background-color 200ms, transform 200ms;
   }
   .assistant-launch:hover {
-    background: var(--btn-primary-hover);
+    background: var(--color-surface-2);
+    border-color: var(--color-strong);
     transform: translateY(-2px);
   }
   .assistant-launch :global(svg) {
-    color: var(--color-accent);
+    color: var(--color-accent-ink);
   }
   .assistant-launch[aria-expanded='true'] {
     display: none;
