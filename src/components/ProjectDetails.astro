@@ -88,7 +88,7 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
     {
       steps.map((s, i) => (
         <li>
-          <button type="button" class="group block w-full cursor-zoom-in overflow-hidden rounded-xl border border-line bg-soft" data-zoom={s.full} data-zoom-alt={s.title}>
+          <button type="button" class="group block w-full cursor-zoom-in overflow-hidden rounded-xl border border-line bg-soft" data-zoom={s.full} data-zoom-alt={s.title} aria-label={`Enlarge: ${s.title}`}>
             <Image
               src={s.src}
               alt={s.title}

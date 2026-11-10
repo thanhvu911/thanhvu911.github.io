@@ -61,7 +61,7 @@ function wrap(text: string, max: number) {
 const META: Record<string, { label: string; title: string; source: string; caption: string }> = {
   'can-mail-data-predict-housing-vacancy': {
     label: 'Project 01 // Housing vacancy',
-    title: 'Does USPS vacancy track the Census rate?',
+    title: 'Can mail data predict housing vacancy?',
     source: 'Census ACS 1-year B25002 and HUD USPS vacancy data, 2011-2024 (no ACS 1-year release for 2020)',
     caption: 'Pooled r = 0.77, yet county by county it runs from 0.72 (Montgomery) to -0.01 (Champaign)',
   },
@@ -138,7 +138,10 @@ const set = (e: El, a: Attrs) => {
 };
 
 // ---------- 01 Housing: Census vs USPS, six counties ----------
+let curHostW = 1200;
 const housing: Scene = (s) => {
+  // The home page draws this chart in a narrow panel: use bigger, fewer labels there so text stays readable.
+  const narrow = !s.phone && curHostW < 900;
   const { years, counties } = data.housing;
   const names = Object.keys(counties) as (keyof typeof counties)[];
   const cols = s.phone ? 2 : 3;
@@ -149,10 +152,11 @@ const housing: Scene = (s) => {
   const chh = (s.bottom - s.top - legendH - gap * (rows - 1)) / rows;
   const all = names.flatMap((n) => [...counties[n].census, ...counties[n].usps]).filter((v) => v != null) as number[];
   const ymax = Math.max(...all) * 1.08;
-  const fs = s.phone ? 11.5 : 14;
+  const fs = s.phone ? 11.5 : narrow ? 17 : 14;
+  const tickFs = narrow ? 15 : 10.5;
   font(s.mk('text', { x: s.x0, y: s.top + 12, 'font-size': fs, fill: C.ink }, s.svg, '━ Census ACS rate'), MONO);
-  font(s.mk('text', { x: s.x0 + (s.phone ? 140 : 175), y: s.top + 12, 'font-size': fs, fill: C.deep }, s.svg, '━ USPS rate'), MONO);
-  const note = font(s.mk('text', { x: s.x0 + (s.phone ? 0 : 320), y: s.top + (s.phone ? 30 : 12), 'font-size': fs, fill: C.deep, opacity: 0 }, s.svg, '┆ 2012: USPS redefinition, not a real trend'), MONO);
+  font(s.mk('text', { x: s.x0 + (s.phone ? 140 : narrow ? 225 : 175), y: s.top + 12, 'font-size': fs, fill: C.deep }, s.svg, '━ USPS rate'), MONO);
+  const note = font(s.mk('text', { x: s.x0 + (s.phone ? 0 : narrow ? 400 : 320), y: s.top + (s.phone ? 30 : 12), 'font-size': fs, fill: C.deep, opacity: 0 }, s.svg, '┆ 2012: USPS redefinition, not a real trend'), MONO);
   type Line = { p: El; v: (number | null)[]; dot: El; X: (i: number) => number; Y: (v: number) => number };
   const lines: Line[] = [];
   const marks: El[] = [];
@@ -160,17 +164,17 @@ const housing: Scene = (s) => {
     const ox = s.x0 + (k % cols) * (cw + gap);
     const oy = s.top + legendH + Math.floor(k / cols) * (chh + gap);
     const g = s.mk('g', { transform: `translate(${ox} ${oy})` });
-    const pt = 22, pb = 14, pl = 30;
+    const pt = narrow ? 32 : 22, pb = narrow ? 20 : 14, pl = narrow ? 44 : 30;
     const ph = chh - pt - pb, pw = cw - pl;
-    font(s.mk('text', { x: 0, y: 12, 'font-size': s.phone ? 13 : 16, 'font-weight': 700, fill: C.ink }, g, n), DISPLAY);
-    for (const f of [0, 0.5, 1]) {
+    font(s.mk('text', { x: 0, y: 12, 'font-size': s.phone ? 13 : narrow ? 20 : 16, 'font-weight': 700, fill: C.ink }, g, n), DISPLAY);
+    for (const f of narrow ? [0, 1] : [0, 0.5, 1]) {
       const yy = pt + ph - f * ph;
       s.mk('line', { x1: pl, x2: cw, y1: yy, y2: yy, stroke: C.line, 'stroke-width': 1, opacity: 0.8 }, g);
-      font(s.mk('text', { x: pl - 5, y: yy + 3, 'font-size': 9, 'text-anchor': 'end', fill: C.mute }, g, `${Math.round(ymax * f)}%`), MONO);
+      font(s.mk('text', { x: pl - 5, y: yy + 3, 'font-size': tickFs, 'text-anchor': 'end', fill: C.mute }, g, `${Math.round(ymax * f)}%`), MONO);
     }
     const X = (i: number) => pl + (i / (years.length - 1)) * pw;
     const Y = (v: number) => pt + ph - (v / ymax) * ph;
-    for (const y of [2012, 2016, 2020, 2024]) font(s.mk('text', { x: X(y - 2011), y: chh, 'font-size': 9, 'text-anchor': 'middle', fill: C.mute }, g, String(y)), MONO);
+    for (const y of s.phone || narrow ? [2012, 2024] : [2012, 2016, 2020, 2024]) font(s.mk('text', { x: X(y - 2011), y: chh, 'font-size': tickFs, 'text-anchor': 'middle', fill: C.mute }, g, String(y)), MONO);
     marks.push(s.mk('line', { x1: X(1), x2: X(1), y1: pt, y2: pt + ph, stroke: C.deep, 'stroke-width': 1.3, 'stroke-dasharray': '4 3', opacity: 0 }, g));
     for (const key of ['census', 'usps'] as const) {
       const v = counties[n][key] as (number | null)[];
@@ -225,13 +229,13 @@ const grocery: Scene = (s) => {
     s.mk('rect', { x: 0, y: 0, width: cw, height: chh, fill: C.surf, stroke: C.line, 'stroke-width': 1.2 }, g);
     s.mk('rect', { x: 0, y: 0, width: 6, height: chh, fill: b.col }, g);
     font(s.mk('text', { x: 20, y: s.phone ? 26 : 38, 'font-size': s.phone ? 14 : 18, 'font-weight': 700, fill: C.ink }, g, b.n), MONO);
-    font(s.mk('text', { x: 20, y: s.phone ? 44 : 62, 'font-size': s.phone ? 10.5 : 13, fill: C.mute }, g, b.sub), MONO);
+    font(s.mk('text', { x: 20, y: s.phone ? 44 : 62, 'font-size': s.phone ? 11.5 : 13, fill: C.mute }, g, b.sub), MONO);
     const nums: Card['nums'] = [];
     b.rows.forEach(([v, lab], r) => {
-      const nx = s.phone ? 150 + r * ((cw - 160) / 2) : 20;
+      const nx = s.phone ? 172 + r * ((cw - 182) / 2) : 20;
       const ny = s.phone ? 38 : 130 + r * 82;
       const e = font(s.mk('text', { x: nx, y: ny, 'font-size': s.phone ? 18 : 34, 'font-weight': 700, fill: k === 1 && r === 1 ? C.deep : C.ink }, g, '0'), DISPLAY);
-      font(para(s.mk, wrap(String(lab), s.phone ? 15 : 34), nx, ny + (s.phone ? 15 : 24), s.phone ? 12 : 17, { 'font-size': s.phone ? 10.5 : 14, fill: C.mute }, g), SANS);
+      font(para(s.mk, wrap(String(lab), s.phone ? 15 : 34), nx, ny + (s.phone ? 15 : 24), s.phone ? 12 : 17, { 'font-size': s.phone ? 11.5 : 14, fill: C.mute }, g), SANS);
       nums.push({ e, v: v as number, pct: String(lab).startsWith('revenue') });
     });
     let bar: El[] | undefined;
@@ -340,7 +344,7 @@ const lancaster: Scene = (s) => {
   }
   years.forEach((y, i) => {
     if (s.phone && i % 2) return;
-    font(s.mk('text', { x: X(y), y: py + ph + 18, 'font-size': s.phone ? 11 : 12, 'text-anchor': 'middle', fill: C.mute }, s.svg, String(y)), MONO);
+    font(s.mk('text', { x: X(y), y: py + ph + 18, 'font-size': s.phone ? 11.5 : 12, 'text-anchor': 'middle', fill: C.mute }, s.svg, String(y)), MONO);
   });
   const clip = s.mk('clipPath', { id: s.uid + 'c' });
   const cr = s.mk('rect', { x: px - 8, y: py - 10, width: 0, height: ph + 20 }, clip);
@@ -476,15 +480,15 @@ const medical: Scene = (s) => {
   const Y = (c: number) => s.top + (sh - pb) - (c / 660) * (sh - pb - 6);
   for (const v of [0, 200, 400, 600]) {
     s.mk('line', { x1: s.x0 + pl, x2: s.x0 + sw, y1: Y(v), y2: Y(v), stroke: C.line, opacity: 0.8 });
-    font(s.mk('text', { x: s.x0 + pl - 6, y: Y(v) + 4, 'font-size': 11, 'text-anchor': 'end', fill: C.mute }, s.svg, `$${v / 10}k`), MONO);
+    font(s.mk('text', { x: s.x0 + pl - 6, y: Y(v) + 4, 'font-size': 11.5, 'text-anchor': 'end', fill: C.mute }, s.svg, `$${v / 10}k`), MONO);
   }
-  for (const a of [20, 40, 60]) font(s.mk('text', { x: X(a), y: s.top + sh - 4, 'font-size': 11, 'text-anchor': 'middle', fill: C.mute }, s.svg, String(a)), MONO);
+  for (const a of [20, 40, 60]) font(s.mk('text', { x: X(a), y: s.top + sh - 4, 'font-size': 11.5, 'text-anchor': 'middle', fill: C.mute }, s.svg, String(a)), MONO);
   const circles = pts.map(([a, c]) => {
     const e = s.mk('circle', { cx: X(a), cy: Y(c), r: s.phone ? 1.9 : 2.7, opacity: 0 });
     e.style.fill = C.mute;
     return e;
   });
-  const leg = glab.map((g, i) => font(s.mk('text', { x: s.x0 + pl + 10, y: s.top + 16 + i * 20, 'font-size': s.phone ? 11 : 13, 'font-weight': 700, fill: i ? gcol[i] : C.mute, opacity: 0 }, s.svg, '● ' + g), SANS));
+  const leg = glab.map((g, i) => font(s.mk('text', { x: s.x0 + pl + 10, y: s.top + 16 + i * 20, 'font-size': s.phone ? 11.5 : 13, 'font-weight': 700, fill: i ? gcol[i] : C.mute, opacity: 0 }, s.svg, '● ' + g), SANS));
   const bx = s.phone ? s.x0 : s.x0 + sw + 40;
   const bw = s.phone ? s.x1 - s.x0 : s.x1 - bx;
   const by0 = s.phone ? s.top + sh + 34 : s.top + 36;
@@ -497,7 +501,7 @@ const medical: Scene = (s) => {
     const bwid = Math.min(colW * 0.56, 70);
     const r = s.mk('rect', { x: cx - bwid / 2, width: bwid, y: by0 + bh, height: 0, fill: col });
     const t = font(s.mk('text', { x: cx, 'font-size': s.phone ? 14 : 20, 'font-weight': 700, 'text-anchor': 'middle', fill: C.ink, opacity: 0 }, s.svg, ''), DISPLAY);
-    font(para(s.mk, wrap(lab, s.phone ? 14 : 12), cx, by0 + bh + 16, 14, { 'font-size': s.phone ? 10.5 : 12, 'text-anchor': 'middle', fill: C.text }, s.svg), SANS);
+    font(para(s.mk, wrap(lab, s.phone ? 14 : 12), cx, by0 + bh + 16, 14, { 'font-size': s.phone ? 11.5 : 12, 'text-anchor': 'middle', fill: C.text }, s.svg), SANS);
     return { r, t, v };
   });
   let shown = 0, colored = false;
@@ -547,12 +551,13 @@ const melbourne: Scene = (s) => {
     const bw = colW * 0.62;
     const r = s.mk('rect', { x: cx - bw / 2, width: bw, y: Y(0), height: 0, fill: i < 2 ? C.mute : v > 30 ? C.deep : C.acc });
     const t = font(s.mk('text', { x: cx, 'font-size': s.phone ? 12 : 17, 'font-weight': 700, 'text-anchor': 'middle', fill: C.ink, opacity: 0 }, s.svg, ''), DISPLAY);
-    font(para(s.mk, wrap(lab, s.phone ? 8 : 13), cx, py + ph + 18, 13, { 'font-size': s.phone ? 10 : 12.5, 'text-anchor': 'middle', fill: C.text }, s.svg), SANS);
+    const short: Record<string, string> = { 'Random 5-fold CV': 'Random CV', 'Future sales': 'Future', 'South-Eastern': 'S-East', Northern: 'North', Southern: 'South', Eastern: 'East', Western: 'West' };
+    font(para(s.mk, wrap(s.phone ? short[lab] ?? lab : lab, s.phone ? 9 : 13), cx, py + ph + 18, 13, { 'font-size': s.phone ? 11 : 12.5, 'text-anchor': 'middle', fill: C.text }, s.svg), SANS);
     return { r, t, v, i };
   });
   const base = s.mk('line', { x1: px, x2: px + pw, y1: Y(13.1), y2: Y(13.1), stroke: C.mute, 'stroke-width': 1.3, 'stroke-dasharray': '5 4', opacity: 0 });
   const div = s.mk('line', { x1: px + colW * 2, x2: px + colW * 2, y1: py, y2: py + ph, stroke: C.line, 'stroke-width': 1.2, opacity: 0 });
-  const note = font(s.mk('text', { x: px + colW * 2 + 10, y: py + 14, 'font-size': s.phone ? 11 : 14, fill: C.mute, opacity: 0 }, s.svg, s.phone ? 'unseen region →' : 'held-out region the model never saw  →'), MONO);
+  const note = font(s.mk('text', { x: px + colW * 2 + 10, y: py + 14, 'font-size': s.phone ? 11.5 : 14, fill: C.mute, opacity: 0 }, s.svg, s.phone ? 'unseen region →' : 'held-out region the model never saw  →'), MONO);
   return {
     dur: 7,
     frame(t) {
@@ -579,7 +584,7 @@ const nowcast: Scene = (s) => {
   const pw = s.phone ? s.x1 - s.x0 : (s.x1 - s.x0 - 50) / 2;
   const ph = s.phone ? (total - 14) / 2 : total;
   font(s.mk('text', { x: s.x0, y: s.top + 12, 'font-size': fs - 1, fill: C.mute }, s.svg, 'Mean absolute error, percentage points'), MONO);
-  const A = hbars(s, s.x0, s.top + 22, pw, ph - 22, mae.map((m, i) => ({ label: m[0], col: i ? C.mute : C.deep })), 1.75, s.phone ? 116 : 150, fs);
+  const A = hbars(s, s.x0, s.top + 22, pw, ph - 22, mae.map((m, i) => ({ label: s.phone ? m[0].replace('Linear, USPS change', 'Linear (USPS)') : m[0], col: i ? C.mute : C.deep })), 1.75, s.phone ? 116 : 172, fs);
   const x2 = s.phone ? s.x0 : s.x0 + pw + 50, y2 = s.phone ? s.top + ph + 14 : s.top;
   font(s.mk('text', { x: x2, y: y2 + 12, 'font-size': fs - 1, fill: C.mute }, s.svg, '80% interval coverage (ridge)'), MONO);
   const B = hbars(s, x2, y2 + 22, pw, ph - 22, cov.map((c) => ({ label: c[0], col: c[1] < 0.7 ? C.deep : c[0] === 'Pooled' ? C.ink : C.acc })), 1.1, s.phone ? 92 : 110, fs);
@@ -618,7 +623,7 @@ const netflix: Scene = (s) => {
   const bh = s.phone ? Math.min(78, (ah - 3 * gap) / 4) : 132;
   const y0 = s.phone ? s.top + (ah - (4 * bh + 3 * gap)) / 2 : s.top + (ah - bh) / 2;
   const pos = names.map((_, i) => (s.phone ? { x: s.x0, y: y0 + i * (bh + gap) } : { x: s.x0 + i * (bw + gap), y: y0 }));
-  const lf = s.phone ? 14 : 17, sf = s.phone ? 11 : 13;
+  const lf = s.phone ? 14 : 17, sf = s.phone ? 12 : 13;
   const boxes = names.map(([a, b], i) => {
     const { x, y } = pos[i];
     const r = s.mk('rect', { x, y, width: bw, height: bh, fill: C.surf, stroke: C.line, 'stroke-width': 1.5 });
@@ -678,12 +683,15 @@ let uidN = 0;
 /** Build the SVG for one scene; returns its length and a frame function. */
 function build(host: HTMLElement, key: string, phone: boolean, alt: string) {
   const meta = META[key];
+  curHostW = host.getBoundingClientRect().width || 1200;
   const W = phone ? 480 : 1200, H = phone ? 600 : 675;
   const svg = document.createElementNS(NS, 'svg') as SVGSVGElement;
   set(svg, { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': alt, preserveAspectRatio: 'xMidYMid meet' });
   svg.style.cssText = 'display:block;width:100%;height:100%';
   const mk: Stage['mk'] = (tag, a = {}, parent, text) => {
     const e = document.createElementNS(NS, tag) as El;
+    // Card thumbnails render this 480-wide layout at about 0.75x, so keep text from shrinking below ~9px on screen.
+    if (phone && tag === 'text' && Number(a['font-size']) < 12.5) a = { ...a, 'font-size': 12.5 };
     for (const k in a) {
       if (k === 'fill' || k === 'stroke') e.style.setProperty(k, String(a[k]));
       else e.setAttribute(k, String(a[k]));
@@ -693,15 +701,15 @@ function build(host: HTMLElement, key: string, phone: boolean, alt: string) {
     return e;
   };
   mk('rect', { x: 0, y: 0, width: W, height: H, fill: C.surf });
-  const pad = phone ? 22 : 44;
+  const pad = phone ? 22 : 40;
   mk('rect', { x: pad, y: pad - 6, width: 9, height: 14, fill: C.acc });
-  const lb = font(mk('text', { x: pad + 18, y: pad + 5, 'font-size': phone ? 11 : 13, fill: C.mute }, svg, meta.label.toUpperCase()), MONO);
+  const lb = font(mk('text', { x: pad + 18, y: pad + 5, 'font-size': phone ? 11.5 : 13, fill: C.mute }, svg, meta.label.toUpperCase()), MONO);
   lb.style.letterSpacing = '0.06em';
   const tFs = phone ? 21 : 32;
   const tLines = wrap(meta.title, phone ? 30 : 62);
   font(para(mk, tLines, pad, pad + (phone ? 40 : 52), tFs * 1.2, { 'font-size': tFs, 'font-weight': 700, fill: C.ink }, svg), DISPLAY);
   const top = pad + (phone ? 40 : 52) + (tLines.length - 1) * tFs * 1.2 + (phone ? 26 : 34);
-  const sLines = wrap(meta.source, phone ? 62 : 150);
+  const sLines = wrap(meta.source, phone ? 50 : 150);
   const sFs = phone ? 9.5 : 11;
   const sY = H - pad * 0.55 - (sLines.length - 1) * (sFs + 3);
   font(para(mk, sLines, pad, sY, sFs + 3, { 'font-size': sFs, fill: C.mute }, svg), MONO);
@@ -735,6 +743,11 @@ export function initMotion(root: ParentNode = document) {
     const tick = (now: number) => {
       raf = 0;
       if (!visible || !player) return;
+      if (document.documentElement.hasAttribute('data-calm')) {
+        last = now;
+        raf = requestAnimationFrame(tick);
+        return;
+      }
       t += Math.min((now - last) / 1000, 0.05);
       last = now;
       if (t > player.dur + 6) t = 0;

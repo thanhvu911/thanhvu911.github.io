@@ -6,6 +6,9 @@ import { profile } from '../data/portfolio';
 <footer class="border-t border-line">
   <div class="frame flex flex-col gap-4 px-4 py-6 sm:flex-row sm:items-center sm:justify-end md:px-10">
     <div class="flex items-center gap-1">
+      <button type="button" class="mono mr-3 inline-flex min-h-11 items-center gap-2 hover:text-strong" aria-pressed="false" aria-label="Pause motion" data-calm-toggle>
+        <span data-calm-label aria-hidden="true">Pause motion</span>
+      </button>
       <a href={profile.linkedin} class="foot-link" aria-label="LinkedIn" target="_blank" rel="noopener" data-goatcounter-click="footer-linkedin">
         <Icon name="linkedin" size={17} />
       </a>
@@ -22,7 +25,59 @@ import { profile } from '../data/portfolio';
   </div>
 </footer>
 
+<script>
+  // Page-wide pause for ambient motion (WCAG 2.2.2). The choice is remembered.
+  const btns = [...document.querySelectorAll<HTMLButtonElement>('[data-calm-toggle]')];
+  if (btns.length) {
+    let timer = 0;
+    const apply = (on: boolean) => {
+      document.documentElement.toggleAttribute('data-calm', on);
+      btns.forEach((b) => {
+        b.setAttribute('aria-pressed', String(on));
+        b.setAttribute('aria-label', on ? 'Resume motion' : 'Pause motion');
+        const l = b.querySelector<HTMLElement>('[data-calm-label]');
+        if (l && !l.classList.contains('sr-only')) l.textContent = on ? 'Resume motion' : 'Pause motion';
+      });
+      clearInterval(timer);
+      const sweep = () =>
+        document.getAnimations().forEach((a) => {
+          if (!on) return a.play();
+          const n = a.effect?.getComputedTiming().iterations;
+          if (n !== undefined && Number.isFinite(n)) a.finish();
+          else a.pause();
+        });
+      sweep();
+      if (on) timer = window.setInterval(sweep, 800);
+    };
+    let saved = false;
+    try { saved = localStorage.getItem('calm') === '1'; } catch {}
+    if (saved) apply(true);
+    btns.forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const on = btn.getAttribute('aria-pressed') !== 'true';
+        try { localStorage.setItem('calm', on ? '1' : '0'); } catch {}
+        apply(on);
+      }),
+    );
+  }
+</script>
+
 <style>
+  /* Paused: entrance animations jump to their finished state, so nothing is stuck invisible. */
+  :global([data-calm] *),
+  :global([data-calm] *::before),
+  :global([data-calm] *::after) {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
+  [data-calm-toggle][aria-pressed='true'] span {
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-underline-offset: 0.3em;
+  }
   .foot-link {
     display: grid;
     place-items: center;
@@ -32,8 +87,10 @@ import { profile } from '../data/portfolio';
     color: var(--color-muted);
     transition: border-color 150ms, color 150ms;
   }
-  .foot-link:hover {
-    border-color: var(--color-line);
-    color: var(--color-strong);
+  @media (hover: hover) and (pointer: fine) {
+    .foot-link:hover {
+      border-color: var(--color-line);
+      color: var(--color-strong);
+    }
   }
 </style>

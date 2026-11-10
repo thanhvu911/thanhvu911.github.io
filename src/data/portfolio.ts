@@ -364,7 +364,7 @@ export const projects: Project[] = [
     animation: 'Dots representing 18.4 thousand customers sort into segments: 42% At-Risk, 26% Growth, 21% Standard, 10% Premium.',
     cover: 'powerbi-page-2-customer-analysis.png',
     metrics: [
-      { value: '42%', label: 'of 18.4K customers fall in the rule-based At-Risk group, the largest' },
+      { value: '42%', label: 'of customers in the largest group (At-Risk)' },
       { value: '18.4K', label: 'Customers scored' },
       { value: '64', label: 'R-F-M codes' },
       { value: '9', label: 'Named segments (shown as 4 groups)' },
@@ -411,7 +411,7 @@ export const projects: Project[] = [
     animation: 'A data-quality bar shows 87.7% complete rows, 12.3% missing a field, and 17 invalid currency codes, then credit bands show Poor-credit accounts hold 51.4% of transaction value.',
     cover: 'insight-peak-hours.png',
     metrics: [
-      { value: '12.3%', label: 'of rows had a missing field; missing amounts were standardized before analysis' },
+      { value: '12.3%', label: 'of rows had a missing field' },
       { value: '17', label: 'Invalid currency codes' },
       { value: '800', label: 'Accounts' },
       { value: '51%', label: 'of value from Poor-credit accounts (52% of customers)' },
@@ -461,7 +461,7 @@ export const projects: Project[] = [
     animation: '1,338 policyholders split into three cost bands by smoking and obesity, and R-squared rises from 0.09 (age and sex) to 0.75 (all predictors) to 0.86 (with the smoker × obese interaction), with 0.88 on held-out data.',
     cover: '01-three-bands.png',
     metrics: [
-      { value: '0.09 → 0.86', label: 'Share of cost variation explained (R², in-sample): 9% (age + sex) to 86% (with smoker × obese interaction)' },
+      { value: '0.09 → 0.86', label: 'R², in-sample (age + sex → full model)' },
       { value: '9', label: 'Models compared' },
       { value: '0.88', label: 'Held-out R²' },
     ],
@@ -510,7 +510,7 @@ export const projects: Project[] = [
     animation: 'Error bars: 13.1% under random and time splits, 18 to 38% when a whole region is held out.',
     cover: '02-leave-one-region-out.png',
     metrics: [
-      { value: '13.1%', label: 'Error on random folds, versus 18–38% on an unseen region' },
+      { value: '13.1%', label: 'Random-fold error (18–38% on an unseen region)' },
       { value: '13.1%', label: 'Error under random CV' },
       { value: '18–38%', label: 'Error on an unseen region' },
     ],
@@ -559,7 +559,7 @@ export const projects: Project[] = [
     animation: 'Reusing last year’s Census vacancy rate gave the lowest error (1.023 points) among the models compared, ahead of ridge (1.054). Its 80% intervals cover 81% overall but only 57% in Champaign.',
     cover: '01-error-by-scheme.png',
     metrics: [
-      { value: '1.02 vs 1.05', label: 'MAE: last year’s value vs ridge (8 models compared; with 78 rows the gap is not distinguishable)' },
+      { value: '1.02 vs 1.05', label: 'MAE: last year vs ridge, gap not distinguishable' },
       { value: '1.02', label: 'Lowest error, in points (last year’s value)' },
       { value: '81%', label: 'Pooled interval coverage' },
       { value: '57%', label: 'Coverage in Champaign' },
@@ -688,7 +688,7 @@ export const skills = [
   {
     group: 'Data engineering',
     icon: 'database',
-    items: ['SQL (T-SQL)', 'Python (pandas)', 'PySpark and Spark SQL (Fabric certification study)', 'ETL / ELT pipelines', 'Medallion architecture', 'Dimensional modeling (star, galaxy)', 'Stored procedures', 'Data-quality testing'],
+    items: ['SQL (T-SQL)', 'Python (pandas)', 'PySpark and Spark SQL (DP-700 study)', 'ETL / ELT pipelines', 'Medallion architecture', 'Dimensional modeling (star, galaxy)', 'Stored procedures', 'Data-quality testing'],
     proof: { label: 'Grocery data warehouse', href: '/projects/grocery-transaction-data-warehouse' },
   },
   {

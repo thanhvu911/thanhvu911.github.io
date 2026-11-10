@@ -84,7 +84,7 @@ const personSchema = {
         // reduced-motion visitors. Add ?intro to replay it.
         try {
           var home = location.pathname.replace(/\/+$/, '') === '';
-          var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+          var calm = matchMedia('(prefers-reduced-motion: reduce)').matches || localStorage.getItem('calm') === '1';
           var again = new URLSearchParams(location.search).has('intro');
           if (home && !calm && (again || !sessionStorage.getItem('intro'))) {
             root.classList.add('intro-on');
@@ -121,7 +121,7 @@ const personSchema = {
   <body class="flex min-h-dvh flex-col">
     <a
       href="#main"
-      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-strong focus:px-4 focus:py-2 focus:text-bg"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-strong focus:flex focus:min-h-11 focus:items-center focus:px-4 focus:text-bg"
       >Skip to content</a
     >
     <Nav />
@@ -207,7 +207,9 @@ const personSchema = {
         el.hidden = false;
       });
 
-      const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let calmSaved = false;
+      try { calmSaved = localStorage.getItem('calm') === '1'; } catch {}
+      const calm = matchMedia('(prefers-reduced-motion: reduce)').matches || calmSaved;
 
       // Scramble a heading's letters, then settle them left to right.
       const glyphs = 'ABCDEFGHKNOPRSTUVXYZ0123456789/#';

@@ -13,11 +13,11 @@ import { profile } from '../data/portfolio';
         <p class="section-lede">Pick the version that fits the role or program.</p>
       </div>
     </div>
-    <div>
-      <ul>
+    <div class="rs">
+      <ul class="rs-list">
         {
-          profile.resumes.map((r) => (
-            <li class="flex flex-col gap-4 border-b border-line px-4 py-7 sm:flex-row sm:items-center sm:justify-between md:px-10">
+          profile.resumes.map((r, i) => (
+            <li class="rs-item flex flex-col gap-4 border-b border-line px-4 py-7 sm:flex-row sm:items-center sm:justify-between md:px-10" data-src={r.href} data-on={String(i === 0)}>
               <div>
                 <h2 class="display-md text-xl md:text-2xl">{r.label}</h2>
                 <p class="text-[0.9375rem] text-muted">{r.note}</p>
@@ -33,6 +33,47 @@ import { profile } from '../data/portfolio';
           ))
         }
       </ul>
+      <div class="rs-prev" hidden>
+        <p class="mono rs-cap">Preview // <span data-prev-label>{profile.resumes[0].label}</span> · one page</p>
+        <iframe title="Resume preview" data-prev src={`${profile.resumes[0].href}#toolbar=0&navpanes=0&view=FitH`} loading="lazy"></iframe>
+      </div>
     </div>
   </div>
 </Base>
+
+<style>
+  .rs-prev { display: none; }
+  @media (min-width: 1000px) {
+    .rs { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; }
+    .rs-list { display: flex; flex-direction: column; }
+    .rs-item { flex: 1 1 0; }
+    .rs-prev { align-self: start; }
+    .rs-prev { display: block; position: sticky; top: 5rem; padding: 1.75rem 2.5rem 2rem 1.5rem; }
+    .rs-prev[hidden] { display: none; }
+    .rs-prev iframe { width: 100%; height: min(68vh, 44rem); border: 1px solid var(--color-line); background: #fff; box-shadow: 0 24px 50px -34px rgb(8 18 36 / 0.55); }
+    .rs-cap { margin-bottom: 0.75rem; }
+    .rs-item { cursor: pointer; transition: background-color 200ms; }
+    .rs-item[data-on='true'] { background: color-mix(in srgb, var(--color-accent) 10%, transparent); box-shadow: inset 3px 0 0 var(--color-accent); }
+    .rs-list { grid-column: 1; }
+  }
+</style>
+
+<script>
+  const items = [...document.querySelectorAll<HTMLElement>('.rs-item')];
+  const prev = document.querySelector<HTMLElement>('.rs-prev');
+  const frame = document.querySelector<HTMLIFrameElement>('[data-prev]');
+  const label = document.querySelector<HTMLElement>('[data-prev-label]');
+  if (prev && frame && items.length) {
+    prev.hidden = false;
+    items.forEach((li) => {
+      const pick = () => {
+        items.forEach((x) => x.setAttribute('data-on', String(x === li)));
+        frame.src = `${li.dataset.src}#toolbar=0&navpanes=0&view=FitH`;
+        if (label) label.textContent = li.querySelector('h2')?.textContent ?? '';
+      };
+      li.addEventListener('mouseenter', () => { if (matchMedia('(hover: hover)').matches) pick(); });
+      li.addEventListener('focusin', pick);
+      li.addEventListener('click', (e) => { if (!(e.target as HTMLElement).closest('a')) pick(); });
+    });
+  }
+</script>

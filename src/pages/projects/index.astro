@@ -15,9 +15,14 @@ const counts = Object.fromEntries(cats.map((c) => [c, projects.filter((p) => cat
 
 <Base title="Projects" description="Data engineering, analytics, and machine learning projects by Thanh Vu: Microsoft Fabric, SQL Server warehouses, Power BI, and Python.">
   <div class="frame">
+    <div class="shead">
+      <p class="idx"><span class="sq"></span><span class="mono">Projects //<br />{projects.length} case studies</span></p>
+      <div class="ttl">
+        <h1 class="section-title">All projects</h1>
+        <p class="section-lede">Pipelines, warehouses, dashboards and models. Open any project for a short visual case study.</p>
+      </div>
+    </div>
     <header class="px">
-      <h1 class="section-title px-title">All projects</h1>
-      <p class="px-lede">Pipelines, warehouses, dashboards and models. Open any project for a short visual case study.</p>
       <div class="px-filter" role="group" aria-label="Filter projects" data-filter>
         <button type="button" aria-pressed="true" data-cat="all">All <span>{projects.length}</span></button>
         {cats.map((c) => <button type="button" aria-pressed="false" data-cat={c}>{c} <span>{counts[c]}</span></button>)}
@@ -29,13 +34,13 @@ const counts = Object.fromEntries(cats.map((c) => [c, projects.filter((p) => cat
         projects.map((p, i) => (
           <li class="pj" data-cat={catOf(p.kind)}>
             <a href={`/projects/${p.slug}`} class="pj-vis" tabindex="-1" aria-hidden="true">
-              {p.animation ? <MotionGraphic slug={p.slug} alt={p.animation} /> : <ProjectVisual project={p} />}
+              {p.animation ? <MotionGraphic slug={p.slug} alt={p.animation} compact /> : <ProjectVisual project={p} />}
             </a>
             <div class="pj-meta">
               <p class="mono">{p.number} // {p.kind.split(' · ')[0]} · {p.year}{dashboardSlugs.includes(p.slug) ? ' · Power BI' : ''}</p>
               <h2 class="pj-title"><a href={`/projects/${p.slug}`}>{p.title}</a></h2>
               <p class="pj-line">{p.headline}</p>
-              <a href={`/projects/${p.slug}`} class="pj-go" aria-label={`Open case study: ${p.title}`}>
+              <a href={`/projects/${p.slug}`} class="pj-go" tabindex="-1" aria-hidden="true">
                 <span>Open case study</span>
                 <Icon name="arrow-right" size={18} />
               </a>
@@ -49,7 +54,7 @@ const counts = Object.fromEntries(cats.map((c) => [c, projects.filter((p) => cat
 
 <style>
   .px {
-    padding: 2.5rem 1rem 3rem;
+    padding: 0 1rem 1rem;
   }
   .px-title {
     margin-top: 1.5rem;
@@ -65,7 +70,7 @@ const counts = Object.fromEntries(cats.map((c) => [c, projects.filter((p) => cat
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem 1.75rem;
-    margin-top: 2.25rem;
+    margin-top: 0.5rem;
   }
   .px-filter button {
     position: relative;
@@ -92,10 +97,12 @@ const counts = Object.fromEntries(cats.map((c) => [c, projects.filter((p) => cat
     background: var(--color-accent);
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .px-filter button:hover {
-    color: var(--color-strong);
+  @media (hover: hover) and (pointer: fine) {
+    .px-filter button:hover {
+      color: var(--color-strong);
+    }
   }
   .px-filter button[aria-pressed='true'] {
     color: var(--color-strong);
@@ -115,6 +122,7 @@ const counts = Object.fromEntries(cats.map((c) => [c, projects.filter((p) => cat
   .pj {
     display: grid;
     gap: 1.5rem;
+    grid-template-rows: auto 1fr;
     align-content: start;
     padding-top: 2rem;
   }
@@ -126,17 +134,19 @@ const counts = Object.fromEntries(cats.map((c) => [c, projects.filter((p) => cat
     overflow: hidden;
     border: 1px solid var(--color-line);
     box-shadow: 0 24px 50px -34px rgb(8 18 36 / 0.55);
-    transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 600ms;
+    transition: border-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .pj:hover .pj-vis {
-    transform: translateY(-6px);
-    box-shadow: 0 34px 60px -32px rgb(8 18 36 / 0.6);
+  @media (hover: hover) and (pointer: fine) {
+    .pj:hover .pj-vis {
+      border-color: var(--color-strong);
+    }
   }
   .pj-vis :global(.mg-replay) {
     display: none;
   }
   .pj-meta {
     display: grid;
+    grid-template-rows: auto auto 1fr auto;
     gap: 0.75rem;
     max-width: 34rem;
   }
@@ -153,6 +163,7 @@ const counts = Object.fromEntries(cats.map((c) => [c, projects.filter((p) => cat
     letter-spacing: -0.01em;
     color: var(--color-strong);
     text-wrap: balance;
+    overflow-wrap: anywhere;
   }
   .pj-line {
     color: var(--color-muted);
@@ -170,29 +181,34 @@ const counts = Object.fromEntries(cats.map((c) => [c, projects.filter((p) => cat
     border-bottom: 1px solid var(--color-accent);
     transition: gap 300ms cubic-bezier(0.22, 1, 0.36, 1), color 200ms;
   }
-  .pj:hover .pj-go,
-  .pj-go:hover {
-    gap: 1rem;
-    color: var(--color-accent);
+  @media (hover: hover) and (pointer: fine) {
+    .pj:hover .pj-go,
+    .pj-go:hover {
+      gap: 1rem;
+      color: var(--color-accent);
+    }
   }
   .pj-reveal {
     opacity: 0;
-    transform: translateY(28px);
+    transform: translateY(12px);
   }
 
   @media (min-width: 768px) {
     .px {
-      padding: 4rem 2.5rem 4rem;
+      padding: 2rem 2.5rem 1rem;
     }
     .pgrid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       column-gap: clamp(2rem, 4vw, 4.5rem);
-      row-gap: 5.5rem;
+      row-gap: 3.5rem;
       padding: 1rem 2.5rem 8rem;
     }
-    /* A calm stagger: the second column sits a little lower. */
-    .pj.odd {
-      margin-top: 4rem;
+  }
+  /* Three columns on wide screens so each chart thumbnail stays near its drawn size and its text stays readable. */
+  @media (min-width: 1200px) {
+    .pgrid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: clamp(1.5rem, 3vw, 3rem);
     }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -220,20 +236,21 @@ const counts = Object.fromEntries(cats.map((c) => [c, projects.filter((p) => cat
     );
     // Quiet reveal as each project scrolls in.
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      items.forEach((li) => li.classList.add('pj-reveal'));
+      // The first row is already in view, so it never starts hidden.
+      items.slice(2).forEach((li) => li.classList.add('pj-reveal'));
       const io = new IntersectionObserver(
         (es) =>
           es.forEach((e) => {
             if (!e.isIntersecting) return;
             const el = e.target as HTMLElement;
-            el.style.transition = 'opacity 800ms cubic-bezier(0.22,1,0.36,1), transform 800ms cubic-bezier(0.22,1,0.36,1)';
+            el.style.transition = 'opacity 400ms cubic-bezier(0.22,1,0.36,1), transform 400ms cubic-bezier(0.22,1,0.36,1)';
             el.style.opacity = '1';
             el.style.transform = 'none';
             io.unobserve(el);
           }),
         { threshold: 0.12 },
       );
-      items.forEach((li) => io.observe(li));
+      items.slice(2).forEach((li) => io.observe(li));
     }
   }
 </script>

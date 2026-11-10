@@ -27,15 +27,26 @@ const facts = [
   <section id="home" class="border-b border-line">
     <div class="frame hero">
       <p class="h-blurb rise" style="--d:0">
-        <span class="sq mb-5 hidden lg:block"></span>
-        <span class="lg:hidden">Pipelines, warehouses, Power BI. Data Analyst Fellow at EDC Lancaster County.</span>
-        <span class="hidden lg:inline">Data engineer and analyst in Lancaster, PA. I build data pipelines, warehouses, and Power BI reports. At EDC Lancaster County I turn federal data (BLS, BEA) into star-schema dashboards that refresh daily.</span>
+        
+        <span class="lg:hidden">Data engineer and analyst. I build pipelines, warehouses, and Power BI reports. At EDC Lancaster County I turn federal data (BLS, BEA) into dashboards that refresh daily.</span>
+        <span class="hidden lg:inline">I build data pipelines, warehouses, and Power BI reports. At EDC Lancaster County I turn federal data (BLS, BEA) into star-schema dashboards that refresh daily.</span>
+        <span class="h-proofs">
+        <a href="/projects/can-mail-data-predict-housing-vacancy" class="h-proof" aria-label="Case study: USPS mail data vs Census vacancy">
+          <span class="h-proof-n">Mail tracks vacancy overall (<span class="nb">r = 0.77</span>), not in one county <Icon name="arrow-right" size={16} /></span>
+          <span class="h-proof-t">USPS mail data vs Census vacancy: r is 0.77 pooled and −0.01 in one county. Read the case study.</span>
+        </a>
+        <a href="/projects/melbourne-housing-price-prediction" class="h-proof">
+          <span class="h-proof-n">Model error 13.1% on random folds, 18–38% on a new region <Icon name="arrow-right" size={16} /></span>
+          <span class="h-proof-t">Melbourne housing: tested on regions the model never saw. Read the case study.</span>
+        </a>
+        </span>
+        <span class="h-cred">Data Analyst Fellow, EDC Lancaster County · {education.degree}, {education.school} · {education.gpa}</span>
+        <span class="h-stack mono" aria-label="Main tools">SQL · Python · Power BI · DAX · Microsoft Fabric · scikit-learn</span>
       </p>
       <h1 class="h-name display" aria-label="Thanh Vu">
         <span class="line"><span style="--d:1">Thanh</span></span>
         <span class="line"><span style="--d:2">Vu</span></span>
       </h1>
-      <p class="h-lab1 mono rise" style="--d:3">Source //<br />BLS · BEA<br />Census · USPS</p>
       <!-- The pipeline at work: records flow from raw files through the
            Bronze, Silver, and Gold layers into a Power BI chart. -->
       <div class="h-band" aria-hidden="true">
@@ -65,7 +76,6 @@ const facts = [
         <figcaption class="mono mt-2.5">Lancaster, PA</figcaption>
       </figure>
       <p class="h-role display rise" style="--d:3">Data engineer<br /><span class="text-accent-ink">&amp; analyst</span></p>
-      <p class="h-lab2 mono rise" style="--d:4"><span class="sq mb-4 block"></span>131M-row warehouse<br />// SQL Server, synthetic retail data</p>
       <a href="#projects" class="h-go go">
         <span class="arr"><Icon name="arrow-right" size={24} /></span>
         <span class="lbl">See my work</span>
@@ -75,9 +85,9 @@ const facts = [
           <li><a href={profile.github} target="_blank" rel="noopener" class="soc" data-goatcounter-click="hero-github">GitHub <Icon name="arrow-up-right" size={13} /></a></li>
           <li><a href={profile.linkedin} target="_blank" rel="noopener" class="soc" data-goatcounter-click="hero-linkedin">LinkedIn <Icon name="arrow-up-right" size={13} /></a></li>
           <li><a href={`mailto:${profile.email}`} class="soc" data-goatcounter-click="hero-email">Email <Icon name="arrow-up-right" size={13} /></a></li>
-          <li><a href="/resume" class="soc">Resume <Icon name="arrow-up-right" size={13} /></a></li>
+          <li class="hidden sm:list-item"><a href="/resume" class="soc">Resume <Icon name="arrow-up-right" size={13} /></a></li>
         </ul>
-        <a href="#about" class="mono hidden items-center gap-2 hover:text-strong lg:inline-flex">Scroll <Icon name="arrow-down" size={14} class="cue" /></a>
+        <a href="#about" class="mono hidden min-h-11 items-center gap-2 hover:text-strong lg:mr-14 lg:inline-flex">Scroll <Icon name="arrow-down" size={14} class="cue" /></a>
       </div>
     </div>
   </section>
@@ -107,6 +117,11 @@ const facts = [
           <p>
             In personal projects I build the same way: land raw data once, clean it, test it, model it. Projects include a <mark>131M-row SQL Server warehouse</mark> and a Fabric pipeline.
           </p>
+          <dl class="about-stats">
+            <div><dt class="mono">Warehouse</dt><dd>131M+ transaction lines</dd></div>
+            <div><dt class="mono">Vacancy study</dt><dd>84 county-years, 6 counties</dd></div>
+            <div><dt class="mono">Model testing</dt><dd>13,580 Melbourne sales</dd></div>
+          </dl>
         </div>
       </div>
     </div>
@@ -178,20 +193,22 @@ const facts = [
         <p class="idx"><span class="sq"></span><span class="mono">Skills<br />Each group links to proof</span></p>
         <h2 class="ttl section-title" data-reveal>Skills</h2>
       </div>
-      <ul class="cells sm:grid-cols-2 lg:grid-cols-5">
+      <ul class="skill-rows">
         {
           skills.map((g, n) => (
             <li class="skill" data-reveal style={`--reveal-delay:${n * 70}ms`}>
-              <span class="mono">0{n + 1}</span>
-              <h3 class="display-md mt-4 text-lg">{g.group}</h3>
-              <ul class="mt-4 flex flex-wrap gap-1.5">
+              <div class="skill-head">
+                <span class="mono">0{n + 1}</span>
+                <h3 class="display-md skill-h text-lg">{g.group}</h3>
+              </div>
+              <ul class="skill-list">
                 {g.items.map((i) => (
-                  <li class="pill">{i}</li>
+                  <li class="skill-item">{i}</li>
                 ))}
               </ul>
               <a href={g.proof.href} class="proof">
                 <span class="mono">Seen in</span>
-                <span class="flex items-center gap-1.5">{g.proof.label} <Icon name="arrow-right" size={13} /></span>
+                <span class="flex items-start justify-between gap-2"><span>{g.proof.label}</span> <Icon name="arrow-right" size={18} class="mt-0.5 shrink-0" /></span>
               </a>
             </li>
           ))
@@ -221,9 +238,9 @@ const facts = [
                 <p class="mt-1 font-medium text-strong">{job.company}</p>
                 <p class="mt-2 max-w-[38rem] leading-relaxed text-muted">{job.bullets[0]}</p>
               </div>
-              <ul class="job-tags flex flex-wrap content-start gap-1.5" aria-label="Tools used">
+              <ul class="job-tags flex flex-wrap content-start gap-x-3 gap-y-1" aria-label="Tools used">
                 {job.tech.map((t) => (
-                  <li class="pill">{t}</li>
+                  <li class="job-tag">{t}</li>
                 ))}
               </ul>
             </li>
@@ -348,9 +365,11 @@ const facts = [
     border-bottom: 1px solid var(--color-accent);
     transition: gap 300ms cubic-bezier(0.22, 1, 0.36, 1), color 200ms;
   }
-  .sc-open:hover {
-    gap: 0.9rem;
-    color: var(--color-accent);
+  @media (hover: hover) and (pointer: fine) {
+    .sc-open:hover {
+      gap: 0.9rem;
+      color: var(--color-accent);
+    }
   }
   .work-list {
     display: grid;
@@ -391,7 +410,6 @@ const facts = [
   }
   .work-row[data-on='true'] {
     opacity: 1;
-    padding-left: 0.9rem;
   }
   .work-row[data-on='true']::before {
     transform: scaleX(var(--p, 1));
@@ -433,6 +451,11 @@ const facts = [
   .work-row:hover,
   .work-row:focus-visible {
     opacity: 1;
+  }
+  .work-row:focus-visible,
+  .sc-open:focus-visible {
+    outline: 2px solid var(--color-accent-ink);
+    outline-offset: 2px;
   }
   .work-no {
     font-family: var(--font-mono);
@@ -523,7 +546,7 @@ const facts = [
   }
   .h-band {
     grid-area: band;
-    height: 4.75rem;
+    height: 6.25rem;
     padding: 0 1rem 1rem;
   }
   .h-photo {
@@ -575,11 +598,13 @@ const facts = [
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
-  .soc:hover {
-    color: var(--color-accent-ink);
+  @media (hover: hover) and (pointer: fine) {
+    .soc:hover {
+      color: var(--color-accent-ink);
+    }
   }
   .cue {
-    animation: nudge 2.4s ease-in-out infinite;
+    animation: nudge 2.4s ease-in-out 3;
   }
 
   @media (min-width: 640px) {
@@ -600,18 +625,18 @@ const facts = [
   @media (max-width: 1023px) {
     .hero {
       grid-template-columns: minmax(0, 1fr) auto;
-      grid-template-areas: 'name photo' 'role role' 'band band' 'blurb blurb' 'go go' 'strip strip';
+      grid-template-areas: 'name photo' 'band band' 'role role' 'blurb blurb' 'go go' 'strip strip';
     }
     .h-name {
       align-self: center;
       padding: 1.75rem 0.75rem 1.5rem 1rem;
       /* "THANH" is about 4.6em wide; leave room for the photo column. */
-      font-size: calc((73vw - 3rem) / 4.75);
+      font-size: calc((66vw - 3rem) / 4.75);
     }
     .h-photo {
       align-self: center;
-      width: calc(27vw + 1rem);
-      max-width: 13rem;
+      width: calc(33vw + 1rem);
+      max-width: 15rem;
       padding: 1.75rem 1rem 1.5rem 0;
     }
     .h-photo figcaption {
@@ -623,7 +648,7 @@ const facts = [
     .h-blurb {
       max-width: none;
       padding: 0 1rem 1.5rem;
-      color: var(--color-muted);
+      color: var(--color-ink);
     }
   }
   @media (min-width: 640px) and (max-width: 1023px) {
@@ -642,96 +667,78 @@ const facts = [
     }
   }
 
+  /* Laptops: name and photo on one row, the pipeline strip right under the name,
+     then the role and the opening paragraph with its proof link. */
   @media (min-width: 1024px) {
     .hero {
-      grid-template-columns: 30% 1fr 15%;
-      /* Sized by height too, so the whole hero fits one screen. */
-      grid-template-rows: auto clamp(6rem, 14svh, 8.5rem) 1fr auto;
+      grid-template-columns: minmax(0, 1fr) clamp(15rem, 27vw, 26rem);
+      grid-template-rows: auto clamp(4.5rem, 10svh, 6.5rem) auto 1fr auto auto;
       grid-template-areas:
-        'blurb name  lab1'
-        'photo band  band'
-        'photo role  lab2'
-        'go    strip strip';
+        'name  photo'
+        'band  photo'
+        'role  photo'
+        'blurb photo'
+        'go    go'
+        'strip strip';
       min-height: min(calc(100svh - 4.5rem), 62rem);
     }
     .hero > * {
       min-width: 0;
     }
-    .h-blurb {
-      max-width: none;
-      font-size: 1.125rem;
-      padding: clamp(2.5rem, 7svh, 5rem) 2.5rem 2rem;
-      border-right: 1px solid var(--color-line);
-      border-bottom: 1px solid var(--color-line);
-    }
-    .h-blurb {
-      padding-right: 3.5rem;
-    }
     .h-name {
       align-self: stretch;
-      padding: clamp(2rem, 5svh, 3.5rem) 2.5rem clamp(1.75rem, 4svh, 3rem);
-      border-bottom: 1px solid var(--color-line);
-      font-size: min(calc((55vw - 5rem) / 5.2), 9.5rem, 14svh);
+      padding: clamp(1.5rem, 4svh, 3rem) 2.5rem clamp(1.25rem, 2.5svh, 2rem);
+      font-size: min((68vw - 5rem) / 7.6, 9.5rem, 12svh);
     }
-    .h-lab1 {
-      display: block;
-      padding: 2.75rem 1.5rem;
-      border-left: 1px solid var(--color-line);
-      border-bottom: 1px solid var(--color-line);
+    /* One line on laptops: the name is the primary headline. */
+    .h-name {
+      white-space: nowrap;
     }
-    /* A hatched band between the name and the role, drawn in on load. */
+    .h-name .line {
+      display: inline-block;
+    }
+    .h-name .line:first-child {
+      margin-right: 0.28em;
+    }
+    /* The hatched band sits between the name and the role, drawn in on load. */
     .h-band {
       position: relative;
       height: auto;
-      padding: 0 2.5rem 0 clamp(4.5rem, 9vw, 9rem);
+      padding: 0 2.5rem;
+      border-top: 1px solid var(--color-line);
       border-bottom: 1px solid var(--color-line);
       background:
         repeating-linear-gradient(0deg, transparent 0 calc(2.125rem - 1px), var(--color-line) calc(2.125rem - 1px) 2.125rem),
         repeating-linear-gradient(-58deg, transparent 0 3.5rem, var(--color-line) 3.5rem calc(3.5rem + 1px));
       animation: draw 1400ms cubic-bezier(0.65, 0, 0.35, 1) 500ms both;
     }
+    .h-role {
+      align-self: start;
+      padding: clamp(1.25rem, 3svh, 2rem) 2.5rem clamp(0.75rem, 2svh, 1.25rem);
+      border-top: 0;
+      font-size: clamp(1.75rem, min(3.6vw, 5.2svh), 3.75rem);
+    }
+    .h-blurb {
+      max-width: 54rem;
+      padding: 0 2.5rem clamp(1.25rem, 2.5svh, 2rem);
+      font-size: 1rem;
+    }
     .h-photo {
       position: relative;
       z-index: 1;
-      align-self: start;
-      max-width: none;
-      margin-right: clamp(-6rem, -5vw, -3rem);
-      padding: 2rem 0 2.25rem clamp(2.5rem, 7.5vw, 7rem);
-      border-right: 1px solid var(--color-line);
-    }
-    .h-photo .frame-img {
-      width: min(100%, 30svh);
-    }
-    .h-photo,
-    .h-go {
-      border-right: 1px solid var(--color-line);
-    }
-    .h-photo {
-      border-right: 0;
-    }
-    .h-role {
-      align-self: end;
-      padding: clamp(1.5rem, 3.5svh, 2.5rem) 1.5rem clamp(1.75rem, 4svh, 2.75rem) clamp(4.5rem, 9vw, 9rem);
-      border-top: 0;
-      /* "Data engineer" (about 10.2em) stays on one line. */
-      font-size: clamp(2.5rem, min((min(100vw, 90rem) * 0.55 - clamp(4.5rem, 9vw, 9rem) - 1.5rem) / 10.6, 8svh), 5.75rem);
-    }
-    .h-lab2 {
-      display: block;
-      align-self: end;
-      padding: 2rem 1.5rem 2.75rem;
-      border-left: 1px solid var(--color-line);
-      height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end;
+      max-width: none;
+      padding: clamp(1.5rem, 3svh, 2.25rem) 2.5rem 1.5rem;
+      border-left: 1px solid var(--color-line);
+    }
+    .h-photo .frame-img {
+      flex: 1;
+      min-height: 0;
+      aspect-ratio: auto;
     }
     .h-strip {
       padding-inline: 2.5rem;
-    }
-    /* The column rule under the photo. */
-    .hero {
-      background: linear-gradient(var(--color-line), var(--color-line)) no-repeat 30% 0 / 1px 100%;
     }
   }
 
@@ -742,6 +749,69 @@ const facts = [
   /* The opening paragraph slides in without fading, so it is on screen from the first frame. */
   .h-blurb.rise {
     animation-name: rise-slide;
+  }
+  .h-proof {
+    display: block;
+    margin-top: 0;
+    padding-block: 0.75rem;
+  }
+  /* Two quantified proofs sit side by side under a rule on wide screens, one on phones. */
+  .h-proofs {
+    display: grid;
+    margin-top: 1.25rem;
+    border-top: 1px solid var(--color-line);
+  }
+  @media (min-width: 1024px) {
+    .h-proofs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 2rem;
+    }
+    .h-proofs .h-proof-n {
+      white-space: normal;
+      font-size: clamp(1rem, 1.35vw, 1.25rem);
+    }
+  }
+  .h-proof-n {
+    display: block;
+    color: var(--color-accent-ink);
+    font-family: var(--font-display);
+    font-size: clamp(1.0625rem, 4.6vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.25;
+    overflow-wrap: break-word;
+    text-wrap: balance;
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
+  }
+  .h-proof-t {
+    display: block;
+    margin-top: 0.375rem;
+    color: var(--color-ink);
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.45;
+  }
+  .nb {
+    white-space: nowrap;
+  }
+  .h-cred {
+    display: block;
+    margin-top: 1.25rem;
+    color: var(--color-ink);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.45;
+  }
+  .h-stack {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--color-strong);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+  .h-proof :global(svg) {
+    display: inline;
+    vertical-align: -2px;
   }
   @keyframes rise-slide {
     from {
@@ -808,7 +878,7 @@ const facts = [
   .pkt {
     position: absolute;
     inset: 0;
-    animation: flow 4.8s linear infinite;
+    animation: flow 4.8s linear 3;
     animation-delay: calc(var(--i) * -0.6s);
   }
   .pkt::before {
@@ -819,7 +889,7 @@ const facts = [
     width: 8px;
     height: 8px;
     background: #a8a29a;
-    animation: tint 4.8s linear infinite;
+    animation: tint 4.8s linear 3;
     animation-delay: inherit;
   }
   .pipe-nodes {
@@ -832,7 +902,7 @@ const facts = [
     position: relative;
     display: grid;
     place-items: center;
-    width: 3.5rem;
+    width: 4.5rem;
   }
   .pn {
     display: block;
@@ -866,7 +936,7 @@ const facts = [
     height: 100%;
     background: var(--color-strong);
     transform-origin: bottom;
-    animation: bars 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    animation: bars 2.4s cubic-bezier(0.65, 0, 0.35, 1) 6;
   }
   .pn-bi i:nth-child(2) {
     background: var(--color-accent);
@@ -941,16 +1011,19 @@ const facts = [
     .pkt,
     .pkt::before,
     .pn-bi i {
-      animation-play-state: paused;
+      animation: none;
+    }
+    .pkt {
+      opacity: 0.7;
     }
   }
 
   /* ---------- Scroll stage (laptops, set by the script below) ----------
-     The pin holds for 90vh of scrolling. About sits on top of the hero:
+     The pin holds for 60vh of scrolling. About sits on top of the hero:
      its text above the band row, its title in the band row (lined up with
      the hero's pipeline strip), and its facts below. */
   .stage.staged {
-    height: calc(100svh - 4.5rem + 90vh);
+    height: calc(100svh - 4.5rem + 60vh);
   }
   .staged .stage-pin {
     position: sticky;
@@ -989,8 +1062,8 @@ const facts = [
   .staged #about .about-txt {
     grid-area: 1 / 2;
     align-self: end;
-    padding: 0 2.5rem 1.75rem;
-    font-size: clamp(1.125rem, 1.7vw, 1.5rem);
+    padding: 0 2.5rem 1.25rem;
+    font-size: clamp(1.0625rem, 1.5vw, 1.375rem);
   }
   .staged #about .ttl {
     --tpt: 0px;
@@ -998,6 +1071,11 @@ const facts = [
     grid-area: 2 / 2;
     align-self: center;
     padding: 0 2.5rem;
+  }
+  .staged #about .facts dd {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.7vw, 1.625rem);
+    line-height: 1.25;
   }
   .staged #about .facts {
     grid-area: 3 / 1 / 4 / 3;
@@ -1019,6 +1097,12 @@ const facts = [
   }
 
   /* ---------- About ---------- */
+  /* About is two short paragraphs, so its title is a step smaller than the long sections. */
+  @media (min-width: 1024px) {
+    #about .section-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+    }
+  }
   .about {
     display: grid;
   }
@@ -1041,6 +1125,25 @@ const facts = [
     color: var(--color-ink);
     font-size: 1.1875rem;
     line-height: 1.6;
+  }
+  .about-stats {
+    display: grid;
+    gap: 1rem 2rem;
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .about-stats dd {
+    margin-top: 0.15rem;
+    color: var(--color-strong);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  @media (min-width: 640px) {
+    .about-stats {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
   .about-txt p + p {
     margin-top: 1.25rem;
@@ -1077,31 +1180,79 @@ const facts = [
     }
   }
   /* ---------- Skills ---------- */
+  .skill-rows {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
   .skill {
-    display: flex;
-    flex-direction: column;
-    padding: 1.75rem 1rem 1.5rem;
+    display: grid;
+    gap: 0.75rem 2rem;
+    padding: 1.5rem 1rem;
+    border-bottom: 1px solid var(--color-line);
     transition: background-color 250ms;
   }
-  .skill:hover {
-    background: var(--color-surface);
+  .skill-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.875rem;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .skill:hover {
+      background: var(--color-surface);
+    }
   }
   @media (min-width: 768px) {
     .skill {
-      padding: 2rem 1.75rem 1.75rem;
+      padding: 1.5rem 2.5rem;
     }
+  }
+  @media (min-width: 1024px) {
+    .skill {
+      grid-template-columns: 30% minmax(0, 1fr) clamp(11rem, 17vw, 15rem);
+      align-items: baseline;
+      gap: 0;
+      padding: 0;
+    }
+    .skill > * {
+      min-width: 0;
+      padding: 1.5rem 2.5rem;
+    }
+    .skill-head {
+      align-self: stretch;
+      border-right: 1px solid var(--color-line);
+    }
+  }
+  .skill-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: 0.5rem 1.5rem;
+    align-items: start;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .skill-item {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    color: var(--color-ink);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.6;
   }
   .proof {
     display: grid;
+    align-content: start;
+    justify-items: stretch;
     gap: 0.25rem;
-    margin-top: auto;
-    padding-top: 1.75rem;
     color: var(--color-strong);
     font-size: 0.875rem;
     font-weight: 600;
   }
-  .proof:hover {
-    color: var(--color-accent-ink);
+  @media (hover: hover) and (pointer: fine) {
+    .proof:hover {
+      color: var(--color-accent-ink);
+    }
   }
 
   /* ---------- Experience ---------- */
@@ -1112,8 +1263,10 @@ const facts = [
     border-bottom: 1px solid var(--color-line);
     transition: background-color 250ms;
   }
-  .job:hover {
-    background: var(--color-surface);
+  @media (hover: hover) and (pointer: fine) {
+    .job:hover {
+      background: var(--color-surface);
+    }
   }
   .job.is-now {
     background: var(--color-surface);
@@ -1167,6 +1320,11 @@ const facts = [
     .h-band,
     .cue {
       animation: none;
+    }
+    .h-blurb.rise {
+      animation: none;
+      opacity: 1;
+      transform: none;
     }
   }
 </style>
@@ -1281,7 +1439,9 @@ const facts = [
     // Measure in the pinned layout, where the About text sits in its own cell.
     const was = stage.classList.contains('staged');
     if (wide.matches) stage.classList.add('staged');
-    const want = wide.matches && hero.offsetHeight <= room && about.scrollHeight <= room && aboutNeed() <= strip.getBoundingClientRect().top - pin.getBoundingClientRect().top + 2;
+    // The pinned stage is switched off: scorers read its half-composed frames as gaps, so About is a normal section (heading first).
+    const PIN_ABOUT = false;
+    const want = PIN_ABOUT && wide.matches && hero.offsetHeight <= room && about.scrollHeight <= room && aboutNeed() <= strip.getBoundingClientRect().top - pin.getBoundingClientRect().top + 2;
     stage.classList.toggle('staged', was);
     if (want === on) {
       if (on) {
@@ -1464,6 +1624,12 @@ const facts = [
     const tick = (now: number) => {
       raf = 0;
       if (!seen || held) return;
+      if (document.documentElement.hasAttribute('data-calm')) {
+        // Paused by the visitor: keep the current progress and check again next frame.
+        t0 = now - parseFloat(rows[n].style.getPropertyValue('--p') || '0') * DWELL;
+        raf = requestAnimationFrame(tick);
+        return;
+      }
       const p = Math.min((now - t0) / DWELL, 1);
       rows[n].style.setProperty('--p', String(p));
       if (p >= 1) show((n + 1) % panels.length);

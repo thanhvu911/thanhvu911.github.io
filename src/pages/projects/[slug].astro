@@ -225,11 +225,16 @@ const tabs = [
   }
   /* Matches the animations' own paper colour, in both themes. */
   .hero-anim {
-    background: #f3f1ec;
+    background: var(--color-surface);
   }
   .hero-anim :global(.mg) {
     max-width: 75rem;
     margin-inline: auto;
+  }
+  @media (min-width: 768px) {
+    .hero-anim :global(.mg) {
+      margin-inline: 0;
+    }
   }
   @media (min-width: 768px) {
     .panel {
@@ -252,7 +257,7 @@ const tabs = [
   }
   .ph-title {
     font-size: clamp(1.5rem, min(6.4vw, calc(100cqi / (var(--lw) * 0.92)), var(--max)), 6rem);
-    line-height: 0.95;
+    line-height: 1.04;
     position: relative;
     animation: ph-slide 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
@@ -280,11 +285,11 @@ const tabs = [
     right: 1rem;
     top: -0.5rem;
     font-family: var(--font-display);
-    font-size: clamp(7rem, 22vw, 16rem);
+    font-size: clamp(6rem, 14vw, 11rem);
     font-weight: 800;
     line-height: 1;
     color: transparent;
-    -webkit-text-stroke: 1px color-mix(in srgb, var(--color-accent) 45%, transparent);
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--color-accent) 22%, transparent);
     pointer-events: none;
     user-select: none;
     animation: ph-fade 1400ms 200ms both;
@@ -321,6 +326,12 @@ const tabs = [
   }
   .cells > div:hover :global(dd)::after {
     width: 4rem;
+  }
+  /* On phones the ghost numeral would sit on top of the meta line and title. */
+  @media (max-width: 639px) {
+    .ph-num {
+      display: none;
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     .ph-title,

@@ -23,7 +23,7 @@ const subtitle = endpoint
       <div class="flex items-start gap-3">
         <span class="icon-tile size-9"><Icon name="message" size={17} /></span>
         <div>
-          <h2 id="assistant-title" class="display-md text-[0.9375rem]">Ask about my work</h2>
+          <p id="assistant-title" class="display-md text-[0.9375rem]">Ask about my work</p>
           <p class="text-xs text-muted">{subtitle}</p>
         </div>
       </div>
@@ -52,7 +52,7 @@ const subtitle = endpoint
 <style>
   .assistant-launch {
     position: fixed;
-    right: 1rem;
+    right: max(1rem, env(safe-area-inset-right));
     bottom: max(1rem, env(safe-area-inset-bottom));
     z-index: 40;
     display: inline-flex;
@@ -75,13 +75,28 @@ const subtitle = endpoint
     cursor: pointer;
     transition: background-color 200ms, transform 200ms;
   }
-  .assistant-launch:hover {
-    background: var(--color-surface-2);
-    border-color: var(--color-strong);
-    transform: translateY(-2px);
+  @media (hover: hover) and (pointer: fine) {
+    .assistant-launch:hover {
+      background: var(--color-surface-2);
+      border-color: var(--color-strong);
+      transform: translateY(-2px);
+    }
+  }
+  .assistant-launch:active {
+    transform: scale(0.95);
+    transition-duration: 80ms;
   }
   .assistant-launch :global(svg) {
     color: var(--color-accent-ink);
+  }
+  .assistant-launch.is-dim {
+    opacity: 0.2;
+    pointer-events: none;
+  }
+  .assistant-launch.is-away {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(8px);
   }
   .assistant-launch[aria-expanded='true'] {
     display: none;
@@ -212,9 +227,26 @@ const subtitle = endpoint
   };
   toggle.addEventListener('click', () => setOpen(true));
   root.querySelector('[data-assistant-close]')!.addEventListener('click', () => setOpen(false));
-  panel.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') setOpen(false);
+  // Escape closes the chat from anywhere while it is open, and focus returns to the launcher.
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !panel.hidden) setOpen(false);
   });
+
+  // Step aside while the footer is on screen, so the button never covers its links.
+  const footerEl = document.querySelector('footer');
+  if (footerEl && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => toggle.classList.toggle('is-away', e.isIntersecting), { threshold: 0.05 }).observe(footerEl);
+  }
+
+  // On phones, fade the button while scrolling so it never sits over text being read.
+  if (matchMedia('(max-width: 639px)').matches) {
+    let t = 0;
+    addEventListener('scroll', () => {
+      toggle.classList.add('is-dim');
+      clearTimeout(t);
+      t = window.setTimeout(() => toggle.classList.remove('is-dim'), 450);
+    }, { passive: true });
+  }
 
   const scrollDown = () => log.scrollTo({ top: log.scrollHeight, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 

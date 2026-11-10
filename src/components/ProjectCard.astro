@@ -74,8 +74,10 @@ const lead = project.metrics[0];
     background: var(--color-bg);
     transition: background-color 300ms;
   }
-  .pcard:hover {
-    background: var(--color-surface);
+  @media (hover: hover) and (pointer: fine) {
+    .pcard:hover {
+      background: var(--color-surface);
+    }
   }
   /* A accent rule grows across the top on hover. */
   .pcard::before {
@@ -89,14 +91,18 @@ const lead = project.metrics[0];
     transform-origin: left;
     transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .pcard:hover::before {
-    transform: scaleX(1);
+  @media (hover: hover) and (pointer: fine) {
+    .pcard:hover::before {
+      transform: scaleX(1);
+    }
   }
   .title-link {
     background: linear-gradient(var(--color-accent), var(--color-accent)) no-repeat 0 100% / 0 3px;
     transition: background-size 350ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .title-link:hover {
-    background-size: 100% 3px;
+  @media (hover: hover) and (pointer: fine) {
+    .title-link:hover {
+      background-size: 100% 3px;
+    }
   }
 </style>

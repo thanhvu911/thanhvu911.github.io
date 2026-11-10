@@ -11,7 +11,7 @@
   --color-navy: #0b1f47;
   --color-strong: #16213b; /* headings and key numbers */
   --color-ink: #2a3350; /* body text */
-  --color-muted: #565c72;
+  --color-muted: #4a5068;
   --color-line: #d3c6ad;
   --color-soft: #e6dcc8;
   --color-accent: #c99a45; /* fills: squares, bars, rules */
@@ -64,7 +64,7 @@
   --color-surface-2: #1d2744;
   --color-strong: #f6efe0;
   --color-ink: #d6d3cb;
-  --color-muted: #9097ac;
+  --color-muted: #a3a9bd;
   --color-line: #273250;
   --color-soft: #121a2d;
   --color-accent: #e8c27a;
@@ -84,10 +84,10 @@
 
 /* Cross-page fade using the browser's native View Transitions (enabled further down, only without reduced motion). */
 ::view-transition-old(root) {
-  animation: 160ms ease-in both vt-out;
+  animation: 120ms cubic-bezier(0.23, 1, 0.32, 1) both vt-out;
 }
 ::view-transition-new(root) {
-  animation: 260ms ease-out both vt-in;
+  animation: 220ms cubic-bezier(0.23, 1, 0.32, 1) both vt-in;
 }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root),
@@ -205,11 +205,15 @@
   }
 
   /* Monospace labels: "01 // PIPELINES". */
+  p,
+  li {
+    text-wrap: pretty;
+  }
   .mono {
-    color: var(--color-muted);
+    color: color-mix(in srgb, var(--color-muted) 70%, var(--color-strong));
     font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
+    font-size: 0.8125rem;
+    letter-spacing: 0.05em;
     line-height: 1.55;
     text-transform: uppercase;
   }
@@ -328,8 +332,10 @@
   .card-hover {
     transition: border-color 250ms, transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .card-hover:hover {
-    border-color: var(--card-hover-border);
+  @media (hover: hover) and (pointer: fine) {
+    .card-hover:hover {
+      border-color: var(--card-hover-border);
+    }
   }
   .card-hover:active {
     transform: scale(0.99);
@@ -363,10 +369,10 @@
     border: 1px solid var(--chip-border);
     color: var(--color-ink);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     font-weight: 500;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    text-transform: none;
   }
 
   .dot-list > li {
@@ -395,8 +401,10 @@
     padding-block: 0.8rem;
     margin-block: -0.8rem;
   }
-  .text-link:hover {
-    text-decoration-color: currentColor;
+  @media (hover: hover) and (pointer: fine) {
+    .text-link:hover {
+      text-decoration-color: currentColor;
+    }
   }
 
   .btn {
@@ -417,6 +425,14 @@
   .btn:active {
     transform: scale(0.97);
   }
+  .go:active,
+  .work-row:active,
+  .mobile-item:active,
+  .search-btn:active,
+  .menu-btn:active,
+  .theme-switch:active {
+    opacity: 0.8;
+  }
   a, button, [role="button"], summary {
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
@@ -426,15 +442,19 @@
     background: var(--btn-primary-bg);
     color: var(--btn-primary-fg);
   }
-  .btn-primary:hover {
-    background: var(--btn-primary-hover);
+  @media (hover: hover) and (pointer: fine) {
+    .btn-primary:hover {
+      background: var(--btn-primary-hover);
+    }
   }
   .btn-outline {
     border-color: var(--color-strong);
     color: var(--color-strong);
   }
-  .btn-outline:hover {
-    background: var(--hover-bg);
+  @media (hover: hover) and (pointer: fine) {
+    .btn-outline:hover {
+      background: var(--hover-bg);
+    }
   }
 
   /* Arrow bar: a accent block with an arrow, then a label. */
@@ -467,11 +487,15 @@
     padding-inline: 1.5rem;
     background: var(--color-surface);
   }
-  .go:hover > .arr {
-    width: 6rem;
+  @media (hover: hover) and (pointer: fine) {
+    .go:hover > .arr {
+      width: 6rem;
+    }
   }
-  .go:hover > .arr svg {
-    transform: translateX(4px);
+  @media (hover: hover) and (pointer: fine) {
+    .go:hover > .arr svg {
+      transform: translateX(4px);
+    }
   }
 
   /* Scroll reveal, only once JavaScript has marked the page (see Base.astro). */
@@ -700,8 +724,10 @@
     cursor: pointer;
     transition: background-color 120ms, border-color 120ms;
   }
-  .demo-chip:hover {
-    background: #f3f2f1;
+  @media (hover: hover) and (pointer: fine) {
+    .demo-chip:hover {
+      background: #f3f2f1;
+    }
   }
   .demo-chip[aria-pressed='true'],
   .demo-chip[aria-checked='true'] {
@@ -760,5 +786,11 @@
   }
   .demo-chart-tall {
     height: 21rem;
+  }
+}
+
+@media (max-width: 639px) {
+  #main {
+    padding-bottom: 3.5rem;
   }
 }

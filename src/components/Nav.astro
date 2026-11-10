@@ -30,13 +30,19 @@ const path = Astro.url.pathname.replace(/\/$/, '');
         <span class="ts-opt ts-dark"><Icon name="moon" size={14} /><span class="hidden xl:inline">Dark</span></span>
       </button>
 
+      <button type="button" class="calm-btn" aria-pressed="false" aria-label="Pause motion" data-calm-toggle>
+        <svg class="calm-pause" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect x="2.5" y="2" width="3" height="10" fill="currentColor" /><rect x="8.5" y="2" width="3" height="10" fill="currentColor" /></svg>
+        <svg class="calm-play" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 2l9 5-9 5z" fill="currentColor" /></svg>
+        <span class="sr-only" data-calm-label>Pause motion</span>
+      </button>
+
       <button type="button" class="search-btn" data-palette-open>
         <Icon name="search" size={16} />
         <span class="sr-only">Search the site</span>
         <kbd class="hidden lg:inline" data-shortcut>Ctrl K</kbd>
       </button>
 
-      <a href="/resume" class="btn btn-primary hidden min-h-11 sm:inline-flex">Resume</a>
+      <a href="/resume" class="btn btn-primary min-h-11 !px-3 sm:!px-5">Resume</a>
 
       <button
         type="button"
@@ -64,11 +70,11 @@ const path = Astro.url.pathname.replace(/\/$/, '');
           </li>
         ))
       }
-      <li class="sm:hidden">
-        <a href="/resume" class="mobile-item">
-          <span class="mono">0{nav.length + 1}</span>
-          Resume
-        </a>
+      <li class="border-b border-line">
+        <button type="button" class="mobile-item w-full text-left" aria-pressed="false" aria-label="Pause motion" data-calm-toggle>
+          <span class="mono">Aa</span>
+          <span data-calm-label aria-hidden="true">Pause motion</span>
+        </button>
       </li>
     </ul>
   </div>
@@ -100,13 +106,16 @@ const path = Astro.url.pathname.replace(/\/$/, '');
     font-weight: 700;
     transition: background-color 200ms;
   }
-  .brand:hover b {
-    background: var(--color-accent-ink);
+  @media (hover: hover) and (pointer: fine) {
+    .brand:hover b {
+      background: var(--color-accent-ink);
+    }
   }
   .nav-item {
     position: relative;
     display: block;
-    padding-block: 0.5rem;
+    padding-block: 0.8rem;
+    min-width: 2.75rem;
     color: var(--color-strong);
     font-size: 0.8125rem;
     font-weight: 500;
@@ -131,6 +140,37 @@ const path = Astro.url.pathname.replace(/\/$/, '');
     transform: scaleX(1);
   }
 
+  .calm-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--color-line);
+    color: var(--color-strong);
+    cursor: pointer;
+    transition: border-color 150ms;
+  }
+  @media (max-width: 479px) {
+    .calm-btn {
+      display: none;
+    }
+  }
+  .calm-btn .calm-play,
+  .calm-btn[aria-pressed='true'] .calm-pause {
+    display: none;
+  }
+  .calm-btn[aria-pressed='true'] .calm-play {
+    display: block;
+  }
+  .calm-btn[aria-pressed='true'] {
+    background: var(--color-surface-2);
+    border-color: var(--color-strong);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .calm-btn:hover {
+      border-color: var(--color-strong);
+    }
+  }
   /* Light/dark switch: two labelled halves, the active one filled. */
   .theme-switch {
     display: inline-flex;
@@ -157,8 +197,10 @@ const path = Astro.url.pathname.replace(/\/$/, '');
     background: none;
     color: var(--color-muted);
   }
-  .theme-switch:hover .ts-opt {
-    color: var(--color-strong);
+  @media (hover: hover) and (pointer: fine) {
+    .theme-switch:hover .ts-opt {
+      color: var(--color-strong);
+    }
   }
 
   .search-btn,
@@ -181,14 +223,16 @@ const path = Astro.url.pathname.replace(/\/$/, '');
     }
   }
   /* The smallest phones drop the search button; the menu has every link. */
-  @media (max-width: 379px) {
+  @media (max-width: 479px) {
     .search-btn {
       display: none;
     }
   }
   .search-btn:hover,
-  .menu-btn:hover {
-    border-color: var(--color-strong);
+  @media (hover: hover) and (pointer: fine) {
+    .menu-btn:hover {
+      border-color: var(--color-strong);
+    }
   }
   .search-btn kbd {
     color: var(--color-muted);
@@ -207,8 +251,10 @@ const path = Astro.url.pathname.replace(/\/$/, '');
     font-weight: 600;
     text-transform: uppercase;
   }
-  .mobile-item:hover {
-    background: var(--hover-bg);
+  @media (hover: hover) and (pointer: fine) {
+    .mobile-item:hover {
+      background: var(--hover-bg);
+    }
   }
   @media (min-width: 768px) {
     .mobile-item {

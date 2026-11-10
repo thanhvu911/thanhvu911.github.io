@@ -17,6 +17,9 @@ const { project, detail } = Astro.props;
 const motion = sectionMotion[project.slug];
 const stepMap = skillSteps[project.slug] ?? {};
 const stepSkills = project.architecture.map((_, i) => project.skills.filter((s) => stepMap[s] === i));
+// "What it found" already shows the first three results; the folded section holds only the rest.
+const moreResults = project.results.slice(3);
+const learnNo = moreResults.length ? '05' : '04';
 const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' } as const;
 ---
 
@@ -159,27 +162,29 @@ const kindLabel = { fact: 'Fact table', dim: 'Dimension', measures: 'Measures' }
     </div>
   </details>
 
-  <details class="acc" open>
-    <summary><span class="mono">04</span>Results &amp; impact<Icon name="chevron-down" size={18} class="chev" /></summary>
-    <div class="body">
-      <ul class="rv space-y-4" data-inview>
-        {
-          project.results.map((r, i) => (
-            <li class="result rv-i" style={`--k:${i}`}>
-              <Icon name="check" size={16} class="mt-1 shrink-0 text-accent-ink" />
-              <span>{r}</span>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </details>
+  {
+    moreResults.length > 0 && (
+      <details class="acc" open>
+        <summary><span class="mono">04</span>More results<Icon name="chevron-down" size={18} class="chev" /></summary>
+        <div class="body">
+          <ul class="rv space-y-4" data-inview>
+            {moreResults.map((r, i) => (
+              <li class="result rv-i" style={`--k:${i}`}>
+                <Icon name="check" size={16} class="mt-1 shrink-0 text-accent-ink" />
+                <span>{r}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </details>
+    )
+  }
 
   {
     (project.learned || project.improve) && (
       <details class="acc">
         <summary>
-          <span class="mono">05</span>What I learned &amp; would improve
+          <span class="mono">{learnNo}</span>What I learned &amp; would improve
           <Icon name="chevron-down" size={18} class="chev" />
         </summary>
         <div class="body grid gap-8 md:grid-cols-2 md:gap-10">
