@@ -105,8 +105,8 @@ import { profile } from '../data/portfolio';
     });
 
     var BURST = 6700, END = 9000;
-    // The story is 9s at 1x; at 1.8x it runs about 5s from start to finish.
-    var SPEED = 1.8;
+    // The story is 9s at 1x; at 1.25x it runs about 7s. Each of the 5 steps stays on screen about 0.9s.
+    var SPEED = 1.25;
     var low = false, lastNow = 0, slowSum = 0, slowN = 0, perfChecked = false;
     var ST = [500, 1650, 2800, 3950, 5100];   // when the data reaches each stage
     var GLOSS = ['RAW = THE ORIGINAL FILES', 'BRONZE = SAVED AS-IS', 'SILVER = CLEANED UP', 'GOLD = READY TO USE', 'POWER BI = THE REPORT TOOL'];
